@@ -1,0 +1,57 @@
+MongoDb Schema
+
+.users
+{ 
+	university:<String>
+	classes:[<String (class id)>]
+	_id:<String (email address)>
+	first_name:<String>
+	last_name:<String>
+	email:<String>
+	password:<String>
+}
+
+.events
+{
+	type:<String (lecture/homework/etc)>
+	class:<String (class id)>
+	location:<String>
+	start_time:<Date>
+	end_time:<Date>
+	details:<String (any extra comments)>
+}
+
+.events.posts
+{
+	post:<String (post content)>
+	event:<String (event id)>
+	votes:<Integer>
+	author: {
+		first_name:<String>
+		last_name:<String>
+		_id:<String>
+	}
+	comments: [
+		{
+			comment:<String (comment content)>
+			votes:<Integer>
+			author: {
+				first_name:<String>
+				last_name:<String>
+				email:<String>
+			_id:<String (current time + randint(0,9))>
+		}
+	]
+}
+	
+.classes
+{
+	instructor:<String>
+	finish_date:<String (yyyy-mm-dd)> 
+	university:<String>
+	section:<String>
+	name:<String>
+	tags:[<String (anything that a user would input to search for this class)>]
+	_id:<String (university-name-section)>
+}
+
