@@ -158,7 +158,7 @@ class LoginHandler(BaseHandler):
                 user = get_user(form.email.data)
             except KeyError:
                 self.write("No username or wrong password")
-                
+                return
             if user['password'] == form.password.data:
                 session = db_login(user['_id'])
                 self.set_cookie('session', session)
