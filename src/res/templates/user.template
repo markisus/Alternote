@@ -1,0 +1,11 @@
+<h1>{{ user.first_name }} {{ user.last_name }}</h1>
+<b>University:</b> {{ user.university }}
+<br />
+<b>Email:</b> {{ user.email }}
+<br />
+<b>Classes:</b>
+<ul>
+{% for class in user.classes %}
+<li><a href="/classes/{{ class._id }}"> {{ class.name }} </a></li>
+{% endfor %}
+</ul>

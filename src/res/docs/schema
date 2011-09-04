@@ -1,10 +1,22 @@
 MongoDb Schema
 
+.logins
+{
+	_id:<String>,
+	userid:<String>
+}
+
 .users
 { 
 	university:<String>
-	classes:[<String (class id)>]
+	classes:[
+		{
+			name:<String>
+			_id:<String (class id)>
+		}
+	]
 	_id:<String (email address)>
+	type:<String (admin, member, etc..)>
 	first_name:<String>
 	last_name:<String>
 	email:<String>
@@ -14,7 +26,10 @@ MongoDb Schema
 .events
 {
 	type:<String (lecture/homework/etc)>
-	class:<String (class id)>
+	class:{
+			name:<String>
+			_id:<String (class id)>
+	}
 	location:<String>
 	start_time:<Date>
 	end_time:<Date>

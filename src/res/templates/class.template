@@ -1,0 +1,12 @@
+<h1>{{ Class.university }}: {{ Class.name }}, Section {{ Class.section }}</h1>
+<b>Instructor:</b> {{ Class.instructor }}
+<br />
+<b>Finish Date:</b> {{ Class.finish_date }}
+<br />
+<b>Tags:</b>
+<ul>
+{% for tag in Class.tags %}
+	<li>{{ tag }}</li>
+{% endfor %}
+</ul>
+<a href="/events/{{ Class._id }}" ><b>Events</b></a>

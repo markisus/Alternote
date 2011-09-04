@@ -1,0 +1,9 @@
+{% extends 'form.template' %}
+{% block content %}
+<h1>Class Search</h1>
+<form method="post">
+	{{ with_errors(form.tags) }}
+	{{ with_errors(form.match) }}
+	{{ with_errors(form.submit) }}
+</form>
+{% endblock content %}

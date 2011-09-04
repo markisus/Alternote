@@ -1,0 +1,10 @@
+{% extends 'form.template' %}
+{% block content %}
+<h1>Make a Post</h1>
+<form method="post" action="/posts/{{ form.postid.data }}">
+	{{ with_errors(form.action) }}
+	{{ form.postid }}
+	{{ form.userid }}
+	<input type="submit" value="submit" /> 
+</form>
+{% endblock content %}

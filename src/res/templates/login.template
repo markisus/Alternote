@@ -1,0 +1,9 @@
+{% extends 'form.template' %}
+{% block content %}
+<h1>Log In</h1>
+<form method="post">
+	{{ with_errors(form.email) }}
+	{{ with_errors(form.password) }}
+	{{ with_errors(form.submit) }}
+</form>
+{% endblock content %}
