@@ -2,7 +2,7 @@
 
 {% for post in posts %}
 <div style="border: 3px coral solid;"> 
-		<a href="/posts/{{ post._id}}">[Async Listen]</a>
+		<a href="/posts/next_update/{{ post._id}}">[Async Listen]</a>
 	<ul>
 		<li> [{{ post.votes }} votes] <a href="/users/{{ post.author._id }}">{{ post.author.first_name }} {{ post.author.last_name }}</a>: {{ post.post }}</li>
 		<li> <a href="/postforms/change/{{ post._id }}">[Write]</a> </li>

@@ -1,7 +1,7 @@
 {% extends 'form.template' %}
 {% block content %}
 <h1>Change a Post</h1>
-<form method="post" action="/posts/{{ form.postid.data }}">
+<form method="post" action="/posts/update/{{ form.postid.data }}">
 	{{ with_errors(form.action) }}
 	{{ form.postid }}
 	{{ form.userid }}

@@ -21,6 +21,7 @@ __all__ = (
            'create_post_for_event',
            'create_comment_for_post',
            'get_event',
+           'get_post',
            
            #Getting Posts
            'get_top_posts_for_event',

@@ -127,6 +127,13 @@ def get_event(eventid):
         raise KeyError("No event with key " + str(eventid) + " exists")
     return result
 
+def get_post(postid):
+    postid = ObjectId(postid)
+    result = events.find_one({'_id':postid})
+    if result == None:
+        raise KeyError("No post with key " + str(postid) + " exists")
+    return result
+
 def create_post_for_event(eventid, userid, post):
     author = __author_query(userid)
     

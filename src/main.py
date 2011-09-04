@@ -173,92 +173,79 @@ class LoginHandler(BaseHandler):
         self.set_secure_cookie('userid', None)
         
 class PostsHandler(BaseHandler):    
-    #{ post_id:[list of callbacks] }
-    callbacks = defaultdict(list)
+    #{ post_id:[set of handlers] }
+    listeners = defaultdict(set)
     
+    #Maintain a moving window of the last prev_updates_size updates.
+    #If clients find that their latest update was outside the frame, they should re-init
+    recent_updates = list() 
+    recent_updates_size = 2
+     
     @tornado.web.authenticated
     @tornado.web.asynchronous
-    def get(self, postid):
-        #Start async listen
-        self.wait_for_update(postid, self.on_update)
-        #Return to the IOLoop until we are called back
+    def get(self, action, postid):
+        cls = PostsHandler
+        if action == "initialize":
+            #Flush the requested post and the latest update:
+            initialize = {'post':get_post(postid), 'last_update':cls.recent_updates[-1]}
+            self.flush(initialize)
+            self.finish()
+            return
+        
+        elif action == "next_update":
+            #Start async listen (register self to the postid)
+            self.add_listener_to_postid(postid, self)
+            #Return to the IOLoop until we are called back
         
     @tornado.web.authenticated
     @tornado.web.asynchronous
     def post(self, postid):
-        """
-        Will write out one of following to all connections listening on this post:
-        --------------------    
-        upvote_post
-            postid
+            cls = PostsHandler
+            params = self.get_params()
+            if not ('action' in params and 'postid' in params and 'userid' in params):
+                self.set_status(400)
+                self.finish("Error, improper params: " + str(params))
+               
+            #The post parameters will select one of the following functions
+            actions = {
+                'upvote_post':upvote_post,
+                'downvote_post':downvote_post,
+                'upvote_comment':upvote_comment,
+                'downvote_comment':downvote_comment,
+                'create_comment_for_post':create_comment_for_post 
+            }
             
-        downvote_post
-            postid
+            action = params.pop('action') #Pop action from params because Mongo does not expect the 'action' keyword
+            postid = params['postid']
+            try:
+                #Doing the database action before calling the updates garauntees that clients see a consistent state (they will not see any posts that are not actually in the db)
+                actions[action](**params) #Execute the database action with Mongo call, TODO:Make it nonblocking         
+            except Exception as e:
+                self.set_status(500)
+                self.finish("Error, got: " + e.message)
+                return
             
-        upvote_comment
-            postid
-            commentid
-        
-        downvote_comment
-            postid
-            commentid
-            
-        create_comment_for_post
-            postid
-        ----------------------    
-        Semantics:
-            <action name>
-                <keyword>
-                
-        Syntax: 
-            JSON, ex: {action:'update_post', postid:'1234'}
-        
-        The javascript client uses this information to update the screen in real time
-        """
-        cls = PostsHandler
-        params = self.get_params()
-        if not ('action' in params and 'postid' in params and 'userid' in params):
-            self.set_status(400)
-            self.finish("Error, improper params: " + str(params))
-           
-        #The post parameters will select one of the following functions
-        actions = {
-            'upvote_post':upvote_post,
-            'downvote_post':downvote_post,
-            'upvote_comment':upvote_comment,
-            'downvote_comment':downvote_comment,
-            'create_comment_for_post':create_comment_for_post 
-        }
-                
-        action = params.pop('action') #Pop action from params because Mongo does not expect the 'action' keyword
-        postid = params['postid']
-        try:
-            actions[action](**params) #Execute the database action with Mongo call, TODO:Make it nonblocking         
-        except Exception as e:
-            self.set_status(500)
-            self.finish("Error, got: " + e.message)
-            return
-        
-        #If no exception, push the results
-        for callback in cls.callbacks[postid]:
-            callback(action=action, **params)
-            
-        #Reset the callbacks
-        del cls.callbacks[postid]
-        
-        #Done
-        self.finish("Success")
+            #If no exception, update recent_updates
+            params.update({'action':action})#We are putting the key 'action' back into params to notify clients what the update was
+            cls.recent_updates.append(params) 
+            cls.recent_updates = cls.recent_updates[-cls.recent_updates_size:] #Get rid of all but the last cls.recent_updates_size items
+            for listener in cls.listeners[postid]:
+                listener.send_json({'recent_updates':cls.recent_updates})
+            #Done
+            self.finish("Success")
 
-    def wait_for_update(self, postid, callback):
+    def add_listener_to_postid(self, postid, listener):
         cls = PostsHandler
-        #Register the callback
-        cls.callbacks[postid] += [callback]
+        #Register the listener
+        cls.listeners[postid].add(listener)
     
-    def on_update(self, **json_response):
+    def send_json(self, json_response):
         if self.request.connection.stream.closed():
+            #Remove self from listeners
             return
         else:
-            self.finish(json_response)
+            self.write(json_response)
+            self.finish()
 
         
 class LogoutHandler(BaseHandler):
@@ -277,7 +264,9 @@ application = tornado.web.Application([
     (r'/events/(.*)/?', EventHandler),
     (r'/login/?', LoginHandler),
     (r'/logout/?', LogoutHandler),
-    (r'/posts/(.*)/?', PostsHandler),
+    (r'/posts/update/(\w+)/?', PostsHandler), #For the POST request
+    (r'/posts/(initialize)/(\w+)/?', PostsHandler),
+    (r'/posts/(next_update)/(\w+)/?', PostsHandler),
     (r'/postforms/(change)/(\w+)/?', PostFormsHandler),
     (r'/postforms/(make)/?', PostFormsHandler),
     (r'/commentforms/(change)/(\w+)/(\d+.\d+)/?', CommentFormsHandler),
