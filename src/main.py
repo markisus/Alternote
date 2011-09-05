@@ -9,7 +9,7 @@ from pymongo.errors import *
 
 from jinja2 import Environment, PackageLoader
 from db import *
-
+from db.utils import __make_unique_string as mus
 from collections import defaultdict
 
 env = Environment(loader=PackageLoader('res', 'templates'))
@@ -38,8 +38,8 @@ class ViewPostsHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, eventid):
         get_event(eventid)
-        posts = get_top_posts_for_event(eventid, 3)
-        self.write(self.template.render(posts=posts))   
+        posts = get_top_posts_for_event(eventid)
+        self.write(self.template.render(posts=posts, eventid=eventid))   
         
         
 class UserHandler(BaseHandler):
@@ -172,80 +172,6 @@ class LoginHandler(BaseHandler):
     def delete(self):
         self.set_secure_cookie('userid', None)
         
-class PostsHandler(BaseHandler):    
-    #{ post_id:[set of handlers] }
-    listeners = defaultdict(set)
-    
-    #Maintain a moving window of the last prev_updates_size updates.
-    #If clients find that their latest update was outside the frame, they should re-init
-    recent_updates = list() 
-    recent_updates_size = 2
-     
-    @tornado.web.authenticated
-    @tornado.web.asynchronous
-    def get(self, action, postid):
-        cls = PostsHandler
-        if action == "initialize":
-            #Flush the requested post and the latest update:
-            initialize = {'post':get_post(postid), 'last_update':cls.recent_updates[-1]}
-            self.flush(initialize)
-            self.finish()
-            return
-        
-        elif action == "next_update":
-            #Start async listen (register self to the postid)
-            self.add_listener_to_postid(postid, self)
-            #Return to the IOLoop until we are called back
-        
-    @tornado.web.authenticated
-    @tornado.web.asynchronous
-    def post(self, postid):
-            cls = PostsHandler
-            params = self.get_params()
-            if not ('action' in params and 'postid' in params and 'userid' in params):
-                self.set_status(400)
-                self.finish("Error, improper params: " + str(params))
-               
-            #The post parameters will select one of the following functions
-            actions = {
-                'upvote_post':upvote_post,
-                'downvote_post':downvote_post,
-                'upvote_comment':upvote_comment,
-                'downvote_comment':downvote_comment,
-                'create_comment_for_post':create_comment_for_post 
-            }
-            
-            action = params.pop('action') #Pop action from params because Mongo does not expect the 'action' keyword
-            postid = params['postid']
-            try:
-                #Doing the database action before calling the updates garauntees that clients see a consistent state (they will not see any posts that are not actually in the db)
-                actions[action](**params) #Execute the database action with Mongo call, TODO:Make it nonblocking         
-            except Exception as e:
-                self.set_status(500)
-                self.finish("Error, got: " + e.message)
-                return
-            
-            #If no exception, update recent_updates
-            params.update({'action':action})#We are putting the key 'action' back into params to notify clients what the update was
-            cls.recent_updates.append(params) 
-            cls.recent_updates = cls.recent_updates[-cls.recent_updates_size:] #Get rid of all but the last cls.recent_updates_size items
-            for listener in cls.listeners[postid]:
-                listener.send_json({'recent_updates':cls.recent_updates})
-            #Done
-            self.finish("Success")
-
-    def add_listener_to_postid(self, postid, listener):
-        cls = PostsHandler
-        #Register the listener
-        cls.listeners[postid].add(listener)
-    
-    def send_json(self, json_response):
-        if self.request.connection.stream.closed():
-            #Remove self from listeners
-            return
-        else:
-            self.write(json_response)
-            self.finish()
 
         
 class LogoutHandler(BaseHandler):
@@ -254,6 +180,130 @@ class LogoutHandler(BaseHandler):
         self.clear_cookie('userid')
         self.redirect('/login/')
 
+
+#/poll/(eventid)
+#/get/(eventid)
+
+#/comment/(postid)/(message)
+#/upvote/comment/(postid)/(commentid)
+#/downvote/comment/(postid)/(commentid)
+
+#/post/(eventid)/(message)
+#/upvote/post/(postid)
+#/downvote/post/(postid)
+
+class Registry(object): #TODO: Implement singleton (?)
+    def __init__(self):
+        self.listeners = defaultdict(list)
+        self.cache = defaultdict(list)
+        self.count = 0
+    
+    def register_listener_on_event(self, listener, eventid):
+        self.listeners[eventid].append(listener)
+        
+    def notify_all_listeners_about_event(self, eventid, data):
+        eventid = str(eventid)
+        self.cache[eventid].append(data)
+        for listener in self.listeners[eventid]:
+            listener.notify(str(self.cache[eventid]))
+        self.listeners[eventid] = list() 
+        
+EVENT_REGISTRY = Registry()
+
+class Listener(BaseHandler):
+    def notify(self, data):
+        self.write(data)
+        self.finish()
+        
+#/poll/(eventid)
+class Randomizer(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, eventid):
+        self.redirect('/poll/' + str(eventid) + '/' + str(mus()))
+        
+#/poll/(eventid)/(randomid)
+class PollHandler(Listener):
+    @tornado.web.asynchronous
+    @tornado.web.authenticated
+    def get(self, eventid, connection=None):
+        if not connection:
+            self.redirect('/poll/' + str(eventid) + '/' + str(mus()))
+            #We need to randomize the URL so that poll does not block subsequent connections
+        #Register ourselves with the EVENT_REGISTRY
+        EVENT_REGISTRY.register_listener_on_event(self, eventid)
+        #Fall back to the ioloop and wait for self.notify to be called
+
+#/get/(eventid)
+class PostGetter(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, eventid):
+        posts = get_top_posts_for_event(eventid)
+        self.write(str(list(posts)))
+        
+#/comment/(postid)/(message)
+class Comment(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, postid, message):
+        post = get_post(postid) #This can be sped up, no reason to get the entire post, also, handle erros better
+        eventid = post['event']
+        userid = self.get_current_user()
+        
+        create_comment_for_post(postid, userid, message)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "comment %s %s %s" % (postid, userid, message))
+
+#/upvote/comment/(postid)/(commentid)        
+class UpvoteComment(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, postid, commentid):
+        post = get_post(postid)
+        eventid = post['event']
+        userid = self.get_current_user()
+        
+        upvote_comment(postid, commentid, userid)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "upvote_comment %s %s %s" % (postid, commentid, userid))
+        
+#/downvote/comment/(postid)/(commentid)
+class DownvoteComment(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, postid, commentid):
+        post = get_post(postid)
+        eventid = post['event']
+        userid = self.get_current_user()
+        
+        downvote_comment(postid, commentid, userid)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "downvote_comment %s %s %s" % (postid, commentid, userid))        
+        
+#/post/(eventid)/(message)
+class Post(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, eventid, message):
+        userid = self.get_current_user()
+        
+        create_post_for_event(eventid, userid, message)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "post %s %s %s" % (eventid, userid, message))
+        
+#/upvote/post/(postid)
+class UpvotePost(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, postid):
+        post = get_post(postid)
+        eventid = post['event']
+        userid = self.get_current_user()
+        
+        upvote_post(postid, userid)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "upvote_post %s %s" % (postid, userid))
+        
+#/downvote/post/(postid)
+class DownvotePost(BaseHandler):
+    @tornado.web.authenticated
+    def get(self, postid):
+        post = get_post(postid)
+        eventid = post['event']
+        userid = self.get_current_user()
+        
+        downvote_post(postid, userid)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "downvote_post %s %s" % (postid, userid))
+    
 application = tornado.web.Application([
     (r"/", LoginHandler),
     (r'/register/?', RegistrationHandler),
@@ -264,13 +314,29 @@ application = tornado.web.Application([
     (r'/events/(.*)/?', EventHandler),
     (r'/login/?', LoginHandler),
     (r'/logout/?', LogoutHandler),
-    (r'/posts/update/(\w+)/?', PostsHandler), #For the POST request
-    (r'/posts/(initialize)/(\w+)/?', PostsHandler),
-    (r'/posts/(next_update)/(\w+)/?', PostsHandler),
-    (r'/postforms/(change)/(\w+)/?', PostFormsHandler),
-    (r'/postforms/(make)/?', PostFormsHandler),
-    (r'/commentforms/(change)/(\w+)/(\d+.\d+)/?', CommentFormsHandler),
-    (r'/commentforms/(make)/(\w+)/?', CommentFormsHandler),
+
+    #SERVER API METHODS
+        #/poll/(eventid)
+        #/get/(eventid)
+        
+        #/comment/(postid)/(message)
+        #/upvote/comment/(postid)/(commentid)
+        #/downvote/comment/(postid)/(commentid)
+        
+        #/post/(eventid)/(message)
+        #/upvote/post/(postid)
+        #/downvote/post/(postid)
+    (r'/poll/(\w+)/(\d+.\d+)?', PollHandler),
+    (r'/poll/(\w+)/?', Randomizer),
+    (r'/get/(\w+)/?', PostGetter),
+    (r'/comment/(\w+)/(.+)/?', Comment),
+    (r'/upvote/comment/(\w+)/(\d+.\d+)/?', UpvoteComment),
+    (r'/downvote/comment/(\w+)/(\d+.\d+)/?', DownvoteComment),
+    (r'/post/(\w+)/(.+)/?', Post),
+    (r'/upvote/post/(\w+)/?', UpvotePost),
+    (r'/downvote/post/(\w+)/?', DownvotePost),
+    #END SERVER API METHODS
+    
     (r'/viewposts/(.*)/?', ViewPostsHandler)
     
 ], 

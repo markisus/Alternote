@@ -1,16 +1,15 @@
 <h1>Top Posts</h1>
-
+	<a href="/poll/{{ eventid }}">[Async Listen]</a><br/>
+<a href="/post/{{ eventid }}/Hello World">[Add "Hello World" Post]</a>
 {% for post in posts %}
 <div style="border: 3px coral solid;"> 
-		<a href="/posts/next_update/{{ post._id}}">[Async Listen]</a>
 	<ul>
-		<li> [{{ post.votes }} votes] <a href="/users/{{ post.author._id }}">{{ post.author.first_name }} {{ post.author.last_name }}</a>: {{ post.post }}</li>
-		<li> <a href="/postforms/change/{{ post._id }}">[Write]</a> </li>
-		<li> Comments: <a href="/commentforms/make/{{ post._id}}/">[Add]</a>
+		<li> [{{ post.votes }} votes <a href="/upvote/post/{{ post._id }}/">[+]</a><a href="/downvote/post/{{ post._id }}">[-]</a>] <a href="/users/{{ post.author._id }}">{{ post.author.first_name }} {{ post.author.last_name }}</a>: {{ post.post }}</li>
+		<li> <a href="/comment/{{ post._id }}/Hello World">[Add "Hello World" Comment]</a> </li>
+		<li>
 			<ul>
 			{% for comment in post.comments %}
-				<li>[{{ comment.votes }} votes] <a href="/users/{{ comment.author._id }}">{{ comment.author.first_name }} {{ comment.author.last_name }}</a>: {{ comment.comment }}</li>
-				<li><a href="/commentforms/change/{{ post._id}}/{{ comment._id}}">[Write]</a></li>
+				<li>[{{ comment.votes }} votes <a href="/upvote/comment/{{ post._id }}/{{ comment._id }}">[+]</a><a href="/downvote/comment/{{ post._id }}/{{ comment._id }}">[-]</a>] <a href="/users/{{ comment.author._id }}">{{ comment.author.first_name }} {{ comment.author.last_name }}</a>: {{ comment.comment }}</li>
 			{% endfor %}
 			</ul>
 		</li>

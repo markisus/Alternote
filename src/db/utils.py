@@ -129,7 +129,7 @@ def get_event(eventid):
 
 def get_post(postid):
     postid = ObjectId(postid)
-    result = events.find_one({'_id':postid})
+    result = events.posts.find_one({'_id':postid})
     if result == None:
         raise KeyError("No post with key " + str(postid) + " exists")
     return result
@@ -146,9 +146,13 @@ def create_post_for_event(eventid, userid, post):
                   }
                  )
 
-def get_top_posts_for_event(eventid, post_limit=50):
+def get_top_posts_for_event(eventid, post_limit=None):
     eventid = ObjectId(eventid)
-    return posts.find({'event':ObjectId(eventid)}, limit=post_limit).sort('votes', direction=DESCENDING).hint([('event',1),('votes',1)])
+    if post_limit:
+        return posts.find({'event':ObjectId(eventid)}, limit=post_limit).sort('votes', direction=DESCENDING).hint([('event',1),('votes',1)])
+    else:
+        return posts.find({'event':ObjectId(eventid)}).sort('votes', direction=DESCENDING).hint([('event',1),('votes',1)])
+
 
 def get_other_posts_for_event(eventid, vote_cap, post_limit=50):
     return posts.find({'event':ObjectId(eventid), 'votes':{'$lte':vote_cap}}, limit=post_limit).sort('votes', direction=DESCENDING).hint([('event',1),('votes',1)])
@@ -241,7 +245,7 @@ def populate():
     lecture1 = create_event_for_class(cs1, "Lecture", "Hamilton 207", datetime(2011, 9, 6, 13, 40), datetime(2011, 9, 6, 15), "The first lecture!")
     print("Created event for a class")
     
-    for i in range(1000):
+    for i in range(3):
         post = create_post_for_event(lecture1, Mark, "I'm so excited for this new class! %d" % i)
         comment = create_comment_for_post(post, Amanda, "Lol I'm commenting on everything!")
         upvote_comment(post, comment, 1)
