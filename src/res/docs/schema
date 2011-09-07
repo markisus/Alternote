@@ -23,6 +23,14 @@ MongoDb Schema
 	password:<String>
 }
 
+votes.posts
+{
+	userid: <String>
+	type: <String (up/down)>
+	timestamp: <Date>
+	item: <id (eventid)>
+}
+
 .events
 {
 	type:<String (lecture/homework/etc)>
@@ -41,20 +49,36 @@ MongoDb Schema
 	post:<String (post content)>
 	event:<String (event id)>
 	votes:<Integer>
+	voters: [
+		{
+		userid: <String userid>
+		timestamp: <Date>
+		type: <String up/down>
+		}
+	]
 	author: {
 		first_name:<String>
 		last_name:<String>
 		_id:<String>
 	}
+	timestamp: <Date>
 	comments: [
 		{
 			comment:<String (comment content)>
 			votes:<Integer>
+			voters: [
+				{
+				userid: <String userid>
+				timestamp: <Date>
+				type: <String up/down>
+				}
+			]
 			author: {
 				first_name:<String>
 				last_name:<String>
 				email:<String>
 			_id:<String (current time + randint(0,9))>
+			timestamp: <Date>
 		}
 	]
 }

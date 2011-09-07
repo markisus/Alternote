@@ -1,9 +1,9 @@
 from pymongo import Connection, ASCENDING, DESCENDING
 from pymongo.errors import *
 from bson.objectid import ObjectId
-from datetime import datetime
 from random import randint
 from time import time
+from datetime import datetime
 
 default_connection = ('localhost', 27017)
 connection = Connection(*default_connection)
@@ -18,6 +18,8 @@ events.ensure_index([('class._id',1)])
 
 posts = alternote.events.posts
 posts.ensure_index([('event',1),('votes',1)])
+posts.ensure_index([('voters.userid',1)])
+posts.ensure_index([('comments.voters.userid', 1)])
 
 classes = alternote.classes
 posts.ensure_index([('_id',1), ('name',1)], [('university',1), ('tags',1)])
@@ -25,15 +27,19 @@ posts.ensure_index([('_id',1), ('name',1)], [('university',1), ('tags',1)])
 logins = alternote.logins
 logins.ensure_index([('userid',1)])
 
+
 #End Binding collection names and setting indices
 
 def __author_query(userid):
-    result = users.find(
-                        {'_id':userid}, {'first_name':1, 'last_name':1},
-                        limit=1
-                    ).hint(
-                           [('_id',1), ('first_name',1), ('last_name',1)]
-                    )[0] #covered query
+    try:
+        result = users.find(
+                            {'_id':userid}, {'first_name':1, 'last_name':1},
+                            limit=1
+                        ).hint(
+                               [('_id',1), ('first_name',1), ('last_name',1)]
+                        )[0] #covered query
+    except IndexError:
+        raise KeyError("No user with key " + str(userid) + " exists")
     if result == None:
         raise KeyError("No user with key " + str(userid) + " exists")
     return result
@@ -49,7 +55,6 @@ def clean_collections():
     events.remove()
     posts.remove()
     classes.remove()
-
 
 def create_class(university, instructor, name, section, finish_date):
     tags = name.lower().split(" ")
@@ -134,15 +139,18 @@ def get_post(postid):
         raise KeyError("No post with key " + str(postid) + " exists")
     return result
 
-def create_post_for_event(eventid, userid, post):
+def create_post_for_event(userid, eventid, post, timestamp=datetime.now()):
+    print("Creating post: timestamp " + str(timestamp))
     author = __author_query(userid)
     
     return posts.insert(
                  {'post':post,
                   'votes':0,
+                  'voters': [],
                   'event':ObjectId(eventid),
                   'author':author,
                   'comments':[],
+                  'timestamp':timestamp,
                   }
                  )
 
@@ -157,16 +165,19 @@ def get_top_posts_for_event(eventid, post_limit=None):
 def get_other_posts_for_event(eventid, vote_cap, post_limit=50):
     return posts.find({'event':ObjectId(eventid), 'votes':{'$lte':vote_cap}}, limit=post_limit).sort('votes', direction=DESCENDING).hint([('event',1),('votes',1)])
 
-def upvote_post(postid, userid=None, times=1): #Userid currently unused
-    posts.update({"_id":ObjectId(postid)}, {"$inc":{"votes":times}})
+def upvote_post(userid, postid, timestamp=datetime.now(), times=1): #Userid currently unused
+    print("upvote_post timestamp: " + str(timestamp))
+    posts.update({"_id":ObjectId(postid)}, {"$inc":{"votes":times}, '$push':{'voters':__create_vote_info(userid, "up", timestamp)}})
     
-def downvote_post(postid, userid=None, times=1): #Userid currently unused
-    posts.update({"_id":ObjectId(postid)}, {"$inc":{"votes":-times}})
+def downvote_post(userid, postid, timestamp=datetime.now(), times=1): #Userid currently unused
+    print("down_post timestamp: " + str(timestamp))
+    posts.update({"_id":ObjectId(postid)}, {"$inc":{"votes":-times}, '$push':{'voters':__create_vote_info(userid, "down", timestamp)}})
 
 def __make_unique_string():
     return str(time()) + str(randint(0, 9)) #Since Tornado is single threaded, we prob dont need the random
 
-def create_comment_for_post(postid, userid, comment, retries=10):
+def create_comment_for_post(userid, postid, comment, timestamp=datetime.now(), retries=10):
+    print("creating comment timestamp: " + str(timestamp))
     postid = ObjectId(postid)
     updatedExisting = False
     retry_counter = 0
@@ -176,6 +187,8 @@ def create_comment_for_post(postid, userid, comment, retries=10):
         comment = {
                     'comment':comment,
                     'votes':0,
+                    'voters': [],
+                    'timestamp':timestamp,
                     'author':author,
                     '_id':comment_id
                    }
@@ -189,14 +202,19 @@ def create_comment_for_post(postid, userid, comment, retries=10):
         raise IOError("Could not generate unique id for this comment, exceeded retries.")
     else:
         return comment_id #Comment id unique within a post
-    
-def upvote_comment(postid, commentid, userid=None, times=1):
+
+def __create_vote_info(userid, type, timestamp):
+    return {'userid':userid, 'timestamp':timestamp, 'type':type}
+
+def upvote_comment(userid, postid, commentid, timestamp=datetime.now(), times=1):
+    print("upvote comment timestamp: " + str(timestamp))
     postid = ObjectId(postid)
-    posts.update({"_id":ObjectId(postid), "comments._id":commentid}, {"$inc":{"comments.$.votes":times}})
+    posts.update({"_id":postid, "comments._id":commentid}, {"$inc":{"comments.$.votes":times}, '$push':{'comments.$.voters':__create_vote_info(userid, "up", timestamp)}})
     
-def downvote_comment(postid, commentid, userid=None, times=1):
+def downvote_comment(userid, postid, commentid, timestamp=datetime.now(), times=1):
+    print("downvote comment timestamp: " + str(timestamp))
     postid = ObjectId(postid)
-    posts.update({"_id":ObjectId(postid), "comments._id":commentid}, {"$inc":{"comments.$.votes":-times}})
+    posts.update({"_id":postid, "comments._id":commentid}, {"$inc":{"comments.$.votes":-times}, '$push':{'comments.$.voters':__create_vote_info(userid, "down", timestamp)}})
 
 def search_classes(university, tags, match="any"):
     """default match any tag, set match="all" to match all tags"""
@@ -246,12 +264,12 @@ def populate():
     print("Created event for a class")
     
     for i in range(3):
-        post = create_post_for_event(lecture1, Mark, "I'm so excited for this new class! %d" % i)
-        comment = create_comment_for_post(post, Amanda, "Lol I'm commenting on everything!")
-        upvote_comment(post, comment, 1)
-        upvote_comment(post, comment, 1)
-        downvote_comment(post, comment, 1)
-        upvote_post(post, i)
+        post = create_post_for_event(Mark, lecture1, "I'm so excited for this new class! %d" % i)
+        comment = create_comment_for_post(Amanda, post, "Lol I'm commenting on everything!")
+        upvote_comment(Amanda, post, comment)
+        upvote_comment(Amanda, post, comment)
+        downvote_comment(Amanda, post, comment)
+        upvote_post(Amanda, post)
     print("Created posts for an event")
     
     for post in get_top_posts_for_event(lecture1):

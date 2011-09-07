@@ -5,15 +5,16 @@ import tornado.web
 
 
 from forms import *
-from pymongo.errors import *
+from pymongo.errors import DuplicateKeyError
 
 from jinja2 import Environment, PackageLoader
 from db import *
 from db.utils import __make_unique_string as mus
 from collections import defaultdict
 
-env = Environment(loader=PackageLoader('res', 'templates'))
+import json
 
+env = Environment(loader=PackageLoader('res', 'templates'))
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -172,8 +173,6 @@ class LoginHandler(BaseHandler):
     def delete(self):
         self.set_secure_cookie('userid', None)
         
-
-        
 class LogoutHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
@@ -205,13 +204,15 @@ class Registry(object): #TODO: Implement singleton (?)
         eventid = str(eventid)
         self.cache[eventid].append(data)
         for listener in self.listeners[eventid]:
-            listener.notify(str(self.cache[eventid]))
+            listener.notify(json.dumps(self.cache[eventid]))
         self.listeners[eventid] = list() 
         
 EVENT_REGISTRY = Registry()
 
 class Listener(BaseHandler):
     def notify(self, data):
+        if self.request.connection.stream.closed():
+            return
         self.write(data)
         self.finish()
         
@@ -248,8 +249,8 @@ class Comment(BaseHandler):
         eventid = post['event']
         userid = self.get_current_user()
         
-        create_comment_for_post(postid, userid, message)
-        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "comment %s %s %s" % (postid, userid, message))
+        create_comment_for_post(userid, postid, message)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "comment %s %s %s" % (userid, postid, message))
 
 #/upvote/comment/(postid)/(commentid)        
 class UpvoteComment(BaseHandler):
@@ -259,8 +260,8 @@ class UpvoteComment(BaseHandler):
         eventid = post['event']
         userid = self.get_current_user()
         
-        upvote_comment(postid, commentid, userid)
-        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "upvote_comment %s %s %s" % (postid, commentid, userid))
+        upvote_comment(userid, postid, commentid)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "upvote_comment %s %s %s" % (userid, postid, commentid))
         
 #/downvote/comment/(postid)/(commentid)
 class DownvoteComment(BaseHandler):
@@ -270,8 +271,8 @@ class DownvoteComment(BaseHandler):
         eventid = post['event']
         userid = self.get_current_user()
         
-        downvote_comment(postid, commentid, userid)
-        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "downvote_comment %s %s %s" % (postid, commentid, userid))        
+        downvote_comment(userid, postid, commentid)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "downvote_comment %s %s %s" % (userid, postid, commentid))        
         
 #/post/(eventid)/(message)
 class Post(BaseHandler):
@@ -279,8 +280,8 @@ class Post(BaseHandler):
     def get(self, eventid, message):
         userid = self.get_current_user()
         
-        create_post_for_event(eventid, userid, message)
-        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "post %s %s %s" % (eventid, userid, message))
+        create_post_for_event(userid, eventid, message)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "post %s %s %s" % (userid, eventid, message))
         
 #/upvote/post/(postid)
 class UpvotePost(BaseHandler):
@@ -290,8 +291,8 @@ class UpvotePost(BaseHandler):
         eventid = post['event']
         userid = self.get_current_user()
         
-        upvote_post(postid, userid)
-        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "upvote_post %s %s" % (postid, userid))
+        upvote_post(userid, postid)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "upvote_post %s %s" % (userid, postid))
         
 #/downvote/post/(postid)
 class DownvotePost(BaseHandler):
@@ -301,8 +302,8 @@ class DownvotePost(BaseHandler):
         eventid = post['event']
         userid = self.get_current_user()
         
-        downvote_post(postid, userid)
-        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "downvote_post %s %s" % (postid, userid))
+        downvote_post(userid, postid)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid, "downvote_post %s %s" % (userid, postid))
     
 application = tornado.web.Application([
     (r"/", LoginHandler),
