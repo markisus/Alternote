@@ -139,11 +139,11 @@ def get_post(postid):
         raise KeyError("No post with key " + str(postid) + " exists")
     return result
 
-def create_post_for_event(userid, eventid, post, timestamp=datetime.now()):
+def create_post_for_event(userid, eventid, post, timestamp=datetime.now().isoformat()):
     print("Creating post: timestamp " + str(timestamp))
     author = __author_query(userid)
     
-    return posts.insert(
+    return str(posts.insert(
                  {'post':post,
                   'votes':0,
                   'voters': [],
@@ -152,7 +152,7 @@ def create_post_for_event(userid, eventid, post, timestamp=datetime.now()):
                   'comments':[],
                   'timestamp':timestamp,
                   }
-                 )
+                 ))
 
 def get_top_posts_for_event(eventid, post_limit=None):
     eventid = ObjectId(eventid)
@@ -165,18 +165,18 @@ def get_top_posts_for_event(eventid, post_limit=None):
 def get_other_posts_for_event(eventid, vote_cap, post_limit=50):
     return posts.find({'event':ObjectId(eventid), 'votes':{'$lte':vote_cap}}, limit=post_limit).sort('votes', direction=DESCENDING).hint([('event',1),('votes',1)])
 
-def upvote_post(userid, postid, timestamp=datetime.now(), times=1): #Userid currently unused
+def upvote_post(userid, postid, timestamp=datetime.now().isoformat(), times=1): #Userid currently unused
     print("upvote_post timestamp: " + str(timestamp))
     posts.update({"_id":ObjectId(postid)}, {"$inc":{"votes":times}, '$push':{'voters':__create_vote_info(userid, "up", timestamp)}})
     
-def downvote_post(userid, postid, timestamp=datetime.now(), times=1): #Userid currently unused
+def downvote_post(userid, postid, timestamp=datetime.now().isoformat(), times=1): #Userid currently unused
     print("down_post timestamp: " + str(timestamp))
     posts.update({"_id":ObjectId(postid)}, {"$inc":{"votes":-times}, '$push':{'voters':__create_vote_info(userid, "down", timestamp)}})
 
 def __make_unique_string():
-    return str(time()) + str(randint(0, 9)) #Since Tornado is single threaded, we prob dont need the random
+    return (str(time()) + str(randint(0, 999))).replace(".", "_") #Since Tornado is single threaded, we prob dont need the random
 
-def create_comment_for_post(userid, postid, comment, timestamp=datetime.now(), retries=10):
+def create_comment_for_post(userid, postid, comment, timestamp=datetime.now().isoformat(), retries=10):
     print("creating comment timestamp: " + str(timestamp))
     postid = ObjectId(postid)
     updatedExisting = False
@@ -206,16 +206,17 @@ def create_comment_for_post(userid, postid, comment, timestamp=datetime.now(), r
 def __create_vote_info(userid, type, timestamp):
     return {'userid':userid, 'timestamp':timestamp, 'type':type}
 
-def upvote_comment(userid, postid, commentid, timestamp=datetime.now(), times=1):
+def upvote_comment(userid, postid, commentid, timestamp=datetime.now().isoformat(), times=1):
     print("upvote comment timestamp: " + str(timestamp))
     postid = ObjectId(postid)
     posts.update({"_id":postid, "comments._id":commentid}, {"$inc":{"comments.$.votes":times}, '$push':{'comments.$.voters':__create_vote_info(userid, "up", timestamp)}})
     
-def downvote_comment(userid, postid, commentid, timestamp=datetime.now(), times=1):
+def downvote_comment(userid, postid, commentid, timestamp=datetime.now().isoformat(), times=1):
     print("downvote comment timestamp: " + str(timestamp))
     postid = ObjectId(postid)
     posts.update({"_id":postid, "comments._id":commentid}, {"$inc":{"comments.$.votes":-times}, '$push':{'comments.$.voters':__create_vote_info(userid, "down", timestamp)}})
-
+    #may fail?
+    
 def search_classes(university, tags, match="any"):
     """default match any tag, set match="all" to match all tags"""
     if match == "any":
@@ -260,7 +261,7 @@ def populate():
     register_user_for_class(Tim, econ3)
     print("Registered users for some classes")
     
-    lecture1 = create_event_for_class(cs1, "Lecture", "Hamilton 207", datetime(2011, 9, 6, 13, 40), datetime(2011, 9, 6, 15), "The first lecture!")
+    lecture1 = create_event_for_class(cs1, "Lecture", "Hamilton 207", datetime(2011, 9, 6, 13, 40).isoformat(), datetime(2011, 9, 6, 15).isoformat(), "The first lecture!")
     print("Created event for a class")
     
     for i in range(3):

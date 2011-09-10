@@ -2,8 +2,25 @@
 
 <head>
 	<title>JQuery Sandbox</title>
+	 <style>
+    	a.test { font-weight: bold; }
+ 	</style>
+	<script src="/static/jquery-1.6.2.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("div").css("border","3px solid red");
+		 });
+	</script>
 </head>
 
 
+<body>
+<div id="poll">POLL</div>
+<div id="get">GET</div>
+<div id="comment">COMMENT</div>
+<div id="upvote_comment">UPVOTE CMMNT</div>
+<div id="downvote_comment">DOWNVOTE CMMNT</div>
+<div id="upvote_post">UPVOTE PST</div>
+<div id="downvote_post">DOWNVOTE PST</div>
 
 </html>
