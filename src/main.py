@@ -61,28 +61,7 @@ class ClassHandler(BaseHandler):
     def get(self, classid):
         aclass = get_class(classid)
         self.write(self.template.render(Class=aclass))
-        
-class ClassSearch(BaseHandler):
-    template = env.get_template('class_search.template')
-    
-    @tornado.web.authenticated
-    def get(self):
-        form = ClassSearchForm()
-        self.write(self.template.render(form=form))
-    
-    @tornado.web.authenticated
-    def post(self):
-        form = ClassSearchForm(**self.get_params())
-        user = get_user(self.get_current_user())
-        if form.validate():
-            tags = form.tags.data.lower().split(" ")
-            university = user['university']
-            self.write(str(tags))
-            results = search_classes(university, tags)
-            for result in results:
-                self.write(str(result) + "</br>")
-        else:
-            self.write(self.template.render(form=form))
+
         
 class EventHandler(BaseHandler):
     template = env.get_template('event.template')
@@ -92,53 +71,6 @@ class EventHandler(BaseHandler):
         events = get_events_for_class(classid)
         self.write(self.template.render(events=events))
         
-            
-class RegistrationHandler(BaseHandler):
-    template = env.get_template('registration.template')
-    
-    def get(self):
-        form = RegistrationForm()
-        self.write(self.template.render(form=form))
-        
-    def post(self):
-        form = RegistrationForm(**self.get_params())
-        if form.validate():
-            try:
-                userid = create_user(form.first_name.data,
-                         form.last_name.data, 
-                         form.password.data, 
-                         form.email.data, 
-                         form.university.data)
-            except DuplicateKeyError as e:
-                self.write(e.message)
-                return
-            self.set_secure_cookie('userid', userid)
-            self.write("Registered")
-        else:
-            self.write(self.template.render(form=form))
-
-class PostFormsHandler(BaseHandler):
-    
-    @tornado.web.authenticated
-    def get(self, action, postid=None):
-        if action == "change":
-            form = ChangePostForm(userid=self.get_current_user(), postid=postid)
-            self.write(env.get_template('change_post.template').render(form=form))
-        elif action == "make":
-            self.write("Not Implemented")
-            #form = MakePostForm(userid=self.get_current_user(), postid=postid)
-            #self.write(env.get_template('make_post.template').render(form=form))
-            
-class CommentFormsHandler(BaseHandler):
-    
-    @tornado.web.authenticated
-    def get(self, action, postid=None, commentid=None):
-        if action == "change":
-            form = ChangeCommentForm(userid=self.get_current_user(), postid=postid, commentid=commentid)
-            self.write(env.get_template('change_comment.template').render(form=form))
-        elif action == "make":
-            form = MakeCommentForm(userid=self.get_current_user(), postid=postid)
-            self.write(env.get_template('make_comment.template').render(form=form))
 
 class LoginHandler(BaseHandler):
     template = env.get_template('login.template')
@@ -404,14 +336,13 @@ class DownvotePost(BaseHandler):
     
 application = tornado.web.Application([
     (r"/", LoginHandler),
-    (r'/register/?', RegistrationHandler),
     (r'/me/?', UserHandler),
     (r'/users/(.*)/?', UserHandler),
-    (r'/classes/?', ClassSearch),
     (r'/classes/(.*)/?', ClassHandler),
     (r'/events/(.*)/?', EventHandler),
     (r'/login/?', LoginHandler),
     (r'/logout/?', LogoutHandler),
+    (r'/viewposts/(.*)/?', ViewPostsHandler)
 
     #SERVER API METHODS
         #/poll/(eventid)/(last_received_item)
@@ -435,7 +366,6 @@ application = tornado.web.Application([
     (r'/downvote/post/(\w+)/?', DownvotePost),
     #END SERVER API METHODS
     
-    (r'/viewposts/(.*)/?', ViewPostsHandler)
     
 ], 
     cookie_secret="CHANGE THIS EVENTUALLY",
