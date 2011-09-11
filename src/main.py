@@ -342,7 +342,7 @@ application = tornado.web.Application([
     (r'/events/(.*)/?', EventHandler),
     (r'/login/?', LoginHandler),
     (r'/logout/?', LogoutHandler),
-    (r'/viewposts/(.*)/?', ViewPostsHandler)
+    (r'/viewposts/(.*)/?', ViewPostsHandler),
 
     #SERVER API METHODS
         #/poll/(eventid)/(last_received_item)
