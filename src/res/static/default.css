@@ -1,62 +1,47 @@
-/*
-------------------------------
-	Impromptu
-------------------------------
-*/
-.jqifade{
-	position: absolute; 
-	background-color: #aaaaaa; 
+body {
+	font-family: "Myriad Pro", "Arial", "Helvetica";
+	
 }
-div.jqi{ 
-	width: 400px; 
-	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; 
-	position: absolute; 
-	background-color: #ffffff; 
-	font-size: 11px; 
-	text-align: left; 
-	border: solid 1px #eeeeee;
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	padding: 7px;
+
+.admin > .author, .admin > .message, .admin > .actions, .admin > .stats {
+	background-color: #FDE4E5;
 }
-div.jqi .jqicontainer{ 
-	font-weight: bold; 
+
+.professor > .author, .professor > .message, .professor > .actions, .professor > .stats {
+	background-color: #FEEFD9;
 }
-div.jqi .jqiclose{ 
-	position: absolute;
-	top: 4px; right: -2px; 
-	width: 18px; 
-	cursor: default; 
-	color: #bbbbbb; 
-	font-weight: bold; 
+
+.student > .author, .student > .message, .student > .actions, .student > .stats {
+	background-color: #FFFFFF;
 }
-div.jqi .jqimessage{ 
-	padding: 10px; 
-	line-height: 20px; 
-	color: #444444; 
+
+#posts, #make_post {
+	width: 500px;
+	position: relative;
+	left: 800px;
 }
-div.jqi .jqibuttons{ 
-	text-align: right; 
-	padding: 5px 0 5px 0; 
-	border: solid 1px #eeeeee; 
-	background-color: #f4f4f4;
+
+.post {
+	margin-bottom: 10px;
 }
-div.jqi button{ 
-	padding: 3px 10px; 
-	margin: 0 10px; 
-	background-color: #2F6073; 
-	border: solid 1px #f4f4f4; 
-	color: #ffffff; 
-	font-weight: bold; 
-	font-size: 12px; 
+
+.comments {
+	width: 450px;
+	position: relative;
+	left: 50px;
 }
-div.jqi button:hover{ 
-	background-color: #728A8C;
+.actions a {
+	margin-right: 10px;
 }
-div.jqi button.jqidefaultbutton{
-	background-color: #BF5E26;
+.author {
+	color:#00B3EF;
 }
-.jqiwarning .jqi .jqibuttons{ 
-	background-color: #BF5E26;
+.message {
+	color:#56585A;
+}
+.stats {
+	overflow: hidden;
+}
+.stats > div {
+	float: right;
 }

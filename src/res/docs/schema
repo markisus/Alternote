@@ -8,7 +8,7 @@ MongoDb Schema
 
 .users
 { 
-	university:<String>
+	university:<???>
 	classes:[
 		{
 			name:<String>
@@ -21,14 +21,17 @@ MongoDb Schema
 	last_name:<String>
 	email:<String>
 	password:<String>
+	flagged: [<comment/post ids>]
+	upvoted: [<comment/post ids>]
+	anonymous_items: [<comment/post ids>]
 }
 
-votes.posts
+logs
 {
 	userid: <String>
-	type: <String (up/down)>
+	action: <String (upvote/unupvote/flag/unflag)>
 	timestamp: <Date>
-	item: <id (eventid)>
+	item: <id (commentid/postid)>	
 }
 
 .events
@@ -49,13 +52,7 @@ votes.posts
 	post:<String (post content)>
 	event:<String (event id)>
 	votes:<Integer>
-	voters: [
-		{
-		userid: <String userid>
-		timestamp: <Date>
-		type: <String up/down>
-		}
-	]
+	flags: <Integer>
 	author: {
 		first_name:<String>
 		last_name:<String>
@@ -66,18 +63,12 @@ votes.posts
 		{
 			comment:<String (comment content)>
 			votes:<Integer>
-			voters: [
-				{
-				userid: <String userid>
-				timestamp: <Date>
-				type: <String up/down>
-				}
-			]
+			flags: <Integer>
 			author: {
 				first_name:<String>
 				last_name:<String>
 				email:<String>
-			_id:<String (current time + randint(0,9))>
+			_id:<ObjectId>
 			timestamp: <Date>
 		}
 	]

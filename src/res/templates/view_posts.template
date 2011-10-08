@@ -3,167 +3,47 @@
 <head>
 	<title>JQuery Sandbox</title>
 	<link rel="stylesheet" type="text/css" href="/static/default.css" />
-
 	<script src="/static/jquery-1.6.2.js"></script>
 	<script src="/static/jquery-impromptu.js"></script>
+	<script src="/static/client.js" /></script>
 	<script type="text/javascript">
-		var actions = {
-			'upvote_post': function(userid, postid) {
-				var tag = $('#' + postid + ' div.post_votes span.number');
-				var num_votes = parseInt(tag.text());
-				num_votes++;
-				tag.text(num_votes);
-			},
-			'downvote_post': function(userid, postid) {
-				var tag = $('#' + postid + ' div.post_votes span.number');
-				var num_votes = parseInt(tag.text());
-				num_votes--;
-				tag.text(num_votes);
-			},
-			'upvote_comment': function(userid, postid, commentid) {
-				var tag = $('#' + commentid + ' div.comment_votes span.number');
-				var num_votes = parseInt(tag.text());
-				num_votes++;
-				tag.text(num_votes);
-			},
-			'downvote_comment': function(userid, postid, commentid) {
-				var tag = $('#' + commentid + ' div.comment_votes span.number');
-				var num_votes = parseInt(tag.text());
-				num_votes--;
-				tag.text(num_votes);
-			},
-			
-			'comment': function(userid, postid, commentid, message) {
-				console.log("before message: " + message);
-				message = message.replace(/\/p/g, " ");
-				message = message.replace(/\/s/g, "/");
-				console.log("after message: " + message);
-				$('#' + postid).append("<div id='" + commentid + "' class='comment' style='border: 1px orange solid'>" + 
-				"<div class='text'> Comment: " + message + "</div>" +
-				"<div class='comment_votes'> Votes: <span class='number'>" + 0 + "</span>" +
-				"<a href='/upvote/comment/" + postid + "/" + commentid + "' target='dummy_target'>[+]</a>" +
-				"<a href='/downvote/comment/" + postid + "/" + commentid + "' target='dummy_target'>[-]</a>" +
-				"</div>");
-			},
-			
-			'post': function(userid, eventid, postid, message) {
-				console.log("before message: " + message);
-				message = message.replace(/\/p/g, " ");
-				message = message.replace(/\/s/g, "/");
-				console.log("after message: " + message);
-				$('#posts').append("<div id='" + postid +"' class='post' style='border: 3px black solid';>" + 
-				"<div class='text'> Post: " + message + "</div>" +
-				"<div class='post_votes'> Votes: <span class='number'>0</span>" + 
-				"<a href='/upvote/post/" + postid + "' target='dummy_target'>[+]</a>" +
-				"<a href='/downvote/post/" + postid + "' target='dummy_target'>[-]</a>" + 
-				"</div>" +
-				"<button type='button' onclick='prompts.add_comment_prompt(\"" + postid + "\")'>Add Comment</button>" + 
-				"</div>"); 
-			}
-		};
+		console.log("Main page start");
+		var eventid = '{{ eventid }}';
+		var userid = '{{ userid }}';
 		
-		var queries = {
-			'add_comment': function(postid) {
-				return function(v, m, f) {
-					message = f.comment;
-					$.getJSON("/comment/" + postid + "/" + encodeURI(message));
-				};
-			},
-			'add_post': function(eventid) {
-				return function(v, m, f) {
-					message = f.post;
-					$.getJSON("/post/" + eventid + "/" + encodeURI(message));
-				};
-			},
-		}
-
-		var prompts = {
-			'add_comment_prompt': function(postid) {
-				var text = "What is your comment?" +
-				"<input type='text' name='comment' />"
-				
-				$.prompt(text, 
-				{'callback':queries['add_comment'](postid), 
-				buttons: {'submit':'submit'}});
-			},
-			'add_post_prompt': function(eventid) {
-				var text = "What is your post?" +
-				"<input type='text' name='post' />"
-				
-				$.prompt(text, 
-				{'callback':queries['add_post'](eventid), 
-				buttons: {'submit':'submit'}});
-			},
-		}
-		var poll = function(last_element) {
-			$.getJSON("/poll/{{ eventid }}/" + last_element + "/", function(json) {
-					last_element = parseInt(last_element);
-					console.log(json);
-					for (key in json) {
-						console.log('loop begin, key is :' + key);
-						if (key > last_element) {
-							console.log('updating last key, was :' + last_element);
-							last_element = key;
-						}
-						var action_array = (json[key]).split(" ");
-						var action = action_array.shift();
-						var params = action_array;
-						console.log("Action is " + action);
-						actions[action].apply(null, params);
-					}
-					console.log(last_element);
-					poll(last_element);		
-			}).error(function() {console.log("poll error");});
-		};
-		$(document).ready(function(){
-			var posts = [];
-			alert("Script started...");
-			$.getJSON("/get/{{ eventid }}", function(json) {
-				$('#posts').append("<button type='button' onclick='prompts.add_post_prompt(\"" + "{{ eventid }}" + "\")'>Add Post</button>");
-				var last_element = json.last_element;
-				console.log("last element:" + last_element);
-				for (key in json.posts) {
-					display_post(json.posts[key]);
-				}
-				//After you get the event, start a long poll for the event
-				poll(last_element);
+		var script = function() {
+			$('#post_input').bind('focus', function() {
+				$('#post_input').val("");
 			});
-			alert("Script finished ");
-			
-			
-			var display_post = function(post) {
-				$('#posts').append("<div id='" + post._id +"' class='post' style='border: 3px black solid';>" + 
-				"<div class='text'> Post: " + post.post + "</div>" +
-				"<div class='post_votes'> Votes: <span class='number'>" + post.votes + 
-				"</span>" + 
-				"<a href='/upvote/post/" + post._id + "' target='dummy_target'>[+]</a>" +
-				"<a href='/downvote/post/" + post._id + "' target='dummy_target'>[-]</a>" + 
-				"</div>" +
-				"<button type='button' onclick='prompts.add_comment_prompt(\"" + post._id + "\")'>Add Comment</button>" + 
-				"</div>"); 
-				
-				//Attach comments
-				for (commentkey in post.comments) {
-					post_id = post._id
-					comment = post.comments[commentkey]
-					$('#' + post_id).append("<div id='" + comment._id + "' class='comment' style='border: 1px orange solid'>" + 
-					"<div class='text'> Comment: " + comment.comment + "</div>" +
-					"<div class='comment_votes'> Votes: <span class='number'>" + comment.votes + "</span>" +
-					"<a href='/upvote/comment/" + post._id + "/" + comment._id + "' target='dummy_target'>[+]</a>" +
-					"<a href='/downvote/comment/" + post._id + "/" + comment._id + "' target='dummy_target'>[-]</a>" +
-					"</div>" + 
-					"</div>");
+			$('#post_share').bind('click', function() {
+				var message = $('#post_input').val();
+				if(!(message === "")) {
+					console.log(message);
+					client.post(message);
+					$('#post_input').val("");
 				}
-			};
-		
-		$.prompt('example 1');
-			
-	});
+			});
+			$('#post_share_anon').bind('click', function() {
+				var message = $('#post_input').val();
+				if(!(message === "")) {
+					console.log(message);
+					client.post_anon(message);
+					$('#post_input').val("");
+				}
+			});
+		}
 	</script>
+	
 </head>
 
 
-<body>
+<body onload="client.init(eventid, userid);script();">
+<div class='input' id='make_post'>
+	<input id='post_input' type='text' value='Drop your insight...' />
+	<div id='embed_preview'></div>
+	<input id='post_share' type='button' value='Share'/>
+	<input id='post_share_anon' type='button' value='Anonymous Share'/>
+</div>
 <div class='realtime' id='posts'></div>
 <iframe id='dummy_target' style='display:none;'></div>
 </body>
