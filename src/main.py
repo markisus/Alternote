@@ -11,7 +11,7 @@ import json
 
 from forms import *
 
-env = Environment(loader=PackageLoader('res', 'templates'))
+env = Environment(variable_start_string='[[', variable_end_string=']]', loader=PackageLoader('res', 'templates'))
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -29,14 +29,18 @@ class BaseHandler(tornado.web.RequestHandler):
     
     def get_params(self):
         return self.__unpack_params(self.request.arguments)
-    
+
+class JSONPHandler(BaseHandler):
+    def write(self, chunk):
+        BaseHandler.write(self, 'client.callback(' + str(chunk) + ')')    
+        
 class ViewPostsHandler(BaseHandler):
     template = env.get_template('view_posts.template')
     
     @tornado.web.authenticated
     def get(self, eventid):
         get_event(eventid)
-        self.write(self.template.render(eventid=eventid, userid=self.get_current_user()))   
+        self.write(self.template.render(eventid=eventid, userid=self.get_current_user(), event=get_event(eventid)))   
         
         
 class UserHandler(BaseHandler):
@@ -126,7 +130,7 @@ class LogoutHandler(BaseHandler):
 
 class Cache(object):
     def __init__(self):
-        self.size = 3
+        self.size = 50
         self.update_counter = 0
         self.data = dict()
     
@@ -144,7 +148,6 @@ class Cache(object):
         if cutoff_index not in keys:
             raise KeyError("This key %d is no longer available" % cutoff_index)
         data = { i:self.data[i] for i in self.data.keys() if i >= cutoff_index }
-        print("Getting recent data " + str(data))
         return data
     
     def get_last_item(self):
@@ -154,23 +157,19 @@ class Registry(object): #TODO: Implement singleton (?)
     def __init__(self):
         self.listeners = defaultdict(list)
         self.caches = defaultdict(Cache)
-        self.cache_size = 50 #Number of messages to keep in cache, see self.add_datum_...
-    
+
     def register_listener_on_event(self, eventid, listener):
-        print("Appending a listener for " + str(eventid))
         eventid = str(eventid)
         self.listeners[eventid].append(listener)
-        print("# of listeners now on this eventid: " + str(len(self.listeners[eventid])))
     
     def add_datum_to_event_cache(self, eventid, datum):
         eventid = str(eventid)
         self.caches[eventid].add(datum)
 
+
     def notify_all_listeners_about_event(self, eventid):
         eventid = str(eventid)
-        print("Notifying all listeners...")
         for listener in self.listeners[eventid]:
-            print("\tFound a listener...")
             listener.notify(self.caches[eventid])
         self.listeners[eventid] = list()
     
@@ -187,7 +186,7 @@ class Registry(object): #TODO: Implement singleton (?)
         
 EVENT_REGISTRY = Registry()
 
-class Listener(BaseHandler):     
+class Listener(JSONPHandler):     
     
     def set_cutoff(self, cutoff):
         self.cutoff = cutoff
@@ -198,12 +197,12 @@ class Listener(BaseHandler):
         try:
             data = cache.get_recent_data(self.cutoff) #inclusive of cutoff
         except KeyError as e:
-            print("Warning: This should never happen!!" + e.message)
             #The oldest item should have been checked when the cutoff was set
             #Items cannot be deleted from the tail of the cache without notifying all listeners
             self.set_status(410) #Gone
             self.finish()
             return
+        print("Data is " + str(data))
         self.write(json.dumps(data, default=str, cls=None))
         self.finish()
         
@@ -211,8 +210,6 @@ class Listener(BaseHandler):
 class Randomizer(BaseHandler):
     @tornado.web.authenticated
     def get(self, eventid, last_received_item):
-        print("inside randomizer")
-        print("redirecting...")
         #We need to do a redirect to a unique url so that the browser opens up a socket for this connection
         self.redirect('/poll/' + str(eventid) + '/' + last_received_item + '/' + str(ObjectId()))
         
@@ -221,42 +218,49 @@ class PollHandler(Listener):
     @tornado.web.asynchronous
     @tornado.web.authenticated
     def get(self, eventid, last_received_message, connection):
-        
+        print("Inside poll...")
         oldest_item_index = EVENT_REGISTRY.get_oldest_index_in_cache_for_eventid(eventid)
-        print("oldest_item_index %d " % oldest_item_index)
+        print("Oldest item in cache is " + str(oldest_item_index))
+        print("Last received message is " + str(last_received_message))
         if last_received_message < oldest_item_index:
             self.set_status(410) #Gone - Client's last received message is too old
             self.finish()
             return
         
-        print("inside pollhandler")
         self.set_cutoff(int(last_received_message) + 1) #We want to receive updates that are numbered strictly greater than our last update
+        #If the cache already has newer elements, we can immediately update
+        newest_item_index = EVENT_REGISTRY.get_newest_index_in_cache_for_eventid(eventid)
+        print(newest_item_index)
+        if newest_item_index >= self.cutoff:
+            print("New events in cache, no need for listen...")
+            self.notify(EVENT_REGISTRY.caches[eventid])
+            return
+        
+        print("No new events, registering to listen...")
         #Register ourselves with the EVENT_REGISTRY
-        print("Registering a listener on " + str(eventid))
         EVENT_REGISTRY.register_listener_on_event(eventid, self)
         #Fall back to the ioloop and wait for self.notify to be called
         
 
 #/get/(eventid)
-class PostGetter(BaseHandler):
+class PostGetter(JSONPHandler):
     @tornado.web.authenticated
     def get(self, eventid):
         posts = get_top_posts_for_event(eventid)
         userid = self.get_current_user()
         votes_and_flags = get_user_votes_and_flags(userid)
         last_element = EVENT_REGISTRY.get_newest_index_in_cache_for_eventid(eventid)
-        result = {'last_element':last_element, 'posts':list(posts), 'votes_and_flags':votes_and_flags}
+        #the js client expects a dictionary of actions, so we wrap the dictionary in another dictionary
+        result = {-1: {'action':'get', 'last_element':last_element, 'posts':list(posts), 'votes_and_flags':votes_and_flags}}
         self.write(json.dumps(result,  default=str, cls=None))
        
 #/comment/(postid)/(message)
 class Comment(BaseHandler):
     def initialize(self, anon=False):
         self.anon = anon
-        print("Comment: anon " + str(self.anon))
         
     @tornado.web.authenticated
     def get(self, postid, message):
-        print("Get: anon " + str(self.anon))
         eventid = get_eventid_of_post(postid)
         userid = self.get_current_user()
         user = get_user_display_info(userid, self.anon)
@@ -264,7 +268,7 @@ class Comment(BaseHandler):
             
         commentid = create_comment_for_post(userid, postid, message, self.anon)
         
-        datum = {'action':'comment', 'user':user, 'postid':postid, 'message':message, 'commentid':commentid}
+        datum = {'action':'comment', 'user':user, 'postid':postid, 'message':message, 'objectid':commentid}
         
         EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
@@ -273,7 +277,6 @@ class Comment(BaseHandler):
 class Post(BaseHandler):
     def initialize(self, anon=False):
         self.anon = anon
-        print("Post: anon " + str(self.anon))
         
     @tornado.web.authenticated
     def get(self, eventid, message):
@@ -282,7 +285,7 @@ class Post(BaseHandler):
         
         postid = create_post_for_event(userid, eventid, message, self.anon)
         
-        datum = {'action':'post', 'user':user, 'message':message, 'postid':postid}
+        datum = {'action':'post', 'user':user, 'message':message, 'objectid':postid}
         
         EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
@@ -302,150 +305,209 @@ class Post(BaseHandler):
 #        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
 #        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
          
-#/vote/comment/(commentid)        
-class VoteComment(BaseHandler):
-    @tornado.web.authenticated
-    def get(self, commentid):
-        eventid = get_eventid_of_comment(commentid)
-        userid = self.get_current_user()
-        
-        try:
-            vote_comment(userid, commentid)
-        except ValueError as e:
-            print(e.message)
-            return #If the user tries to double-upvote, ignore it
-        datum = {'action':'vote_comment', 'commentid':commentid, 'userid':userid}
-        
-        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
-        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
-        
-#/unvote/comment/(commentid)        
-class UnvoteComment(BaseHandler):
-    @tornado.web.authenticated
-    def get(self, commentid):
-        eventid = get_eventid_of_comment(commentid)
-        userid = self.get_current_user()
-        
-        try:
-            unvote_comment(userid, commentid)
-        except ValueError as e:
-            print(e.message)
-            return #If the user tries to pre-unvote, ignore it
-        
-        datum = {'action':'unvote_comment', 'commentid':commentid, 'userid':userid}
-        
-        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
-        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
-        
-#/flag/comment/(commentid)
-class FlagComment(BaseHandler):
-    @tornado.web.authenticated
-    def get(self, commentid):
-        eventid = get_eventid_of_comment(commentid)
-        userid = self.get_current_user()
-        
-        try:
-            flag_comment(userid, commentid)
-        except ValueError as e:
-            print(e.message)
-            return
-        
-        datum = {'action':'flag_comment', 'commentid':commentid, 'userid':userid}
-        
-        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)  
-        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)     
-        
-#/unflag/comment/(commentid)
-class UnflagComment(BaseHandler):
-    @tornado.web.authenticated
-    def get(self, commentid):
-        eventid = get_eventid_of_comment(commentid)
-        userid = self.get_current_user()
-        
-        try:
-            unflag_comment(userid, commentid)
-        except ValueError as e:
-            print(e.message)
-            return
-        
-        datum = {'action':'unflag_comment', 'commentid':commentid, 'userid':userid}
-        
-        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)  
-        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)       
-        
-        
-#/vote/post/(postid)
-class VotePost(BaseHandler):
-    @tornado.web.authenticated
-    def get(self, postid):
-        eventid = get_eventid_of_post(postid)
-        userid = self.get_current_user()
-        
-        try:
-            vote_post(userid, postid)
-        except ValueError as e:
-            print(e.message)
-            return
-        
-        datum = {'action':'vote_post', 'postid':postid, 'userid':userid}
-        
-        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
-        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
+##/vote/comment/(commentid)        
+#class VoteComment(BaseHandler):
+#    @tornado.web.authenticated
+#    def get(self, commentid):
+#        eventid = get_eventid_of_comment(commentid)
+#        userid = self.get_current_user()
+#        
+#        try:
+#            vote_comment(userid, commentid)
+#        except ValueError as e:
+#            print(e.message)
+#            return #If the user tries to double-upvote, ignore it
+#        datum = {'action':'vote_comment', 'commentid':commentid, 'userid':userid}
+#        
+#        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
+#        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
+#        
+##/unvote/comment/(commentid)        
+#class UnvoteComment(BaseHandler):
+#    @tornado.web.authenticated
+#    def get(self, commentid):
+#        eventid = get_eventid_of_comment(commentid)
+#        userid = self.get_current_user()
+#        
+#        try:
+#            unvote_comment(userid, commentid)
+#        except ValueError as e:
+#            print(e.message)
+#            return #If the user tries to pre-unvote, ignore it
+#        
+#        datum = {'action':'unvote_comment', 'commentid':commentid, 'userid':userid}
+#        
+#        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
+#        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
+#        
+##/flag/comment/(commentid)
+#class FlagComment(BaseHandler):
+#    @tornado.web.authenticated
+#    def get(self, commentid):
+#        eventid = get_eventid_of_comment(commentid)
+#        userid = self.get_current_user()
+#        
+#        try:
+#            flag_comment(userid, commentid)
+#        except ValueError as e:
+#            print(e.message)
+#            return
+#        
+#        datum = {'action':'flag_comment', 'commentid':commentid, 'userid':userid}
+#        
+#        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)  
+#        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)     
+#        
+##/unflag/comment/(commentid)
+#class UnflagComment(BaseHandler):
+#    @tornado.web.authenticated
+#    def get(self, commentid):
+#        eventid = get_eventid_of_comment(commentid)
+#        userid = self.get_current_user()
+#        
+#        try:
+#            unflag_comment(userid, commentid)
+#        except ValueError as e:
+#            print(e.message)
+#            return
+#        
+#        datum = {'action':'unflag_comment', 'commentid':commentid, 'userid':userid}
+#        
+#        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)  
+#        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)       
+#        
+#        
+##/vote/post/(postid)
+#class VotePost(BaseHandler):
+#    @tornado.web.authenticated
+#    def get(self, postid):
+#        print("Trying to vote post")
+#        eventid = get_eventid_of_post(postid)
+#        userid = self.get_current_user()
+#        
+#        try:
+#            vote_post(userid, postid)
+#        except ValueError as e:
+#            print(e.message)
+#            return
+#        
+#        datum = {'action':'vote_post', 'postid':postid, 'userid':userid}
+#        
+#        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
+#        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
+#        print("Notified all listeners about the vote")
+#        
+##/unvote/post/(postid)
+#class UnvotePost(BaseHandler):
+#    @tornado.web.authenticated
+#    def get(self, postid):
+#        print("Trying to unvote post")
+#        eventid = get_eventid_of_post(postid)
+#        userid = self.get_current_user()
+#        
+#        try:
+#            unvote_post(userid, postid)
+#        except ValueError as e:
+#            print(e.message)
+#            return
+#        
+#        datum = {'action':'unvote_post', 'postid':postid, 'userid':userid}
+#        
+#        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
+#        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
+#        print("Notified all listeners about the unvote")
+##/flag/post/(postid)
+#class FlagPost(BaseHandler):
+#    @tornado.web.authenticated
+#    def get(self, postid):
+#        eventid = get_eventid_of_post(postid)
+#        userid = self.get_current_user()
+#        
+#        try:
+#            flag_post(userid, postid)
+#        except ValueError as e:
+#            print(e.message)
+#            return
+#        
+#        datum = {'action':'flag_post', 'postid':postid, 'userid':userid}
+#        
+#        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
+#        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
+#
+##/unflag/post/(postid)
+#class UnflagPost(BaseHandler):
+#    @tornado.web.authenticated
+#    def get(self, postid):
+#        eventid = get_eventid_of_post(postid)
+#        userid = self.get_current_user()
+#        
+#        try:
+#            unflag_post(userid, postid)
+#        except ValueError as e:
+#            print(e.message)
+#            return
+#        
+#        datum = {'action':'unflag_post', 'postid':postid, 'userid':userid}
+#        
+#        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
+#        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
 
-#/unvote/post/(postid)
-class UnvotePost(BaseHandler):
+class VoteObject(BaseHandler):    
     @tornado.web.authenticated
-    def get(self, postid):
-        eventid = get_eventid_of_post(postid)
+    def get(self, objectid):
+        print("Vote object!")
+        eventid = get_eventid_of_object(objectid)
         userid = self.get_current_user()
-        
         try:
-            unvote_post(userid, postid)
+            vote_object(userid, objectid)
         except ValueError as e:
             print(e.message)
             return
-        
-        datum = {'action':'unvote_post', 'postid':postid, 'userid':userid}
-        
+        datum = {'action':'vote', 'objectid':objectid, 'userid':userid}
         EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
-        
-#/flag/post/(postid)
-class FlagPost(BaseHandler):
+class UnvoteObject(BaseHandler):    
     @tornado.web.authenticated
-    def get(self, postid):
-        eventid = get_eventid_of_post(postid)
+    def get(self, objectid):
+        print("unvote object!")
+        eventid = get_eventid_of_object(objectid)
         userid = self.get_current_user()
-        
         try:
-            flag_post(userid, postid)
+            unvote_object(userid, objectid)
         except ValueError as e:
             print(e.message)
             return
-        
-        datum = {'action':'flag_post', 'postid':postid, 'userid':userid}
-        
+        datum = {'action':'unvote', 'objectid':objectid, 'userid':userid}
         EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
-
-#/unflag/post/(postid)
-class UnflagPost(BaseHandler):
+class FlagObject(BaseHandler):    
     @tornado.web.authenticated
-    def get(self, postid):
-        eventid = get_eventid_of_post(postid)
+    def get(self, objectid):
+        print("flag object!")
+        eventid = get_eventid_of_object(objectid)
         userid = self.get_current_user()
-        
         try:
-            unflag_post(userid, postid)
+            flag_object(userid, objectid)
         except ValueError as e:
             print(e.message)
             return
-        
-        datum = {'action':'unflag_post', 'postid':postid, 'userid':userid}
-        
+        datum = {'action':'flag', 'objectid':objectid, 'userid':userid}
         EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
-    
+class UnflagObject(BaseHandler):    
+    @tornado.web.authenticated
+    def get(self, objectid):
+        eventid = get_eventid_of_object(objectid)
+        userid = self.get_current_user()
+        try:
+            unflag_object(userid, objectid)
+        except ValueError as e:
+            print(e.message)
+            return
+        datum = {'action':'unflag', 'objectid':objectid, 'userid':userid}
+        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
+        
 application = tornado.web.Application([
     (r"/", LoginHandler),
     (r'/me/?', UserHandler),
@@ -479,14 +541,18 @@ application = tornado.web.Application([
     (r'/post/(\w+)/(.+)/?', Post),
     (r'/anon_comment/(\w+)/(.+)/?', Comment, {'anon':True}),
     (r'/anon_post/(\w+)/(.+)/?', Post, {'anon':True}),
-    (r'/vote/comment/(\w+)/?', VoteComment),
-    (r'/flag/comment/(\w+)/?', FlagComment),
-    (r'/vote/post/(\w+)/?', VotePost),
-    (r'/flag/post/(\w+)/?', FlagPost),
-    (r'/unvote/comment/(\w+)/?', UnvoteComment),
-    (r'/unflag/comment/(\w+)/?', UnflagComment),
-    (r'/unvote/post/(\w+)/?', UnvotePost),
-    (r'/unflag/post/(\w+)/?', UnflagPost),
+    (r'/vote/(\w+)/?', VoteObject),
+    (r'/unvote/(\w+)/?', UnvoteObject),
+    (r'/flag/(\w+)/', FlagObject),
+    (r'/unflag/(\w+)/?', UnflagObject),
+#    (r'/vote/comment/(\w+)/?', VoteComment),
+#    (r'/flag/comment/(\w+)/?', FlagComment),
+#    (r'/vote/post/(\w+)/?', VotePost),
+#    (r'/flag/post/(\w+)/?', FlagPost),
+#    (r'/unvote/comment/(\w+)/?', UnvoteComment),
+#    (r'/unflag/comment/(\w+)/?', UnflagComment),
+#    (r'/unvote/post/(\w+)/?', UnvotePost),
+#    (r'/unflag/post/(\w+)/?', UnflagPost),
     #END SERVER API METHODS
     
     

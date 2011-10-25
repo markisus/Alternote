@@ -152,27 +152,33 @@ def get_post(postid):
         raise KeyError("No post with key " + str(postid) + " exists")
     return result
 
+def get_eventid_of_object(objectid):
+    result = get_eventid_of_post(objectid) or get_eventid_of_comment(objectid)
+    if result == None:
+        raise KeyError("No object with key " + str(objectid) + " exists")
+    return result
+
 def get_eventid_of_post(postid):
     postid = ObjectId(postid)
     result = events.posts.find_one({'_id':postid}, {'_id':0, 'event':1})
-    if result == None:
-        raise KeyError("No post with key " + str(postid) + " exists")
-    return result['event']
+    if result != None:
+        return result['event']
+
 
 def get_eventid_of_comment(commentid):
     commentid = ObjectId(commentid)
     result = events.posts.find_one({'comments._id':commentid}, {'event':1})
-    if result == None:
-        raise KeyError("No comment with key " + str(commentid) + " exists")
-    return result['event']
+    if result != None:
+        return result['event']
 
 
-def create_post_for_event(userid, eventid, post, anonymous=False, timestamp=datetime.now().isoformat()):
+def create_post_for_event(userid, eventid, post, anonymous=False):
+    timestamp=datetime.now().isoformat()
     author = __author_query(userid)
     if anonymous: #Wipe identifying info
         anonymize(author)
     result = posts.insert(
-                 {'post':post,
+                 {'message':post,
                   'votes':0,
                   'flags':0,
                   'event':ObjectId(eventid),
@@ -199,8 +205,8 @@ def anonymize(author):
     author['type'] = "student"
     return author
 
-#Kind of convoluted, get rid of retry mechanism and hope that the comment succeeds
-def create_comment_for_post(userid, postid, comment, anonymous=False, timestamp=datetime.now().isoformat()):
+def create_comment_for_post(userid, postid, comment, anonymous=False):
+    timestamp=datetime.now().isoformat()
     postid = ObjectId(postid)
     comment_id = ObjectId()
     author = __author_query(userid)
@@ -209,7 +215,7 @@ def create_comment_for_post(userid, postid, comment, anonymous=False, timestamp=
         record_anon_item(userid, comment_id)
         #Save this commentid into the user
     comment = {
-                'comment':comment,
+                'message':comment,
                 'votes':0,
                 'flags':0,
                 'timestamp':timestamp,
@@ -257,77 +263,76 @@ def get_user_flags(userid):
     print(result)
     return result['flagged']
 
-def vote_post(userid, postid, timestamp=datetime.now().isoformat(), times=1): 
-    postid = ObjectId(postid)
-    #Check that this user has not voted yet
+def vote_object(userid, objectid):
+    objectid = ObjectId(objectid)
     voted = get_user_votes(userid)
-    if postid in voted:
-        raise ValueError("Double-vote detected on postid " + str(postid))
-    
+    if objectid in voted:
+        print(str(objectid) + "is in voted")
+        raise ValueError("Double-vote detected on object " + str(objectid))
+    vote_post(userid, objectid)
+    vote_comment(userid, objectid)
+    users.update({"_id":userid}, {"$addToSet":{"voted":objectid}})
+
+def unvote_object(userid, objectid):
+    objectid = ObjectId(objectid)
+    voted = get_user_votes(userid)
+    if objectid not in voted:
+        raise ValueError("Cannot unupvote before upvote on object " + str(objectid))
+    unvote_post(userid, objectid)
+    unvote_comment(userid, objectid)
+    users.update({"_id":userid}, {"$pull":{"voted":objectid}})
+
+def flag_object(userid, objectid):
+    objectid = ObjectId(objectid)
+    flagged = get_user_flags(objectid)
+    if objectid in flagged:
+        raise ValueError("Double-flag detected on object " + str(objectid))    
+    flag_post(userid, objectid)
+    flag_comment(userid, objectid)
+    users.update({"_id":userid}, {"$addToSet":{"flagged":objectid}})
+
+def unflag_object(userid, objectid):
+    objectid = ObjectId(objectid)
+    flagged = get_user_flags(userid)
+    if objectid not in flagged:
+        raise ValueError("Cannot unflag before flag on object " + str(objectid))
+    unflag_post(userid, objectid)
+    unflag_comment(userid, objectid)
+    users.update({"_id":userid}, {"$pull":{"flagged":objectid}})
+
+
+def vote_post(userid, postid, times=1): 
+    timestamp=datetime.now().isoformat()
     posts.update({"_id":postid}, {"$inc":{"votes":times}})
-    users.update({"_id":userid}, {"$addToSet":{"voted":postid}})
     
-def unvote_post(userid, postid, timestamp=datetime.now().isoformat(), times=1):
-    postid = ObjectId(postid)
-    voted = get_user_votes(userid)
-    if postid not in voted:
-        raise ValueError("Cannot unupvote before upvote on postid " + str(postid))
+def unvote_post(userid, postid, times=1):
+    timestamp=datetime.now().isoformat()
     posts.update({"_id":ObjectId(postid)}, {"$inc":{"votes":-times}})
-    users.update({"_id":userid}, {"$pull":{"voted":postid}})
 
-def vote_comment(userid, commentid, timestamp=datetime.now().isoformat(), times=1):
-    commentid = ObjectId(commentid)
-    voted = get_user_votes(userid)
-    if commentid in voted:
-        raise ValueError("Double-vote detected on commentid " + str(commentid))
-    
+def vote_comment(userid, commentid, times=1):
+    timestamp=datetime.now().isoformat()
     posts.update({"comments._id":commentid}, {"$inc":{"comments.$.votes":times}})
-    users.update({"_id":userid}, {"$addToSet":{"voted":commentid}})
 
-def unvote_comment(userid, commentid, timestamp=datetime.now().isoformat(), times=1):
-    commentid = ObjectId(commentid)
-    voted = get_user_votes(userid)
-    if commentid not in voted:
-        raise ValueError("Cannot unupvote before upvote on commentid " + str(commentid))
-    
+def unvote_comment(userid, commentid, times=1):
+    timestamp=datetime.now().isoformat()
     posts.update({"comments._id":commentid}, {"$inc":{"comments.$.votes":-times}})
-    users.update({"_id":userid}, {"$pull":{"voted":commentid}})
     
-def flag_post(userid, postid, timestamp=datetime.now().isoformat(), times=1):
-    postid = ObjectId(postid)
-    flagged = get_user_flags(userid)
-    if postid in flagged:
-        raise ValueError("Double-flag detected on postid " + str(postid))
-    
+def flag_post(userid, postid, times=1):
+    timestamp=datetime.now().isoformat()
     posts.update({"_id":postid}, {"$inc":{"flags":times}})
-    users.update({"_id":userid}, {"$addToSet":{"flagged":postid}})
     
-def unflag_post(userid, postid, timestamp=datetime.now().isoformat(), times=1):
-    postid = ObjectId(postid)
-    flagged = get_user_flags(userid)
-    if postid not in flagged:
-        raise ValueError("Cannot unflag before flag on postid " + str(postid))
-    
+def unflag_post(userid, postid, times=1):
+    timestamp=datetime.now().isoformat()
     posts.update({"_id":postid}, {"$inc":{"flags":-times}})
-    users.update({"_id":userid}, {"$pull":{"flagged":postid}})
     
-def flag_comment(userid, commentid, timestamp=datetime.now().isoformat(), times=1):
-    commentid = ObjectId(commentid)
-    flagged = get_user_flags(userid)
-    if commentid in flagged:
-        raise ValueError("Double-vote detected on commentid " + str(commentid))
-    
+def flag_comment(userid, commentid, times=1):
+    timestamp=datetime.now().isoformat()
     posts.update({"comments._id":commentid}, {"$inc":{"comments.$.flags":times}})
-    users.update({"_id":userid}, {"$addToSet":{"flagged":commentid}})
         
-def unflag_comment(userid, commentid, timestamp=datetime.now().isoformat(), times=1):
-    commentid = ObjectId(commentid)
-    flagged = get_user_flags(userid)
-    if commentid not in flagged:
-        raise ValueError("Cannot unflag before flag on commentid " + str(commentid))
-    
+def unflag_comment(userid, commentid, times=1):
+    timestamp=datetime.now().isoformat()    
     posts.update({"comments._id":commentid}, {"$inc":{"comments.$.flags":-times}})
-    users.update({"_id":userid}, {"$pull":{"flagged":commentid}})
+
 ##############################################################################
 # End Real Time Server Methods                                               #
 ##############################################################################

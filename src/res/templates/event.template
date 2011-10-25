@@ -1,9 +1,9 @@
 <h1>Events</h1>
 {% for event in events %}
-<h1><a href="/viewposts/{{ event._id }}">{{ event.type }}</a> for {{ event.class.name }} </h1>
+<h1><a href="/viewposts/[[ event._id ]]">[[ event.type ]]</a> for [[ event.class.name ]] </h1>
 <b>Details:</b> {{ event.details }}
 <br />
-<b>Discussion Window</b> {{ event.start_time }} - {{ event.end_time }}
+<b>Discussion Window</b> [[ event.start_time ]] - [[ event.end_time ]]
 <br />
 
 {% endfor %}

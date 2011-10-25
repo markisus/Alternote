@@ -2,50 +2,44 @@
 
 <head>
 	<title>JQuery Sandbox</title>
-	<link rel="stylesheet" type="text/css" href="/static/default.css" />
 	<script src="/static/jquery-1.6.2.js"></script>
-	<script src="/static/jquery-impromptu.js"></script>
-	<script src="/static/client.js" /></script>
+	<script src="/static/jsrender.js"></script>
+	<script src="/static/client.js"/></script>
 	<script type="text/javascript">
-		console.log("Main page start");
-		var eventid = '{{ eventid }}';
-		var userid = '{{ userid }}';
-		
-		var script = function() {
-			$('#post_input').bind('focus', function() {
-				$('#post_input').val("");
-			});
-			$('#post_share').bind('click', function() {
-				var message = $('#post_input').val();
-				if(!(message === "")) {
-					console.log(message);
-					client.post(message);
-					$('#post_input').val("");
-				}
-			});
-			$('#post_share_anon').bind('click', function() {
-				var message = $('#post_input').val();
-				if(!(message === "")) {
-					console.log(message);
-					client.post_anon(message);
-					$('#post_input').val("");
-				}
-			});
-		}
+		var startup = function() {
+			client.initialize("[[ eventid ]]", "[[ userid ]]");
+		};
 	</script>
 	
 </head>
+<body onload="startup();">
+	<div id="main">
+	</div>
+	<script id="object" type="text/x-query-tmpl">
+		<div id="{{=objectid}}" class="{{=objecttype}}">
+			<div class="author">
+				{{=author}}
+			</div>
+			<div class="authorimg">
+				{{=authorimg}}
+			</div>
+			<div class="message">
+				{{=message}}
+			</div>
+			<div class="actions">
+				actions
+			</div>
+			<div class="meta">
+				<div class="votes">{{=votes}}</div>
+				<div class="flags">{{=flags}}</div>
+			</div>
+		</div>
+	</script>
+	<div id="scriptInject"></div>
+	<div id="posts">
 
-
-<body onload="client.init(eventid, userid);script();">
-<div class='input' id='make_post'>
-	<input id='post_input' type='text' value='Drop your insight...' />
-	<div id='embed_preview'></div>
-	<input id='post_share' type='button' value='Share'/>
-	<input id='post_share_anon' type='button' value='Anonymous Share'/>
-</div>
-<div class='realtime' id='posts'></div>
-<iframe id='dummy_target' style='display:none;'></div>
+	</div>
 </body>
+
 
 </html>

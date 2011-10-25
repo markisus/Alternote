@@ -1,0 +1,564 @@
+html {
+    display: block;
+}
+
+/*Classes*/
+
+
+.link-blue {
+	color: #53b8ee;
+}
+
+.link-light-blue {
+	color: #B5DAF6;
+}
+
+.profpost {
+    background-color: #fde4e5;
+}
+
+.admin {
+    background-color: #FDE4E5;
+}
+
+.professor {
+    background-color: #feedd5;
+}
+
+
+.datetime {
+	color: #999999;
+}
+
+.clear {
+    clear: both;
+}
+
+.subhead {
+	font-size: 9pt;
+}
+
+
+/*Global tag settings*/
+ul li {
+	list-style: none;
+}
+
+h1 {
+	font-size: 14pt;
+	font-weight: normal;
+}
+
+h2 {
+	font-size: 12pt;
+	font-weight: normal;
+}
+
+h3 {
+	font-size: 10pt;
+	font-weight: normal;
+}
+
+a {
+    text-decoration: none;
+    color: #555555;
+}
+
+a:hover, a:focus {
+	color: #777777;
+}
+
+body {
+	font-family: 'Droid Sans', sans-serif;
+	font-size: 10pt;
+	color: #424242;
+}
+
+/*Site Header*/
+header {
+    width: 980px;
+    margin: 0px auto 0px auto;
+	display: block;
+}
+
+#head-wrapper {
+	width: 100%;
+	background-color: #DEDEDE;
+}
+
+#divider {
+    width: 100%;
+    height: 0px;
+    border-bottom: 1px solid #989898;
+    margin-bottom: 10px;
+}
+
+nav {
+    float: right;
+    width: 450px;
+    font-size: 11.5pt;
+    margin-top: 44px;
+}
+
+nav ul {
+    list-style: none;
+	margin-right: 17px;
+}
+
+nav ul li {
+    float: right;
+    margin-right: 15px;
+}
+
+header {
+	margin-top: 4px;
+	margin-left: -9px;
+    margin-bottom: 5px;
+}
+
+#main {
+    width: 1010px;
+    margin: 0px auto 0px auto;
+    
+}
+
+/*Registration page*/
+#greeting {
+    width: 450px;
+    float: left;
+}
+
+form#signup {
+    width: 450px;
+    float: right;
+}
+
+form#signup input {
+    width: 90%;
+    padding: 3px 6px 3px 6px;
+    font-size: 14pt;
+    color: #777777;
+    border: 1px solid #424242;
+    margin-bottom: 7px;
+}
+
+form#signup #firstname, form#signup #lastname {
+    width: 45%;
+}
+
+/*main class feed*/
+#left-sidebar {
+	width: 28%;
+	float: left;
+	margin-top: -9px;
+}
+
+#main-column {
+	width: 68%;
+	float: right;
+	margin-top: -10px;
+	padding-left: 35px;
+	border-left: 1px solid #ebebeb;
+}
+
+/*main column*/
+#maincol-head {
+	height: 145px;
+	float: left;
+	margin-left: -16px;
+	width: 102.5%;
+}	
+
+#maincol-head h1 {
+	float: left;
+}
+
+#maincol-head h3 {
+	float: left;
+	clear: left;
+	margin-top: -12px;
+}
+
+#maincol-head p {
+	float: right;
+	margin-top: -13px;
+	margin-right: 27px;
+	font-size: 11pt;
+	clear: none;
+	font-size: 9.5pt;
+}
+
+#type-response {
+	clear: both;
+	overflow: auto;
+	width: 96%;
+}
+
+#type-response input[type="text"] {
+	width: 100%;
+    border: 1px solid #999999;
+	background: none;
+  	float: left;
+  	height: 35px;
+  	line-height: 29px;
+	margin: 0;
+  	padding: 3px 4px;
+}
+
+#type-response input[type="submit"] {
+	float: right;
+	width: 61px;
+	padding: 6px;
+	color: white;
+	margin: 4px 0px 4px 0px;
+	background-color: #777777;
+}
+
+
+.shades {
+	background-size: 100%;
+	cursor: pointer;
+	width: 35px;
+}
+
+#maincol-head .shades {
+    background: url(/static/media/sunglasses.png);
+    background-repeat: no-repeat;
+    margin-left: 635px;
+    margin-bottom: 5px;
+    height: 34px;
+    position: relative;
+    top: 4px;
+}
+
+#maincol-body .shades {
+    background: url(/static/media/sunglasses.png);
+    background-repeat: no-repeat;
+    margin-left: 600px;
+    height: 34px;
+    position: relative;
+    top: -32px;
+}
+
+#maincol-body {
+	overflow: auto;
+	width: 100%;
+}
+
+.meta {
+	height: 25px;
+	margin-top: -2px;
+    margin-left: 72px;
+}
+
+.meta .stats {
+	float: right;
+	margin-right: 10px;
+}
+
+.meta .stats div {
+	float: right;
+}
+
+.original-post .meta {
+	margin-left: -2px; //Some ugly hack, sorry
+}
+.comments .meta {
+    margin-left: 3px;
+}
+
+.meta p {
+	float: left;
+}
+
+.meta div {
+	display: inline;
+}
+
+.meta .actions div {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.votes, .plus-symbol {
+	color: #A8A9AD;
+	font-weight: bold;
+}
+
+.meta .tinydot {
+	position: relative;
+	top: -4px;
+	color:#BCBDC0;
+	font-size: large;
+}
+
+.meta img {
+	margin-left: 8px;
+	float: left;
+	padding-top: 10px;
+	padding-bottom: 10px;
+} 
+
+.meta img.logotiny {
+	margin-top: -7px;
+}
+
+.original-post {
+	width: 98%;
+	float: right; 
+	margin-right: 30px;
+	padding: 10px;
+	
+}
+
+.original-post > p > .message {
+	margin-left: 50px;
+}
+
+.comment > p > .message {
+	margin-left: 40px;
+}
+
+.comment, .original-post {
+	padding-top: 6px;
+}
+
+.original-post .poster-img, .comment .poster-img {
+	float: left;
+	margin-right: 8px;
+	margin-top: 0px;
+}
+
+.original-post .poster-img {
+	position: relative;
+	left: 10px;
+}
+
+.original-post > .meta, .original-post > p {
+	position: relative;
+	left: 10px;
+}
+
+.original-post a.name {
+
+}
+
+.original-post p {
+	margin-top: 0px;
+	margin-bottom: 10px;
+}
+
+.comments {
+	width: 100%;
+	float: right;
+	margin-top: 7px;
+	
+}
+
+.comment {
+	float: left;
+	clear: both;
+	border-left: 1px solid #d2d2d2;
+	padding-left: 4px;
+	height: 65px;
+	width: 95%;
+}
+
+.comment p {
+	margin-top: -1px;
+}
+
+.post {
+	clear: both;
+	overflow: auto;
+	padding-left: 20px;
+	margin-bottom: 40px;
+}
+
+.post input {
+	background: none;
+  	border: 1px solid #999999;
+  	line-height: 29px;
+	margin: 0;
+  	padding: 3px 4px;
+	width: 96%;
+	height: 35px;
+	margin-top: 5px;
+}
+
+
+/*left sidebar*/
+#left-sidebar input {
+	margin-bottom: 20px;
+	width: 94%;
+}
+
+#searchbox {
+	border: 1px solid #999999;
+	width: 94%;
+	height: 22px;
+	margin-bottom: 15px;
+}
+
+#searchbox input[type="text"] {
+	background: none;
+  	border: 0 none;
+  	float: left;
+  	height: 29px;
+  	line-height: 29px;
+	margin: 0;
+  	padding: 3px 4px;
+  	width: 95%;
+	margin-top: -3px;
+}
+
+#searchbox input[type="submit"] {	
+  	background: url(/static/media/search_glass.png);
+  	border: 0 none;
+  	height: 11px;
+  	line-height: 10px;
+	margin: 0;
+  	margin-top: 5px;
+  	padding: 3px 0;
+  	text-indent: 100px;
+  	width: 4.5%;
+}
+
+#left-sidebar h3 {
+	margin-top: -12px;
+}
+
+#sidebar-box h3 {
+	margin-top: 0px;
+}
+
+#sidebar-box legend {
+	margin-left: -10px;
+	padding-right: 8px;
+}
+
+#sidebar-box a#title {
+	font-weight: bold;
+	font-size: 14pt;
+}
+
+#sidebar-box {
+	clear: both;
+	width: 96%;
+	font-size: 9pt;
+	margin-bottom: 12px;
+	border-top: 1px solid #ebebeb;
+	border-right: none;
+	border-left: none;
+	border-bottom: none;
+}
+
+#past-event {
+	border-top: 1px solid #ebebeb;
+	width: 105%;
+}
+
+#past-event, #top-event {
+	margin-left: -7px;
+}
+
+#past-event h3, #top-event h3 {
+	font-weight: normal;
+	float: left;
+	margin-bottom: 0px;
+	width: 85%;
+}
+
+#past-event div, #top-event div, #past-event img, #top-event img {
+	float: right;
+}
+
+#unread {
+	width: 8px;
+	height: 8px;
+	background-color: purple;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+#past-event #unread {
+	margin: -40px 10px 0px 0px;
+}
+
+#top-event #unread {
+	margin: -40px 3px 0px 0px;
+}
+
+#top-event #attachment {
+	margin: -40px 23px 0px 0px;
+}
+
+#past-event #attachment {
+	margin: -40px 30px 0px 0px;
+}
+
+#past-event p, #top-event p {
+	clear: both;
+	margin-top: -11.5px;
+}
+
+#extend-link {
+	float: right;
+	margin-right: 33px;
+}
+
+#sidebar-box table {
+	font-size: 9pt;
+	margin-top: 7px;
+	width: 103.5%;
+	float: right;
+}
+
+#sidebar-box table td {
+	width: 73%;
+}
+
+.expanded-link {
+    width: 88%;
+    float: right;
+}
+
+.expanded-link img {
+    float: left;
+    margin-right: 5px;
+    max-width: 17%;
+}
+
+.expanded-link a {
+    float: left;
+}
+
+.expanded-link p {
+    margin-top: 3px;
+    float: right;
+    width: 82%;
+}
+
+.flags {
+	position:relative;
+	width: 15px;
+	height: 15px;
+	padding-right: 10px;
+	margin-left: 5px;
+	margin-right: 5px;
+	background: url(/static/media/redflag.png) right;
+	background-size:15px 15px;
+	background-repeat:no-repeat;
+	display: inline;
+	color: #F55858;
+	font-weight: bold;
+}
+
+.flag_message {
+	margin-top: 20px;
+	margin-bottom: 10px;
+	margin-left: 30px;
+	color: #F55858;
+	cursor: pointer;
+}
