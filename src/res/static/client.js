@@ -77,9 +77,10 @@ var client = {};
 		_post_helper("anon_comment", parentid, message);
 	}
 	
+	/* I think this code below was an accident. keeping it around to be safe
 	client.anon_post = function(message) {
 		client.injectScript("/anon_post/" + client.eventid + "/" + message);
-	}
+	}*/
 	
 	var _post_helper = function(api_call, parentid, message) {
 		message = escape(message);
