@@ -1,7 +1,9 @@
-{% extends 'form.template' %}
+{% extends 'main.template' %}
+
 {% block content %}
-<h1>Log In</h1>
+Alternote Landing Page.
 <form method="post">
 	[[ with_errors(form.code) ]]
+	[[ with_errors(form.submit) ]]
 </form>
 {% endblock content %}

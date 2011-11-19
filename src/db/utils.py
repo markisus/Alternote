@@ -4,30 +4,7 @@ from bson.objectid import ObjectId
 from random import randint
 from time import time
 from datetime import datetime
-
-default_connection = ('localhost', 27017)
-connection = Connection(*default_connection)
-alternote = connection.alternote
-
-#Binding collection names and setting indices
-users = alternote.users
-users.ensure_index([('_id',1), ('first_name',1), ('last_name',1)]) #For covered queries
-users.ensure_index([('_id',1), ('flagged', 1)])
-users.ensure_index([('_id',1), ('upvoted', 1), ('flagged', 1)])
-
-events = alternote.events
-events.ensure_index([('class._id',1)])
-
-posts = alternote.events.posts
-posts.ensure_index([('comment._id',1)])
-posts.ensure_index([('event',1),('timestamp',1)])
-
-#Ben will handle these, we can get rid of them later
-classes = alternote.classes
-posts.ensure_index([('_id',1), ('name',1)], [('university',1), ('tags',1)])
-
-logins = alternote.logins
-logins.ensure_index([('userid',1)])
+from collections import *
 
 def __author_query(userid):
     result = users.find_one({'_id':userid}, {'_id':1, 'first_name':1, 'last_name':1, 'type':1})
@@ -40,12 +17,6 @@ def __class_query(classid):
     if classdoc == None:
         raise KeyError("Registration failed; could not find class with key " + classid)
     return classdoc
-
-def clean_collections():
-    users.remove()
-    events.remove()
-    posts.remove()
-    classes.remove()
 
 def create_class(university, instructor, name, section, finish_date):
     tags = name.lower().split(" ")
@@ -84,8 +55,6 @@ def create_user(first_name, last_name, password, email, university, classes=[], 
                  , safe = True
                 )
     
-
-
 def register_user_for_class(userid, classid):
     classdoc = classes.find({'_id':classid}, {'name':1, '_id':0}, limit=1).hint([('_id',1), ('name',1)])[0]
     if classdoc == None:
@@ -113,10 +82,6 @@ def create_event_for_class(classid, typ, location, start_time, end_time, details
 
 def get_events_for_class(classid):
     return events.find({'class._id':classid})
-
-##################################################################################################
-# Ben will reimplement the above methods. The methods below are necessary to the real time server#
-##################################################################################################
 def get_user(userid): #Todo: Consolidate this method with duplicate method "__author_query"
     result = users.find_one({'_id':userid})
     if result == None:
@@ -337,32 +302,6 @@ def unflag_comment(userid, commentid, times=1):
 # End Real Time Server Methods                                               #
 ##############################################################################
 
-
-#Make some data for the database:
-def populate():
-    print("Starting")
-    clean_collections()
-    
-    cs1 = create_class("Columbia", "Alfred Aho", "Intro to CS", "1", "2012-05-11")
-    print("Created classes")
-
-    Anonymous = create_user("Anonymous", "", "admin", "Anonymous", None, "student")
-    Mark = create_user("Mark", "Liu", "admin", "ml2877@columbia.edu", "Columbia", type="student")
-    Amanda = create_user("Amanda", "Pickering", "test", "amanda@columbia.edu", "Columbia", type="admin")
-    Ankit = create_user("Ankit", "Shah", "admin", "ankit@upenn.edu", "U. Penn", type="professor")
-    print("Created users")
-    
-    register_user_for_class(Mark, cs1)
-    register_user_for_class(Amanda, cs1)
-    register_user_for_class(Ankit, cs1)
-
-    print("Registered users for some classes")
-    
-    lecture1 = create_event_for_class(cs1, "Lecture", "Hamilton 207", datetime(2011, 9, 6, 13, 40).isoformat(), datetime(2011, 9, 6, 15).isoformat(), "The first lecture!")
-    print("Created event for a class")
-        
-    print("Done")
- 
 def db_login(userid):
     session = __make_unique_string()
     logins.insert({'_id':session, 'userid':userid})
@@ -376,6 +315,3 @@ def db_get_userid(session):
     if not user:
         raise KeyError("No user matching this session " + session)
     return user['userid']
-            
-#Test functionality when this file is run as a standalone program:
-if __name__ == '__main__': populate()

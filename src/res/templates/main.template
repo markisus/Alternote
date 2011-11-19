@@ -1,9 +1,11 @@
 {% extends 'base.template' %}
 
-{% block title %}alternote{% endblock %}
+{% block title %}Alternote{% endblock %}
 
 {% block body %}
+	Main Template: Header HTML
 	{% block content %}
+		Main Template: Content Override
 	{% endblock %}
-footer text
+	Main Template: Footer HTML
 {% endblock %}
