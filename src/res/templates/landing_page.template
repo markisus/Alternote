@@ -1,28 +1,15 @@
 {% extends 'main.template' %}
 
 {% block content %}
-    <div id="login_box" style="display: none" title="Login">
-    	<form action="/mark/user/do_login" method="post" accept-charset="utf-8">	Email:
-		<input type="text" name="username" value=""  />	Password:
-		<input type="password" name="password" value=""  />		
-	<input type="submit" name="" value="Go"  />
-</form>    </div>
-
-	<div id-"main">
+	<div id="main">
     <div class="container">
 	<div class="sixteen columns content" id="index">
-		<img id="main-logo" src="/mark/style/media/logo-large.png" />
+		<img id="main-logo" src="[[ image('logo-large.png') ]]" />
 	    <div class="ten columns content" id="join">
 	        <h4>Join the conversation!</h4>
 	        <p>Alternote lean startup ipsum product market fit customer development acquihire technical cofounder. User engagement A/B testing shrink a market venture capital pitch deck. Social bookmarking group buying crowded market pivot onboarding freemium prototype ping pong. Early stage disruptive ecosystem community outreach dynamic location based strategic investor. <br/> <br/> <br/>
-		
-			<form action="/mark/registration_codes/process_code" method="post" accept-charset="utf-8">				<input type="text" name="code" value="Enter Code" id="code" onclick="clickclear(this, 'Enter Code')" onblur="clickrecall(this, 'Enter Code')"  />				<input type="submit" name="submit" value="Go"  />			 <br/> <br/> <br/>
-			
-			<!--<form action="/mark/user/do_register" method="post" accept-charset="utf-8" id="signup"><div style="display:none">
-<input type="hidden" name="school_id" value="" />
 </div> 
 				<h2>Join the conversation</h2>
-				<input type="text" name="firstname" value="First Name" id="firstname" onclick="clickclear(this, 'First Name')" onblur="clickrecall(this, 'First Name')"  />				<input type="text" name="lastname" value="Last Name" id="lastname" onclick="clickclear(this, 'Last Name')" onblur="clickrecall(this, 'Last Name')"  />				<input type="text" name="school" value="School" id="school" onclick="clickclear(this, 'School')" onblur="clickrecall(this, 'School')"  />				<input type="text" name="email" value="School Email" id="email" onclick="clickclear(this, 'School Email')" onblur="clickrecall(this, 'School Email')"  />				<input type="password" name="password" value="Password" id="password" onclick="clickclear(this, 'Password')" onblur="clickrecall(this, 'Password')"  />				<input type="password" name="confirm_pass" value="Password" id="confirm_pass" onclick="clickclear(this, 'Password')" onblur="clickrecall(this, 'Password')"  />				<input type="submit" name="" value="Register"  />			-->
 	    </div>
 	</div> <!-- 16 columns content end -->
 

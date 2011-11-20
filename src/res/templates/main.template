@@ -31,12 +31,10 @@
 	<div id="head-wrapper" class="container">
 		<header class="sixteen columns">
 			<a href="/">
-				<img src="/mark/style/media/logo-bubbles.png" />
+				<img src="[[ image('logo-bubbles.png') ]]" />
 			</a>
 			<ul id="nav">
-				<!-- li><a href="#" onclick="$('#login_box').dialog()">Login</a></li -->
-				<li><a href="/mark/user/login" onclick="return Alternote.ajax_dialog('/mark/user/login', 'Login')">Login</a></li>
-				<!-- ><li><a href="#" title="Help">Help</a></li> -->
+				{% block nav %}OVERRIDE NAV{% endblock %}
 			</ul>
 		</header>
 	</div> <!-- End head-wrapper -->

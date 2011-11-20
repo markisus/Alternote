@@ -1,0 +1,881 @@
+/*
+  Bootstrap v1.1
+  Variables and mixins to bootstrap any new web development project.
+*/
+/* Variables
+-------------------------------------------------- */
+/* Mixins
+-------------------------------------------------- */
+.clearfix {
+  zoom: 1;
+}
+.clearfix:after {
+  display: block;
+  visibility: hidden;
+  height: 0;
+  clear: both;
+  content: ".";
+}
+.center-block {
+  display: block;
+  margin: 0 auto;
+}
+.container {
+  width: 940px;
+  margin: 0 auto;
+  zoom: 1;
+}
+.container:after {
+  display: block;
+  visibility: hidden;
+  height: 0;
+  clear: both;
+  content: ".";
+}
+#flexbox .display-box {
+  display: -moz-box;
+  display: -webkit-box;
+  display: box;
+}
+#reset .global-reset html,
+#reset .global-reset body,
+#reset .global-reset div,
+#reset .global-reset span,
+#reset .global-reset applet,
+#reset .global-reset object,
+#reset .global-reset iframe,
+#reset .global-reset h1,
+#reset .global-reset h2,
+#reset .global-reset h3,
+#reset .global-reset h4,
+#reset .global-reset h5,
+#reset .global-reset h6,
+#reset .global-reset p,
+#reset .global-reset blockquote,
+#reset .global-reset pre,
+#reset .global-reset a,
+#reset .global-reset abbr,
+#reset .global-reset acronym,
+#reset .global-reset address,
+#reset .global-reset big,
+#reset .global-reset cite,
+#reset .global-reset code,
+#reset .global-reset del,
+#reset .global-reset dfn,
+#reset .global-reset em,
+#reset .global-reset img,
+#reset .global-reset ins,
+#reset .global-reset kbd,
+#reset .global-reset q,
+#reset .global-reset s,
+#reset .global-reset samp,
+#reset .global-reset small,
+#reset .global-reset strike,
+#reset .global-reset strong,
+#reset .global-reset sub,
+#reset .global-reset sup,
+#reset .global-reset tt,
+#reset .global-reset var,
+#reset .global-reset b,
+#reset .global-reset u,
+#reset .global-reset i,
+#reset .global-reset center,
+#reset .global-reset dl,
+#reset .global-reset dt,
+#reset .global-reset dd,
+#reset .global-reset ol,
+#reset .global-reset ul,
+#reset .global-reset li,
+#reset .global-reset fieldset,
+#reset .global-reset form,
+#reset .global-reset label,
+#reset .global-reset legend,
+#reset .global-reset table,
+#reset .global-reset caption,
+#reset .global-reset tbody,
+#reset .global-reset tfoot,
+#reset .global-reset thead,
+#reset .global-reset tr,
+#reset .global-reset th,
+#reset .global-reset td,
+#reset .global-reset article,
+#reset .global-reset aside,
+#reset .global-reset canvas,
+#reset .global-reset details,
+#reset .global-reset embed,
+#reset .global-reset figure,
+#reset .global-reset figcaption,
+#reset .global-reset footer,
+#reset .global-reset header,
+#reset .global-reset hgroup,
+#reset .global-reset menu,
+#reset .global-reset nav,
+#reset .global-reset output,
+#reset .global-reset ruby,
+#reset .global-reset section,
+#reset .global-reset summary,
+#reset .global-reset time,
+#reset .global-reset mark,
+#reset .global-reset audio,
+#reset .global-reset video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+#reset .global-reset body {
+  line-height: 1;
+}
+#reset .global-reset ol, #reset .global-reset ul {
+  list-style: none;
+}
+#reset .global-reset table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+#reset .global-reset caption, #reset .global-reset th, #reset .global-reset td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+#reset .global-reset q, #reset .global-reset blockquote {
+  quotes: none;
+}
+#reset .global-reset q:before,
+#reset .global-reset blockquote:before,
+#reset .global-reset q:after,
+#reset .global-reset blockquote:after {
+  content: "";
+  content: none;
+}
+#reset .global-reset a img {
+  border: none;
+}
+#reset .global-reset article,
+#reset .global-reset aside,
+#reset .global-reset details,
+#reset .global-reset figcaption,
+#reset .global-reset figure,
+#reset .global-reset footer,
+#reset .global-reset header,
+#reset .global-reset hgroup,
+#reset .global-reset menu,
+#reset .global-reset nav,
+#reset .global-reset section {
+  display: block;
+}
+#reset .reset-box-model {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#reset .reset-font {
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+#reset .reset-focus {
+  outline: 0;
+}
+#reset .reset-body {
+  line-height: 1;
+}
+#reset .reset-list-style {
+  list-style: none;
+}
+#reset .reset-table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+#reset .reset-table-cell {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+#reset .reset-quotation {
+  quotes: none;
+}
+#reset .reset-quotation:before, #reset .reset-quotation:after {
+  content: "";
+  content: none;
+}
+#reset .reset-image-anchor-border {
+  border: none;
+}
+#reset .reset-html5 article,
+#reset .reset-html5 aside,
+#reset .reset-html5 details,
+#reset .reset-html5 figcaption,
+#reset .reset-html5 figure,
+#reset .reset-html5 footer,
+#reset .reset-html5 header,
+#reset .reset-html5 hgroup,
+#reset .reset-html5 menu,
+#reset .reset-html5 nav,
+#reset .reset-html5 section {
+  display: block;
+}
+a {
+  text-decoration: none;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.subhead {
+  color: #555;
+}
+.tinydot {
+  height: 2px;
+  width: 2px;
+  background: #424242;
+  -moz-border-radius: 1px;
+  border-radius: 1px;
+  float: left;
+  margin: 8px;
+}
+.plusbutton {
+  float: right;
+}
+.link-blue {
+  color: #619ecf;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.link-blue:hover {
+  color: #000;
+}
+.profpost {
+  background-color: #fde4e5;
+}
+.adminpost {
+  /* background-color: #feedd5; */
+
+  background-color: #fff3e2;
+  border-top: none;
+}
+.datetime {
+  color: #999999;
+}
+.clear {
+  clear: both;
+}
+.highlight {
+  background: #FCC;
+  color: #111;
+}
+hr {
+  border: none;
+  border-top: solid 1px #CCC;
+  border-bottom: solid 1px #FFF;
+  margin: 4px 0;
+}
+input[type="text"],
+input[type="password"],
+input[type="email"],
+textarea,
+select {
+  -webkit-transition-property: box-shadow, -webkit-box-shadow, border-color;
+  -webkit-transition-duration: 0.15s, 0.15s, 0.15s;
+  -webkit-transition-timing-function: linear, linear, linear;
+  -moz-transition-property: box-shadow, -moz-box-shadow, border-color;
+  -moz-transition-duration: 0.15s, 0.15s, 0.15s;
+  -moz-transition-timing-function: linear, linear, linear;
+  transition-property: box-shadow, border-color;
+  transition-duration: 0.15s, 0.15s;
+  transition-timing-function: linear, linear;
+}
+#head-wrapper {
+  background: #EEE;
+  border-bottom: solid 1px #DDD;
+  height: 60px;
+  width: 100%;
+}
+header {
+  margin: 0 auto !important;
+  float: none !important;
+  display: block !important;
+}
+header img {
+  height: 60px;
+  margin-left: 5px;
+}
+header ul#nav {
+  float: right;
+  margin: 35px 0 0 0;
+}
+header ul#nav li {
+  float: left;
+  margin: 0;
+}
+header ul#nav li a {
+  color: #333;
+  text-shadow: 0px 1px 1px #FFF;
+  padding: 10px;
+  background-color: transparent;
+  border: solid 1px transparent;
+  border-bottom: none;
+  -moz-border-radius: 3px 3px 0px 0px;
+  border-radius: 3px 3px 0px 0px;
+  -webkit-transition-property: background-color, border-color;
+  -webkit-transition-duration: 0.15s, 0.15s;
+  -webkit-transition-timing-function: linear, linear;
+  -moz-transition-property: background-color, border-color;
+  -moz-transition-duration: 0.15s, 0.15s;
+  -moz-transition-timing-function: linear, linear;
+  transition-property: background-color, border-color;
+  transition-duration: 0.15s, 0.15s;
+  transition-timing-function: linear, linear;
+}
+header ul#nav li a:hover {
+  color: #333;
+  background-color: #FFF;
+  border-color: #CCC;
+}
+ul#footer-links {
+  width: 455px;
+  height: 20px;
+  margin: 20px auto 10px auto;
+}
+ul#footer-links li {
+  float: left;
+  margin: 0 5px;
+}
+ul#footer-links li a {
+  color: #619ecf;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+ul#footer-links li a:hover {
+  color: #000;
+}
+#index img#main-logo {
+  float: left;
+  width: 600px;
+  padding: 0 160px;
+  margin: 20px 0;
+}
+#index #join {
+  background: #F3F3F3;
+  padding: 10px;
+  margin-left: 160px;
+}
+#index #join h2 {
+  margin-bottom: 10px;
+}
+#index #join input[type="text"] {
+  color: #333;
+  padding: 8px 4px;
+  width: 268px;
+  border-radius: 2px;
+  border: none;
+  border-bottom: dashed 1px #AAA;
+  background: transparent;
+  float: left;
+  margin-right: 10px;
+  margin-left: 120px;
+}
+#index #join input[type="text"]:focus {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  border: none;
+  border-bottom: dashed 1px #AAA;
+}
+#sample {
+  width: 960px;
+  margin: 0;
+}
+#sample h4 {
+  font-weight: normal;
+}
+.sidebar {
+  border-right: solid 1px #DDD;
+  margin-right: 9px;
+  padding-top: 10px;
+}
+.sidebar img {
+  float: left;
+}
+.sidebar #nav-link, .sidebar #info-link {
+  font-size: 14px;
+  float: left;
+  margin: 0 10px 0 0;
+  opacity: 0.7;
+  -webkit-transition: opacity 0.15s linear;
+  -moz-transition: opacity 0.15s linear;
+  transition: opacity 0.15s linear;
+}
+.sidebar #nav-link.active, .sidebar #info-link.active {
+  opacity: 1.0;
+}
+.sidebar #nav-link:hover, .sidebar #info-link:hover {
+  opacity: 1.0;
+}
+.sidebar #nav-link {
+  color: #dfab2d;
+}
+.sidebar #nav-link.active:before {
+  content: url(media/navigation-icon.png);
+  display: inline;
+  float: left;
+}
+.sidebar #info-link {
+  color: #619ecf;
+}
+.sidebar #info-link.active:before {
+  content: url(media/info-icon.png);
+  display: inline;
+  float: left;
+}
+.sidebar #info-content {
+  display: none;
+}
+.sidebar ul.sidebar-content {
+  float: left;
+  margin-top: 10px;
+  width: 100%;
+}
+.sidebar ul.sidebar-content img {
+  width: 20px;
+  margin-right: 5px;
+}
+.sidebar ul.sidebar-content p {
+  font-size: 12px;
+}
+.sidebar ul.sidebar-content p a {
+  color: #858;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.sidebar ul.sidebar-content p a:hover {
+  color: #000;
+}
+.sidebar ul.sidebar-content .purple-line {
+  float: right;
+  margin-top: -10px;
+  height: 1px;
+  width: 50%;
+  background: #CAC;
+}
+.sidebar ul.sidebar-content#meeting p a:hover, .sidebar ul.sidebar-content#honchoes p a:hover, .sidebar ul.sidebar-content#classmates p a:hover {
+  color: #858;
+}
+.sidebar ul.sidebar-content#meeting li, .sidebar ul.sidebar-content#honchoes li, .sidebar ul.sidebar-content#classmates li {
+  border: none;
+}
+.sidebar ul.sidebar-content#meeting li:hover, .sidebar ul.sidebar-content#honchoes li:hover, .sidebar ul.sidebar-content#classmates li:hover {
+  background-color: transparent;
+}
+.sidebar ul.sidebar-content li {
+  float: left;
+  margin: 0;
+  width: 97%;
+  padding: 3px 0;
+  font-size: 14px;
+  border-bottom: solid 1px #DDD;
+  background-color: transparent;
+  -webkit-transition: background-color 0.15s linear;
+  -moz-transition: background-color 0.15s linear;
+  transition: background-color 0.15s linear;
+  /* &:hover { background-color: #F3F3F3; } */
+
+}
+.sidebar ul.sidebar-content li:last-child {
+  border: none;
+}
+.sidebar ul.sidebar-content li:last-child a {
+  font-size: 12px;
+  float: right;
+  margin-right: 5px;
+  color: #619ecf;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.sidebar ul.sidebar-content li:last-child a:hover {
+  color: #000;
+}
+.sidebar ul.sidebar-content li:last-child:hover {
+  background-color: transparent;
+}
+.sidebar ul.sidebar-content li p.date {
+  font-size: 12px;
+  color: #999;
+}
+.sidebar ul.sidebar-content li.attach {
+  background: url('media/paperclip-icon') no-repeat 195px 5px;
+}
+.sidebar ul.sidebar-content li.attach:hover {
+  background: #f6f6f6 url('media/paperclip-icon.png') no-repeat 200px 5px;
+}
+.sidebar ul#upcoming li {
+  border: none;
+}
+.sidebar ul#upcoming li:hover {
+  background: transparent;
+}
+.sidebar ul#upcoming li p.date {
+  float: right;
+  margin-right: 5px;
+  font-size: 14px;
+  color: #161616;
+}
+.maincol-head {
+  padding-top: 10px;
+}
+.maincol-head p#tags {
+  float: right;
+  display: none;
+}
+.maincol-head p#tags a {
+  text-decoration: underline;
+}
+.maincol-head form {
+  float: left;
+  width: 100%;
+  margin: 10px 0 0 0;
+}
+.maincol-head input#postText {
+  width: 96%;
+  float: left;
+}
+.post {
+  float: left;
+  margin-bottom: 10px;
+  padding: 5px 6px 35px 55px;
+  width: 90%;
+  border-top: solid 1px #EEE;
+}
+.post.professor {
+  /* background-color: #feedd5; */
+
+  background-color: #fff3e2;
+  border-top: none;
+}
+.post p {
+  line-height: 1.5em;
+}
+.post .author a {
+  color: #619ecf;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.post .author a:hover {
+  color: #000;
+}
+.post .authorimg {
+  float: left;
+  margin-left: -50px;
+  margin-top: -1.5em;
+}
+.post .authorimg img {
+  height: 40px;
+}
+.post .actions {
+  float: left;
+  font-size: 12px;
+  width: 80%;
+}
+.post .actions p, .post .actions a {
+  float: left;
+}
+.post .actions a {
+  color: #619ecf;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.post .actions a:hover {
+  color: #000;
+}
+.post .meta {
+  float: right;
+}
+.post .meta div {
+  float: left;
+  margin-right: 5px;
+}
+.post .comment {
+  float: left;
+  margin: 10px 0 0 0;
+  padding: 5px 5px 5px 55px;
+  width: 91%;
+  border-top: solid 1px #EEE;
+}
+.post .comment.professor {
+  /* background-color: #feedd5; */
+
+  background-color: #fff3e2;
+  border-top: none;
+}
+.post input[type="text"] {
+  margin-top: 10px;
+  width: 98%;
+  float: left;
+}
+input.new-comment {
+  float: left;
+  width: 88%;
+  margin: -45px 0 0 60px;
+}
+/*
+.post {
+	float: left;
+	margin-bottom: 10px;
+	padding-left: 55px;
+	width: 80%;
+	
+	p { line-height: 1.5em; }
+	
+	.poster-img {
+		float: left;
+		width: 40px;
+		margin: 0 5px 5px -50px;
+	}
+	
+	.original-post, .comments, .comment { float: left; }
+	.comments, .comment { margin-top: 5px; }
+	.comment { 
+		padding: 5px 5px 5px 55px;
+		
+		.post-meta h5 { margin-right: 0px; }
+	}
+	
+	.expanded-link {
+		margin-top: 8px;
+		float: left;
+		padding-left: 115px;
+		
+		img {
+			float: left;
+			width: 100px;
+			margin-left: -110px;
+		}
+		
+		p.text {
+			color: #999;
+			font-size: 12px;
+			line-height: 16px;
+		}
+	}
+	
+	.post-meta {
+		font-size: 12px;
+		float: left;
+		width: 100%;
+		margin-top: 5px;
+		
+		a, p { float: left; }
+		
+		h5 {
+			float: right;
+			padding: 4px;
+			margin: -5px 5px 0 0;
+			
+			a { 
+				color: rgba(0,0,0,0.5); 
+				&:hover { color: rgba(0,0,0,1) }
+			}
+		}
+	}
+	
+	input[name='comment'] {
+		float: left;
+		width: 100%;
+		margin-top: 5px;
+	}
+}
+*/
+.calendar {
+  margin: 10px 0 0 -10px;
+  border-left: solid 1px #CCC;
+}
+.calendar table.main-cal {
+  float: left;
+  width: 100%;
+  margin-left: -1px;
+}
+.calendar tr.cal td {
+  height: 70px;
+  width: 100px;
+  padding: 5px;
+  border: solid 1px #CCC;
+  -webkit-transition: background-color 0.1s linear;
+  -moz-transition: background-color 0.1s linear;
+  transition: background-color 0.1s linear;
+}
+.calendar tr.cal td:hover {
+  background: #F3F3F3;
+}
+.calendar tr.cal td div.content {
+  font-size: 12px;
+  white-space: nowrap;
+  max-width: 100px;
+  overflow: hidden;
+}
+.calendar tr.week td {
+  text-align: center;
+  color: #000;
+}
+.calendar tr.head th {
+  font-size: 12px;
+  text-align: left;
+  padding-left: 10px;
+}
+.calendar a.arrow {
+  color: #679;
+  font-size: 12px;
+}
+.calendar a.arrow:hover {
+  color: #346;
+}
+.calendar .new-event {
+  display: none;
+  float: left;
+  width: 97%;
+  padding: 10px;
+  border-right: solid 1px #CCC;
+  border-bottom: solid 1px #CCC;
+  margin-bottom: 5px;
+}
+.calendar .new-event span {
+  float: left;
+  margin: 5px 5px 11px 5px;
+}
+.calendar .new-event input {
+  float: left;
+}
+.calendar .new-event input[type="text"] {
+  width: 70px;
+  margin: 0 5px 5px 5px;
+}
+.calendar .new-event #name {
+  height: 24px;
+  padding: 3px;
+  margin: 2px 10px 5px 0;
+  width: 70%;
+}
+.calendar .new-event input[type="checkbox"] {
+  width: auto;
+  margin: 8px;
+}
+.calendar .new-event select {
+  width: 160px;
+  float: left;
+  margin: 3px 0 0 10px;
+}
+.calendar .new-event .chzn-container {
+  float: left;
+  margin-left: 10px;
+}
+.calendar .new-event .chzn-container span {
+  margin-top: 0;
+}
+.calendar .new-event ul.chzn-results {
+  float: left;
+  width: 87%;
+}
+.calendar .new-event input[name="day_offset"], .calendar .new-event input[name="hour_offset"] {
+  width: 20px;
+}
+.calendar .new-event label {
+  float: left;
+  margin: 5px 0;
+}
+.calendar .new-event input#convo {
+  margin-right: 200px;
+}
+.calendar .new-event #details {
+  float: left;
+  width: 480px;
+  margin-right: 20px;
+}
+.calendar .new-event #files {
+  float: left;
+}
+.calendar .new-event #files a {
+  color: #619ecf;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+  text-decoration: underline;
+}
+.calendar .new-event #files a:hover {
+  color: #000;
+}
+.calendar .upcoming {
+  float: left;
+  width: 80%;
+  padding: 10px;
+}
+.calendar .upcoming h4 {
+  font-weight: normal;
+  margin-bottom: 0.5em;
+}
+.calendar .upcoming table {
+  width: 75%;
+}
+.calendar .upcoming table tr td {
+  height: 1.5em;
+  padding: 5px;
+}
+.calendar .upcoming table tr td a:hover {
+  color: #000;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.calendar .upcoming table a {
+  color: #619ecf;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.calendar .upcoming table a:hover {
+  color: #000;
+}
+.registration {
+  float: right;
+  border-left: solid 1px #CCC;
+  padding: 10px 0 0 10px;
+}
+.registration h4 {
+  margin: 8px 0 12px 0;
+}
+.registration hr {
+  margin-left: -10px;
+}
+.registration label {
+  float: left;
+  font-weight: normal;
+  font-size: 14px;
+  margin: 0;
+}
+.registration input[type="text"],
+.registration input[type="password"],
+.registration input[type="email"],
+.registration select,
+.registration #photo {
+  float: left;
+  width: 260px;
+  margin: 0 80px 15px 0;
+}
+.registration #photo a {
+  text-decoration: underline;
+}
+.registration select {
+  height: 25px;
+  width: 270px;
+}
+.registration .chzn-container {
+  margin-bottom: 15px;
+}
+.registration input[type="submit"] {
+  float: right;
+  margin-right: 90px;
+}
