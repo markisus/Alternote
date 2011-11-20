@@ -1,0 +1,12 @@
+{% extends 'main.template' %}
+{% block content %}
+<form method="post">
+	[[ with_errors(form.school) ]]
+	[[ with_errors(form.first_name) ]]
+	[[ with_errors(form.last_name) ]]
+	[[ with_errors(form.email) ]]
+	[[ with_errors(form.password) ]]
+	[[ with_errors(form.password1) ]]
+	[[ with_errors(form.submit) ]]
+</form>
+{% endblock content %}

@@ -1,0 +1,25 @@
+{% extends 'main.template' %}
+{% block content %}
+<form method="post">
+	[[ with_errors(form.name) ]]
+	[[ with_errors(form.section) ]]
+	[[ with_errors(form.code) ]]
+	[[ with_errors(form.alternate_codes) ]]
+	[[ with_errors(form.start_date) ]]
+	[[ with_errors(form.finish_date) ]]
+	[[ with_errors(form.auto_convo) ]]
+	[[ with_errors(form.m) ]]
+	[[ with_errors(form.m_end) ]]
+	[[ with_errors(form.t) ]]
+	[[ with_errors(form.t_end) ]]
+	[[ with_errors(form.w) ]]
+	[[ with_errors(form.w_end) ]]
+	[[ with_errors(form.r) ]]
+	[[ with_errors(form.r_end) ]]
+	[[ with_errors(form.s) ]]
+	[[ with_errors(form.s_end) ]]
+	[[ with_errors(form.u) ]]
+	[[ with_errors(form.u_end) ]]
+	[[ with_errors(form.submit) ]]
+</form>
+{% endblock content %}
