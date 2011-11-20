@@ -13,9 +13,15 @@
 
 <html>
 	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="content-language" content="en" />
 		<title>
 			{%block title%}{%endblock%}
 		</title>
+		{% block scripts %}
+		{% endblock %}
+		{% block css %}
+		{% endblock %}
 	</head>
 
 	<body>

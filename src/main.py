@@ -1,43 +1,15 @@
-import os.path
+from forms import *
+from forms.forms import RegistrationCodeForm, ProfRegistrationForm
+from handlers import admin, registration, classes, misc, auth, calendar
+from jinja2 import Environment, PackageLoader
+from tornado.web import URLSpec
 import cgi
+import json
+import os.path
 import tornado.ioloop
 import tornado.web
-from jinja2 import Environment, PackageLoader
-from db.utils import *
-import json
-from forms import *
-from conversation_api import *
+import handlers.env
 
-#Global Vars
-env = Environment(variable_start_string='[[', variable_end_string=']]', loader=PackageLoader('res', 'templates'))
-prof_code = "alternote_rocks"
-
-#The 'index' page: handles registration code redirects
-class LandingPage(tornado.web.RequestHandler):
-    template = env.get_template('landing_page.template')
-    def get(self):
-        #Display the landing page
-        self.write(self.template.render(form=RegistrationCodeForm()))
-        
-    def post(self):
-        #Handle the registration code
-        code = self.get_argument("code")
-        if (code == prof_code):
-            self.set_secure_cookie("code", code, expires_days=1)
-            self.redirect(self.reverse_url('ProfessorRegistration'))
-        else:
-            pass #Try student signup
-            
-#Handles professor registration
-class ProfessorRegistration(tornado.web.RequestHandler):
-    template = env.get_template('professor_registration.template')
-    def get(self):
-        #Check registration code:
-        code = self.get_secure_cookie("code")
-        if code == prof_code:
-            #Get a list of schools:
-            self.write(self.template.render(form=ProfRegistrationForm()))
-        
 #class ViewPostsHandler(BaseHandler):
 #    template = env.get_template('view_posts.template')
 #    
@@ -116,8 +88,24 @@ class ProfessorRegistration(tornado.web.RequestHandler):
 #        self.redirect('/login/')
         
 application = tornado.web.Application([
-    (r"/", LandingPage),
-    tornado.web.URLSpec(r"/registration/professor/?", ProfessorRegistration, name="ProfessorRegistration"),
+    URLSpec(r"/", misc.LandingPage, name="LandingPage"),
+    URLSpec(r"/registration/professor/?", registration.ProfessorRegistration, name="ProfessorRegistration"),
+    
+    #Auth
+    URLSpec(r"/auth/login/?", auth.LoginHandler, name="LoginHandler"),
+    
+    #Admin Methods
+    URLSpec(r"/admin/school/create/?", admin.CreateSchool, name="CreateSchool"),
+    
+    #Calendar
+    URLSpec(r"/calendar/view/([\w|\-|%]+)/?", calendar.ViewCalendar, name="ViewCalendar"),
+    
+    #Classes
+    URLSpec(r"/classes/create/?", classes.CreateClass, name="CreateClass"),
+    URLSpec(r"/classes/view/?", classes.ViewClasses, name="ViewClasses"),
+    URLSpec(r"/classes/codes/([\w|\-|%]+)/?", classes.ViewCodes, name="ViewCodes"),
+    
+    #Calendar
 #    (r"/", LoginHandler),
 #    (r'/me/?', UserHandler),
 #    (r'/users/(.*)/?', UserHandler),
@@ -143,24 +131,30 @@ application = tornado.web.Application([
         #/unvote/comment/(commentid)
         #/flag/comment/(commentid)
         #/unflag/comment/(commentid)
-    (r'/poll/(\w+)/(-1|\d+)/(\w+)/?', PollHandler),
-    (r'/poll/(\w+)/(-1|\d+)/?', Randomizer), #
-    (r'/get/(\w+)/?', PostGetter),
-    (r'/comment/(\w+)/(.+)/?', Comment),
-    (r'/post/(\w+)/(.+)/?', Post),
-    (r'/anon_comment/(\w+)/(.+)/?', Comment, {'anon':True}),
-    (r'/anon_post/(\w+)/(.+)/?', Post, {'anon':True}),
-    (r'/vote/(\w+)/?', VoteObject),
-    (r'/unvote/(\w+)/?', UnvoteObject),
-    (r'/flag/(\w+)/', FlagObject),
-    (r'/unflag/(\w+)/?', UnflagObject),
+#    (r'/poll/(\w+)/(-1|\d+)/(\w+)/?', PollHandler),
+#    (r'/poll/(\w+)/(-1|\d+)/?', Randomizer), #
+#    (r'/get/(\w+)/?', PostGetter),
+#    (r'/comment/(\w+)/(.+)/?', Comment),
+#    (r'/post/(\w+)/(.+)/?', Post),
+#    (r'/anon_comment/(\w+)/(.+)/?', Comment, {'anon':True}),
+#    (r'/anon_post/(\w+)/(.+)/?', Post, {'anon':True}),
+#    (r'/vote/(\w+)/?', VoteObject),
+#    (r'/unvote/(\w+)/?', UnvoteObject),
+#    (r'/flag/(\w+)/', FlagObject),
+#    (r'/unflag/(\w+)/?', UnflagObject),
 ], 
                                       
     cookie_secret="CHANGE THIS EVENTUALLY",
-    login_url= "/login/",
+    login_url= "/auth/login/",
     static_path= os.path.join(os.path.dirname(__file__), "res", "static")
 )
 
+#Add methods to the template environment
+globals = handlers.env.env.globals
+globals['reverse_url'] = application.reverse_url
+globals['css'] = lambda path: ("/static/css/" + path).replace("//", "/")
+globals['script'] = lambda path: ("/static/scripts/" + path).replace("//", "/")
+globals['image'] = lambda path: ("/static/images/" + path).replace("//", "/")
 
 if __name__ == "__main__":
     application.listen(8888)

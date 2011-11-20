@@ -1,11 +1,54 @@
 {% extends 'base.template' %}
 
-{% block title %}Alternote{% endblock %}
+{% block title %}Alternote Alpha{% endblock %}
+
+{% block css %} 
+	<link rel="stylesheet" type="text/css" href="[[ css('base.css') ]]" />
+	<link rel="stylesheet" type="text/css" href="[[ css('layout.css') ]]" />
+	<link rel="stylesheet" type="text/css" href="[[ css('skeleton.css') ]]" />
+	<link rel="stylesheet" type="text/css" href="[[ css('style.css') ]]" />
+	<link rel="stylesheet" type="text/css" href="[[ css('chosen.css') ]]" />
+	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" />
+	<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+{% endblock %}
+
+{% block scripts %} 
+	<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="[[ script('ajax_dialog.js') ]]"></script>
+	<script type="text/javascript" src="[[ script('tabs.js') ]]"></script>
+	<script type="text/javascript" src="[[ script('global.js') ]]"></script>
+	<script type="text/javascript" src="[[ script('chosen.jquery.min.js') ]]"></script>
+{% endblock %}
 
 {% block body %}
-	Main Template: Header HTML
+	<div id="head-wrapper" class="container">
+		<header class="sixteen columns">
+			<a href="/">
+				<img src="/mark/style/media/logo-bubbles.png" />
+			</a>
+			<ul id="nav">
+				<!-- li><a href="#" onclick="$('#login_box').dialog()">Login</a></li -->
+				<li><a href="/mark/user/login" onclick="return Alternote.ajax_dialog('/mark/user/login', 'Login')">Login</a></li>
+				<!-- ><li><a href="#" title="Help">Help</a></li> -->
+			</ul>
+		</header>
+	</div> <!-- End head-wrapper -->
+
 	{% block content %}
-		Main Template: Content Override
-	{% endblock %}
-	Main Template: Footer HTML
+ <!-- Container end -->
+{% endblock %}
+<ul id="footer-links">
+	<li>&copy; 2011 Alternote</li>
+	<li><a href="/mark/pages/about">About us</a></li>
+	<li><a href="/mark/pages/privacy">Privacy policy</a></li>
+	<li><a href="/mark/pages/terms">Terms of service</a></li>
+	<li><a href="/mark/pages/contact">Contact</a></li>
+</ul>
 {% endblock %}

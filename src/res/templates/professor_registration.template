@@ -1,4 +1,0 @@
-(% extends 'main.template' %}
-{% block content %}
-Hello Prof!
-{% endblock content %}

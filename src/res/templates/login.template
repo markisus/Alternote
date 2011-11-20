@@ -1,7 +1,0 @@
-{% extends 'form.template' %}
-{% block content %}
-<h1>Log In</h1>
-<form method="post">
-	[[ with_errors(form.code) ]]
-</form>
-{% endblock content %}
