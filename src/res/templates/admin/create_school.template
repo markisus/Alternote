@@ -1,10 +1,11 @@
 {% extends 'main.template' %}
 
 {% block content %}
+	<br/>
 	<h4>Create School</h4>
 	<form method="post">
 		[[ with_errors(form.school_name) ]]
 		[[ with_errors(form.tags) ]]
-		[[ with_errors(form.submit) ]]
+		[[ form.submit() ]]
 	</form>
 {% endblock content %}

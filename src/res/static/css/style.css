@@ -313,7 +313,7 @@ header ul#nav li {
 header ul#nav li a {
   color: #333;
   text-shadow: 0px 1px 1px #FFF;
-  padding: 10px;
+  padding: 9px;
   background-color: transparent;
   border: solid 1px transparent;
   border-bottom: none;
@@ -627,74 +627,6 @@ input.new-comment {
   width: 88%;
   margin: -45px 0 0 60px;
 }
-/*
-.post {
-	float: left;
-	margin-bottom: 10px;
-	padding-left: 55px;
-	width: 80%;
-	
-	p { line-height: 1.5em; }
-	
-	.poster-img {
-		float: left;
-		width: 40px;
-		margin: 0 5px 5px -50px;
-	}
-	
-	.original-post, .comments, .comment { float: left; }
-	.comments, .comment { margin-top: 5px; }
-	.comment { 
-		padding: 5px 5px 5px 55px;
-		
-		.post-meta h5 { margin-right: 0px; }
-	}
-	
-	.expanded-link {
-		margin-top: 8px;
-		float: left;
-		padding-left: 115px;
-		
-		img {
-			float: left;
-			width: 100px;
-			margin-left: -110px;
-		}
-		
-		p.text {
-			color: #999;
-			font-size: 12px;
-			line-height: 16px;
-		}
-	}
-	
-	.post-meta {
-		font-size: 12px;
-		float: left;
-		width: 100%;
-		margin-top: 5px;
-		
-		a, p { float: left; }
-		
-		h5 {
-			float: right;
-			padding: 4px;
-			margin: -5px 5px 0 0;
-			
-			a { 
-				color: rgba(0,0,0,0.5); 
-				&:hover { color: rgba(0,0,0,1) }
-			}
-		}
-	}
-	
-	input[name='comment'] {
-		float: left;
-		width: 100%;
-		margin-top: 5px;
-	}
-}
-*/
 .calendar {
   margin: 10px 0 0 -10px;
   border-left: solid 1px #CCC;
@@ -854,21 +786,6 @@ input.new-comment {
 .registration hr {
   margin-left: -10px;
 }
-.registration label {
-  float: left;
-  font-weight: normal;
-  font-size: 14px;
-  margin: 0;
-}
-.registration input[type="text"],
-.registration input[type="password"],
-.registration input[type="email"],
-.registration select,
-.registration #photo {
-  float: left;
-  width: 260px;
-  margin: 0 80px 15px 0;
-}
 .registration #photo a {
   text-decoration: underline;
 }
@@ -881,5 +798,43 @@ input.new-comment {
 }
 .registration input[type="submit"] {
   float: right;
-  margin-right: 90px;
+  margin: 10px 120px 0 0;
+}
+.registration input[type="text"],
+.registration input[type="password"],
+.registration input[type="email"],
+.registration select,
+.registration #photo {
+  float: left;
+  width: 260px;
+  margin: 8px 0;
+}
+.registration label {
+  float: left;
+  font-weight: normal;
+  font-size: 14px;
+  margin: 0;
+  width: 320px;
+  padding: 12px 0;
+}
+.registration form {
+  float: left;
+}
+.registration form .form_field {
+  float: left;
+}
+.registration form ul.errors {
+  float: right;
+  margin: 0 0 0 10px;
+  padding: 5px;
+  width: 100px;
+  min-height: 55px;
+  background: #FEE;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.registration form ul.errors li {
+  margin: 0;
+  color: #833;
+  font-style: italic;
 }

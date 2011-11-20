@@ -1,25 +1,38 @@
 {% extends 'main.template' %}
+
+{% block nav %}
+	<li><a href="auth/login">Login</a></li>
+{% endblock %}
+
 {% block content %}
-<form method="post">
-	[[ with_errors(form.name) ]]
-	[[ with_errors(form.section) ]]
-	[[ with_errors(form.code) ]]
-	[[ with_errors(form.alternate_codes) ]]
-	[[ with_errors(form.start_date) ]]
-	[[ with_errors(form.finish_date) ]]
-	[[ with_errors(form.auto_convo) ]]
-	[[ with_errors(form.m) ]]
-	[[ with_errors(form.m_end) ]]
-	[[ with_errors(form.t) ]]
-	[[ with_errors(form.t_end) ]]
-	[[ with_errors(form.w) ]]
-	[[ with_errors(form.w_end) ]]
-	[[ with_errors(form.r) ]]
-	[[ with_errors(form.r_end) ]]
-	[[ with_errors(form.s) ]]
-	[[ with_errors(form.s_end) ]]
-	[[ with_errors(form.u) ]]
-	[[ with_errors(form.u_end) ]]
-	[[ with_errors(form.submit) ]]
-</form>
+	<div class="twelve columns content registration">
+		<h4>Let's get you and your class set up. This won't take long at all.</h4>
+		<hr/>
+		<p>Now we need to know a little bit about the class your students are learning in.</p> <br/>
+		
+		<form method="post">
+			[[ with_errors(form.name) ]]
+			[[ with_errors(form.section) ]]
+			[[ with_errors(form.code) ]]
+			[[ with_errors(form.alternate_codes) ]]
+			[[ with_errors(form.start_date) ]]
+			[[ with_errors(form.finish_date) ]]
+			[[ with_errors(form.auto_convo) ]]
+			[[ with_errors(form.m) ]]
+			[[ with_errors(form.m_end) ]]
+			[[ with_errors(form.t) ]]
+			[[ with_errors(form.t_end) ]]
+			[[ with_errors(form.w) ]]
+			[[ with_errors(form.w_end) ]]
+			[[ with_errors(form.r) ]]
+			[[ with_errors(form.r_end) ]]
+			[[ with_errors(form.f) ]]
+			[[ with_errors(form.f_end) ]]
+			[[ with_errors(form.s) ]]
+			[[ with_errors(form.s_end) ]]
+			[[ with_errors(form.u) ]]
+			[[ with_errors(form.u_end) ]]
+			[[ form.submit() ]]
+		</form>
+	</div>
 {% endblock content %}

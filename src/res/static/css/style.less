@@ -111,7 +111,7 @@ header {
 			a {
 				color: #333;
 				text-shadow: 0px 1px 1px #FFF;
-				padding: 10px;
+				padding: 9px;
 				background-color: transparent;
 				border: solid 1px transparent;
 				border-bottom: none;
@@ -405,75 +405,6 @@ input.new-comment {
 	margin: -45px 0 0 60px;
 }
 
-/*
-.post {
-	float: left;
-	margin-bottom: 10px;
-	padding-left: 55px;
-	width: 80%;
-	
-	p { line-height: 1.5em; }
-	
-	.poster-img {
-		float: left;
-		width: 40px;
-		margin: 0 5px 5px -50px;
-	}
-	
-	.original-post, .comments, .comment { float: left; }
-	.comments, .comment { margin-top: 5px; }
-	.comment { 
-		padding: 5px 5px 5px 55px;
-		
-		.post-meta h5 { margin-right: 0px; }
-	}
-	
-	.expanded-link {
-		margin-top: 8px;
-		float: left;
-		padding-left: 115px;
-		
-		img {
-			float: left;
-			width: 100px;
-			margin-left: -110px;
-		}
-		
-		p.text {
-			color: #999;
-			font-size: 12px;
-			line-height: 16px;
-		}
-	}
-	
-	.post-meta {
-		font-size: 12px;
-		float: left;
-		width: 100%;
-		margin-top: 5px;
-		
-		a, p { float: left; }
-		
-		h5 {
-			float: right;
-			padding: 4px;
-			margin: -5px 5px 0 0;
-			
-			a { 
-				color: rgba(0,0,0,0.5); 
-				&:hover { color: rgba(0,0,0,1) }
-			}
-		}
-	}
-	
-	input[name='comment'] {
-		float: left;
-		width: 100%;
-		margin-top: 5px;
-	}
-}
-*/
-
 .calendar {
 	margin: 10px 0 0 -10px;
 	border-left: solid 1px #CCC;
@@ -645,22 +576,6 @@ input.new-comment {
 	
 	hr { margin-left: -10px; }
 	
-	label {
-		float: left;
-		font-weight: normal;
-		font-size: 14px;
-		margin: 0;
-	}
-		
-	input[type="text"],
-	input[type="password"],
-	input[type="email"], 
-	select, #photo {
-		float: left;
-		width: 260px;
-		margin: 0 80px 15px 0;
-	}
-	
 	#photo {
 		a { text-decoration: underline; }
 	}
@@ -671,6 +586,46 @@ input.new-comment {
 	
 	input[type="submit"] {
 		float: right;
-		margin-right: 90px;
+		margin: 10px 120px 0 0;
+	}
+
+	input[type="text"],
+	input[type="password"],
+	input[type="email"], 
+	select, #photo {
+		float: left;
+		width: 260px;
+		margin: 8px 0;
+	}
+	
+	label {
+		float: left;
+		font-weight: normal;
+		font-size: 14px;
+		margin: 0;
+		width: 320px;
+		padding: 12px 0;
+	}
+	
+	form {
+		float: left;
+		
+		.form_field { float: left; }
+		
+		ul.errors {
+			float: right;
+			margin: 0 0 0 10px;
+			padding: 5px;
+			width: 100px;
+			min-height: 55px;
+			background: #FEE;
+			.border-radius(3px);
+			
+			li { 
+				margin: 0; 
+				color: #833;
+				font-style: italic;
+			}
+		}
 	}
 }

@@ -26,7 +26,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		
 		<link rel="shortcut icon" href="[[ image('favicon.png') ]]">
-		<link rel="apple-touch-icon" href="[[ image('apple-icon.png') ]]">
+		<link rel="apple-touch-icon" href="[[ image('touch-icon.png') ]]">
 		
 		{% block scripts %}
 		{% endblock %}

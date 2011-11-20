@@ -1,6 +1,11 @@
 {% extends 'main.template' %}
 
+{% block nav %}
+	<li><a href="auth/login">Login</a></li>
+{% endblock %}
+
 {% block content %}
+	<br/>
 	<h4>Log In</h4>
 	<form method="post">
 		[[ with_errors(form.email) ]]

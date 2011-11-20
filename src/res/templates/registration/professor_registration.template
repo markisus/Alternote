@@ -1,12 +1,30 @@
 {% extends 'main.template' %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".chzn-select").chosen();
+	});
+</script>
+
+{% block nav %}
+	<li><a href="auth/login">Login</a></li>
+{% endblock %}
+
 {% block content %}
-<form method="post">
-	[[ with_errors(form.school) ]]
-	[[ with_errors(form.first_name) ]]
-	[[ with_errors(form.last_name) ]]
-	[[ with_errors(form.email) ]]
-	[[ with_errors(form.password) ]]
-	[[ with_errors(form.password1) ]]
-	[[ with_errors(form.submit) ]]
-</form>
+	<div class="twelve columns content registration">
+		<h4>Let's get you and your class set up. This won't take long at all.</h4>
+		<hr/>
+		<p>We'd love to know a little more about you.</p> <br/>
+		
+		<form method="post">
+			[[ form.school(class_="chzn-select") ]]
+			[[ with_errors(form.first_name) ]]
+			[[ with_errors(form.last_name) ]]
+			[[ with_errors(form.email) ]]
+			[[ with_errors(form.password) ]]
+			[[ with_errors(form.password1) ]]
+			[[ form.submit() ]]
+		</form>
+	</div>
+	
 {% endblock content %}

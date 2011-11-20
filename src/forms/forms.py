@@ -53,7 +53,7 @@ class CreateClassForm(Form):
     f_end = TextField("Friday End", [time_validate])
     s = TextField("Saturday", [time_validate])
     s_end = TextField("Saturday End", [time_validate])
-    u = TextField("Sunday End", [time_validate])
+    u = TextField("Sunday", [time_validate])
     u_end = TextField("Sunday End", [time_validate])
     auto_convo = BooleanField("Create a conversation around every class")
     day_offset = IntegerField("Day offset", [validators.NumberRange(min=0, max=100)])
