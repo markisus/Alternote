@@ -367,7 +367,7 @@ ul#footer-links li a:hover {
   margin-bottom: 10px;
 }
 #index #join input[type="text"] {
-  color: #333;
+  color: #666;
   padding: 8px 4px;
   width: 268px;
   border-radius: 2px;
@@ -375,8 +375,8 @@ ul#footer-links li a:hover {
   border-bottom: dashed 1px #AAA;
   background: transparent;
   float: left;
-  margin-right: 10px;
-  margin-left: 120px;
+  margin: 0 10px 0 120px;
+  font-size: 14px;
 }
 #index #join input[type="text"]:focus {
   -webkit-box-shadow: none;

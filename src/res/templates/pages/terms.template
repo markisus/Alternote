@@ -1,0 +1,10 @@
+{% extends 'pages.template' %}
+
+{% block information %}
+
+	<h4>Terms of Service</h4>
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In lacinia elit et lacus fermentum euismod. Praesent bibendum nisi in augue aliquam ullamcorper. Nam lorem nibh, pretium in aliquam volutpat, placerat eget nisl. Nulla nec massa nulla. Curabitur et ligula sed quam hendrerit scelerisque nec sit amet est. Pellentesque non justo urna. Nam consequat nisi quis purus molestie ultrices. Vivamus vulputate tortor quis libero auctor vel ultricies ipsum posuere. Proin pretium euismod lobortis. Fusce ut nibh turpis, sit amet dapibus magna. <br/>
+	Nullam condimentum, lectus at iaculis iaculis, diam arcu adipiscing odio, ac auctor purus lacus nec augue. Sed vitae magna in justo tincidunt ultricies. Nam convallis tincidunt sapien, eu euismod urna gravida eu. Mauris ultricies condimentum scelerisque. Sed eget sapien sit amet justo condimentum interdum. Cras quis quam vel mauris accumsan vehicula. Vivamus vulputate tincidunt ornare. <br/>
+	Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse fringilla rhoncus metus, sed malesuada tellus pharetra eget. Phasellus molestie, dui ac vulputate elementum, sem libero cursus dui, eget posuere felis lorem hendrerit est. Praesent ac quam at urna tristique vehicula eu eget felis. Donec felis orci, euismod non accumsan at, malesuada at tortor. Nam ullamcorper, dolor sed aliquet malesuada, massa augue scelerisque sapien, id eleifend mauris augue eu purus. Donec nec quam sed nisl fermentum placerat eget at felis.</p>
+	
+{% endblock %}

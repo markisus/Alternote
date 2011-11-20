@@ -104,6 +104,12 @@ application = tornado.web.Application([
     URLSpec(r"/classes/create/?", classes.CreateClass, name="CreateClass"),
     URLSpec(r"/classes/view/?", classes.ViewClasses, name="ViewClasses"),
     URLSpec(r"/classes/codes/([\w|\-|%]+)/?", classes.ViewCodes, name="ViewCodes"),
+
+	#Pages
+	URLSpec(r"/pages/about", misc.About, name="About"),
+	URLSpec(r"/pages/privacy", misc.Privacy, name="Privacy"),
+	URLSpec(r"/pages/terms", misc.Terms, name="Terms"),
+	URLSpec(r"/pages/contact", misc.Contact, name="Contact"),
     
     #Calendar
 #    (r"/", LoginHandler),

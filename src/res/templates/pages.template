@@ -1,0 +1,20 @@
+{% extends 'main.template' %}
+
+{% block content %}
+
+	<div class="sixteen columns content" class="pages">
+	    <div class="four columns content sidebar">
+	        <ul>
+				<li><a href="./pages/about">About us</a></li>
+				<li><a href="./pages/privacy">Privacy policy</a></li>
+				<li><a href="./pages/terms">Terms of service</a></li>
+				<li><a href="./pages/contact">Contact</a></li>
+			</ul>
+		</div>
+		<div class="twelve columns content">
+			{% block information %}
+			{% endblock %}
+		</div>
+	</div> <!-- 16 columns content end -->
+
+{% endblock content %}

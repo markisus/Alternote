@@ -8,11 +8,11 @@ class LoginForm(Form):
     submit = SubmitField("Log In")
     
 class RegistrationCodeForm(Form):
-    code = TextField('Code')
+    code = TextField('Enter code...')
     submit = SubmitField("Register")
     
 class ProfRegistrationForm(Form):
-    school = SelectField('Choose a school:')
+    school = SelectField('Choose a school')
     first_name = TextField('What is your first name?', [validators.Length(min=1)])
     last_name = TextField('And last name?', [validators.Length(min=1)])
     email = TextField("What's your (.edu) email address?", [validators.Email()])
@@ -21,7 +21,7 @@ class ProfRegistrationForm(Form):
     submit = SubmitField("Register")
     
 class CreateSchoolForm(Form):
-    school_name = TextField('School Name:', [validators.Length(min=1)])
+    school_name = TextField('School Name', [validators.Length(min=1)])
     tags = TextField('Tags (space separated)')
     submit = SubmitField("Create School")
 

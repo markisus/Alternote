@@ -1,23 +1,21 @@
 {% extends 'main.template' %}
 
+{% block nav %}
+	<li><a href="user/login">Login</a></li>
+{% endblock %}
+
 {% block content %}
-	<div id="main">
-    <div class="container">
+
 	<div class="sixteen columns content" id="index">
 		<img id="main-logo" src="[[ image('logo-large.png') ]]" />
 	    <div class="ten columns content" id="join">
 	        <h4>Join the conversation!</h4>
 	        <p>Alternote lean startup ipsum product market fit customer development acquihire technical cofounder. User engagement A/B testing shrink a market venture capital pitch deck. Social bookmarking group buying crowded market pivot onboarding freemium prototype ping pong. Early stage disruptive ecosystem community outreach dynamic location based strategic investor. <br/> <br/> <br/>
-</div> 
-				<h2>Join the conversation</h2>
-	    </div>
+			<form method="post">
+				[[ form.code( value="Enter code...", onfocus="clickclear(this, 'Enter code...')", onblur="clickrecall(this, 'Enter code...')" ) ]]
+				[[ form.submit() ]]
+			</form>
+		</div>
 	</div> <!-- 16 columns content end -->
 
-</div>
-
-</div>
-<form method="post">
-	[[ with_errors(form.code) ]]
-	[[ with_errors(form.submit) ]]
-</form>
 {% endblock content %}

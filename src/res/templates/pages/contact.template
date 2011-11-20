@@ -1,0 +1,8 @@
+{% extends 'pages.template' %}
+
+{% block information %}
+
+	<h4>Contact Us</h4>
+	<p>Form</p>
+	
+{% endblock %}
