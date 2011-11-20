@@ -1,0 +1,37 @@
+This is the calendar!
+{% extends 'base.template' %}
+
+{% block css %}
+<link rel='stylesheet' type='text/css' href='[[ css('fullcalendar.css') ]]' />
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<script type='text/javascript' src='[[ script('fullcalendar.min.js') ]]'></script>
+<script type='text/javascript'>
+
+	$(document).ready(function() {
+	
+		var date = new Date();
+		var d = date.getDate();
+		var m = date.getMonth();
+		var y = date.getFullYear();
+		
+		$('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,basicWeek,basicDay'
+			},
+			editable: false,
+			events: "[[ reverse_url('CalendarFeed', class_id) ]]"
+		});
+		
+	});
+</script>
+{% endblock %}
+
+{% block body %}
+<div id='calendar'></div>
+{% endblock %}

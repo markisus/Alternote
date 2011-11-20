@@ -89,21 +89,23 @@ import handlers.env
         
 application = tornado.web.Application([
     URLSpec(r"/", misc.LandingPage, name="LandingPage"),
-    URLSpec(r"/registration/professor/?", registration.ProfessorRegistration, name="ProfessorRegistration"),
+    URLSpec(r"/registration/professor", registration.ProfessorRegistration, name="ProfessorRegistration"),
     
     #Auth
-    URLSpec(r"/auth/login/?", auth.LoginHandler, name="LoginHandler"),
+    URLSpec(r"/auth/login", auth.LoginHandler, name="LoginHandler"),
     
     #Admin Methods
-    URLSpec(r"/admin/school/create/?", admin.CreateSchool, name="CreateSchool"),
+    URLSpec(r"/admin/school/create", admin.CreateSchool, name="CreateSchool"),
     
     #Calendar
-    URLSpec(r"/calendar/view/([\w|\-|%]+)/?", calendar.ViewCalendar, name="ViewCalendar"),
+    URLSpec(r"/calendar/view/([\w|\-|%]+)", calendar.ViewCalendar, name="ViewCalendar"),
+    URLSpec(r"/calendar/feed/([\w|\-|%]+)", calendar.CalendarFeed, name="CalendarFeed"),
+    URLSpec(r"/calendar/details/(\w+)", calendar.CalendarDetails, name="CalendarDetails"),
     
     #Classes
-    URLSpec(r"/classes/create/?", classes.CreateClass, name="CreateClass"),
-    URLSpec(r"/classes/view/?", classes.ViewClasses, name="ViewClasses"),
-    URLSpec(r"/classes/codes/([\w|\-|%]+)/?", classes.ViewCodes, name="ViewCodes"),
+    URLSpec(r"/classes/create", classes.CreateClass, name="CreateClass"),
+    URLSpec(r"/classes/view", classes.ViewClasses, name="ViewClasses"),
+    URLSpec(r"/classes/codes/([\w|\-|%]+)", classes.ViewCodes, name="ViewCodes"),
     
     #Calendar
 #    (r"/", LoginHandler),
