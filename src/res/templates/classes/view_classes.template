@@ -1,7 +1,10 @@
 {% extends 'main.template' %}
+
 {% block content %}
-{% for class in classes %}
-	<br/><a href="[[ reverse_url('ViewCalendar', class._id) ]]">[[ class.name ]]</a>
-{% endfor %}
-<br/>
+	<br/>
+	<h4>Select a Course</h4> <hr/> <br/>
+	{% for class in classes %}
+		<a href="[[ reverse_url('ViewCalendar', class._id) ]]">[[ class.name ]]</a> <br/>
+	{% endfor %}
+	<br/>
 {% endblock content %}

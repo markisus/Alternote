@@ -12,14 +12,26 @@ class RegistrationCodeForm(Form):
     submit = SubmitField("Register")
     
 class ProfRegistrationForm(Form):
-    school = SelectField('Choose a school')
+    school = SelectField('Where do you teach?')
+    instructor_type = SelectField('Are you a professor or TA?')
     first_name = TextField('What is your first name?', [validators.Length(min=1)])
     last_name = TextField('And last name?', [validators.Length(min=1)])
-    email = TextField("What's your (.edu) email address?", [validators.Email()])
+    email = TextField("Where do your students email you?", [validators.Email()])
     password = PasswordField("Create a password", [validators.Length(min=4)])
     password1 = PasswordField("Repeat password", [validators.EqualTo('password', message="Passwords must match")])
+    image = FileField("It'd be nice (for us and the students) to see your face around here. Mind uploading a photo?")
     submit = SubmitField("Register")
     
+    def validate_image(form, field):
+        if field.data:
+            field.data = re.sub(r'[^a-z0-9_.-]', '_', field.data)
+
+def upload(request):
+    form = ProfRegistrationForm(request.POST)
+    if form.image.data:
+        image_data = request.FILES[form.image.name].read()
+        open(os.path.join(UPLOAD_PATH, form.image.data), 'w').write(image_data)
+
 class CreateSchoolForm(Form):
     school_name = TextField('School Name', [validators.Length(min=1)])
     tags = TextField('Tags (space separated)')
@@ -29,7 +41,7 @@ def time_validate(form, field):
     data = field.data.strip()
     match = re.match("^(?:0[1-9])|(?:[1-2]:[0-4]):[0-5][0-9]$", data)
     if not match:
-        raise ValidationError("Time must be formatted like HH:MM military time")
+        raise ValidationError("Time must be formatted as HH:MM 24-hour time")
 def date_validate(form, field):
     data = field.data.strip()
     match = re.match("")

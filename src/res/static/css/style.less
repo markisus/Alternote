@@ -39,7 +39,7 @@ a {
 	.transition(color 0.1s linear);
 	
 	&:hover {
-		color: #000;
+		color: #444;
 	}
 }
 
@@ -86,6 +86,12 @@ select {
 	transition-timing-function: linear, linear;
 }
 
+.chzn-search input {
+	/* Allows chzn results to display properly */
+	float: none !important;
+	width: 100% !important;
+}
+
 #head-wrapper {
 	background: #EEE;
 	border-bottom: solid 1px #DDD;
@@ -111,7 +117,7 @@ header {
 			a {
 				color: #333;
 				text-shadow: 0px 1px 1px #FFF;
-				padding: 9px;
+				padding: 9spx;
 				background-color: transparent;
 				border: solid 1px transparent;
 				border-bottom: none;
@@ -213,7 +219,7 @@ ul#footer-links {
 	#nav-link { 
 		color: #dfab2d;
 		&.active:before {
-			content:url(media/navigation-icon.png);
+			content:url('../images/navigation-icon.png');
 			display: inline;
 			float: left;
 		}
@@ -221,7 +227,7 @@ ul#footer-links {
 	#info-link { 
 		color: #619ecf;
 		&.active:before {
-			content:url(media/info-icon.png);
+			content:url('../images/info-icon.png');
 			display: inline;
 			float: left;
 		}
@@ -298,9 +304,9 @@ ul#footer-links {
 			}
 			
 			&.attach {
-				background: url('media/paperclip-icon') no-repeat 195px 5px;
+				background: url('../images/paperclip-icon') no-repeat 195px 5px;
 				&:hover {
-					background: #F6F6F6 url('media/paperclip-icon.png') no-repeat 200px 5px;
+					background: #F6F6F6 url('../images/paperclip-icon.png') no-repeat 200px 5px;
 				}
 			}
 		}
@@ -577,7 +583,15 @@ input.new-comment {
 	hr { margin-left: -10px; }
 	
 	#photo {
+		img { float: left; }
+		
 		a { text-decoration: underline; }
+		
+		input {
+			float: left;
+			width: 210px;
+			padding: 15px 5px;
+		}
 	}
 	
 	select { height: 25px; width: 270px; }
@@ -591,19 +605,18 @@ input.new-comment {
 
 	input[type="text"],
 	input[type="password"],
-	input[type="email"], 
-	select, #photo {
+	input[type="email"], #photo {
 		float: left;
 		width: 260px;
-		margin: 8px 0;
+		margin: 6px 0;
 	}
 	
 	label {
 		float: left;
 		font-weight: normal;
 		font-size: 14px;
-		margin: 0;
-		width: 320px;
+		margin: 0 20px 0 0;
+		width: 300px;
 		padding: 12px 0;
 	}
 	
@@ -614,10 +627,10 @@ input.new-comment {
 		
 		ul.errors {
 			float: right;
-			margin: 0 0 0 10px;
+			margin: 4px 0 0 10px;
 			padding: 5px;
 			width: 100px;
-			min-height: 55px;
+			min-height: 30px;
 			background: #FEE;
 			.border-radius(3px);
 			
@@ -625,6 +638,8 @@ input.new-comment {
 				margin: 0; 
 				color: #833;
 				font-style: italic;
+				font-size: 12px;
+				line-height: 14px;
 			}
 		}
 	}

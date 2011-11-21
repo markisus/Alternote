@@ -2,7 +2,7 @@
 
 {% block title %}Alternote Alpha{% endblock %}
 
-{% block css %} 
+{% block css %}
 	<link rel="stylesheet" type="text/css" href="[[ css('base.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="[[ css('layout.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="[[ css('skeleton.css') ]]" />
@@ -18,6 +18,9 @@
 	<script type="text/javascript" src="[[ script('tabs.js') ]]"></script>
 	<script type="text/javascript" src="[[ script('global.js') ]]"></script>
 	<script type="text/javascript" src="[[ script('chosen.jquery.min.js') ]]"></script>
+	
+	{% block page_specific_scripts %}
+	{% endblock %}
 {% endblock %}
 
 {% block body %}
@@ -25,13 +28,18 @@
 		<header class="sixteen columns">
 			<a href="/"><img src="[[ image('logo-bubbles.png') ]]" /></a>
 			<ul id="nav">
-				{% block nav %} OVERRIDE NAV {% endblock %}
+				{% block nav %}
+				<li><a href="auth/login">Login</a></li>
+				{% endblock %}
 			</ul>
 		</header>
 	</div> <!-- End head-wrapper -->
 
 	<div id="main">
     	<div class="container">
+			{% block sidebar %}
+			{% endblock %}
+			
 			{% block content %}
 			{% endblock %}
 		</div>

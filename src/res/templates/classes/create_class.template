@@ -1,7 +1,15 @@
 {% extends 'main.template' %}
 
-{% block nav %}
-	<li><a href="auth/login">Login</a></li>
+{% block sidebar %}
+	<div class="four columns content sidebar">
+		<ul id="user" class="sidebar-content">
+			<p><a class="header" href="">You</a></p>
+			<div class="purple-line" style="width:85%"></div>
+			
+			<li><img src="[[ image('default-icon-small.png') ]]" />Professor Albert Bernstein</li>
+			<li><a href="registration/edit">Edit this section</a></li>
+		</ul>
+	</div>
 {% endblock %}
 
 {% block content %}
@@ -17,7 +25,8 @@
 			[[ with_errors(form.alternate_codes) ]]
 			[[ with_errors(form.start_date) ]]
 			[[ with_errors(form.finish_date) ]]
-			[[ with_errors(form.auto_convo) ]]
+			[[ form.auto_convo.label ]]
+				[[ form.auto_convo(CHECKED) ]]
 			[[ with_errors(form.m) ]]
 			[[ with_errors(form.m_end) ]]
 			[[ with_errors(form.t) ]]

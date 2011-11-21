@@ -5,6 +5,7 @@ import json
 from datetime import date
 
 class ViewCalendar(BaseHandler):
+    template = env.get_template('calendar/view_calendar.template')
     @authenticated
     def get(self, class_id, month=None, year=None):
         if not (month and year):
@@ -13,7 +14,8 @@ class ViewCalendar(BaseHandler):
             year = today.year
         #Check if we are member of the class
         if db.classes.check_members(class_id, self.get_current_user()):
-            pass #Display Calendar
+            # Display Calendar
+            self.write(self.template.render(class_id=class_id))
         else:
             self.write("You must be a member of this class!") #TODO: Make error pages for auth stuff...
             

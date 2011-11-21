@@ -1,13 +1,11 @@
 {% extends 'main.template' %}
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		$(".chzn-select").chosen();
-	});
-</script>
-
-{% block nav %}
-	<li><a href="auth/login">Login</a></li>
+{% block page_specific_scripts %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".chzn-select").chosen();
+		});
+	</script>
 {% endblock %}
 
 {% block content %}
@@ -17,12 +15,18 @@
 		<p>We'd love to know a little more about you.</p> <br/>
 		
 		<form method="post">
-			[[ form.school(class_="chzn-select") ]]
+			[[ form.school.label ]]
+				[[ form.school(class_="chzn-select") ]]
 			[[ with_errors(form.first_name) ]]
 			[[ with_errors(form.last_name) ]]
 			[[ with_errors(form.email) ]]
 			[[ with_errors(form.password) ]]
 			[[ with_errors(form.password1) ]]
+			[[ form.image.label ]]
+			<div id="photo">
+				<img src="[[ image('default-icon-small.png') ]]" />
+				[[ form.image() ]]
+			</div>
 			[[ form.submit() ]]
 		</form>
 	</div>
