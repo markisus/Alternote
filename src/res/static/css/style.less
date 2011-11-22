@@ -117,18 +117,36 @@ header {
 			a {
 				color: #333;
 				text-shadow: 0px 1px 1px #FFF;
-				padding: 9spx;
+				padding: 9px;
 				background-color: transparent;
 				border: solid 1px transparent;
 				border-bottom: none;
 				.border-radius(3px 3px 0px 0px);
 				.transition-double(background-color, border-color);
 				
-				&:hover {
+				&:hover, &.active {
 					color: #333;
 					background-color: #FFF;
 					border-color: #CCC;
 				}
+			}
+			
+			div.dropdown {
+				position: absolute;
+				top: 61px;
+				width: 150px;
+				padding: 5px;
+				margin: 0 0 0 -108px;
+				background: #FFF;
+				border: solid 1px #CCC;
+				border-top: none;
+				.border-radius(0px 0px 3px 3px);
+				display: none;
+				z-index: 10;
+				
+				form, input#submit { margin-bottom: 2px; }
+				
+				input#submit { float: right; }
 			}
 		}
 	}

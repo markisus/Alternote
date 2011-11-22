@@ -1,7 +1,36 @@
 {% extends 'main.template' %}
 
+{% block page_specific_scripts %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("ul#nav li a").click(function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				$(this).addClass("active");
+				$(".dropdown").fadeToggle();
+			});
+			$(".dropdown").click(function(e) {
+				e.stopPropagation();
+			});
+			$("body").click(function(e) {
+				$(".dropdown").fadeOut();
+				$("ul#nav li a").removeClass("active");
+			});
+		});
+	</script>
+{% endblock %}
+
 {% block nav %}
-	<li><a href="auth/login">Login</a></li>
+	<li>
+		<a href="auth/login">Login</a>
+		<div class="dropdown">
+			<form method="post">
+				[[ with_errors(loginForm.email) ]]
+				[[ with_errors(loginForm.password) ]]
+				[[ loginForm.submit() ]]
+			</form>
+		</div>
+	</li>
 {% endblock %}
 
 {% block content %}
@@ -12,8 +41,8 @@
 			<h4>Join the conversation!</h4>
 			<p>Alternote lean startup ipsum product market fit customer development acquihire technical cofounder. User engagement A/B testing shrink a market venture capital pitch deck. Social bookmarking group buying crowded market pivot onboarding freemium prototype ping pong. Early stage disruptive ecosystem community outreach dynamic location based strategic investor. <a href="/admin/school/create" class="link-blue">Create a school</a> <br/> <br/> <br/> </p>
 			<form method="post">
-				[[ form.code( placeholder="Enter code..." ) ]]
-				[[ form.submit() ]]
+				[[ regForm.code( placeholder="Enter code..." ) ]]
+				[[ regForm.submit() ]]
 			</form>
 		</div>
 	</div> <!-- 16 columns content end -->
