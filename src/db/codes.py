@@ -1,4 +1,4 @@
-from db.collections import *
+from src.db.collections import *
 from random import randint
 
 word_bank = """academic, augur, bookish person, bookworm, brain, critic, disciple, 
@@ -24,6 +24,13 @@ def lookup_codes(class_id):
     result = codes.find({'class_id':class_id})
     return result
 
+def lookup_code(code_id):
+    result = codes.findOne({'_id':code_id})
+    if not result:
+        raise KeyError("Code " + code_id + " does not exist!")
+    else:
+        return result
+    
 def __randword():
     if not word_bank:
         return "?"

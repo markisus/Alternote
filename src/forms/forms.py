@@ -1,6 +1,7 @@
 from wtforms import *
 import re
-
+import os
+import time
 
 class LoginForm(Form):
     email = TextField('Email', [validators.Email()])
@@ -22,11 +23,12 @@ class ProfRegistrationForm(Form):
     image = FileField("It'd be nice (for us and the students) to see your face around here. Mind uploading a photo?")
     submit = SubmitField("Register")
     
-    def validate_image(form, field):
-        if field.data:
-            field.data = re.sub(r'[^a-z0-9_.-]', '_', field.data)
+def validate_image(form, field):
+    if field.data:
+        field.data = re.sub(r'[^a-z0-9_.-]', '_', field.data)
 
 def upload(request):
+    UPLOAD_PATH = ""
     form = ProfRegistrationForm(request.POST)
     if form.image.data:
         image_data = request.FILES[form.image.name].read()
@@ -38,21 +40,27 @@ class CreateSchoolForm(Form):
     submit = SubmitField("Create School")
 
 def time_validate(form, field):
-    data = field.data.strip()
-    match = re.match("^(?:0[1-9])|(?:[1-2]:[0-4]):[0-5][0-9]$", data)
-    if not match:
-        raise ValidationError("Time must be formatted as HH:MM 24-hour time")
+    if field.data:
+        data = field.data.strip()
+        match = re.match("^(?:0[1-9])|(?:[1-2]:[0-4]):[0-5][0-9]$", data)
+        if not match:
+            raise ValidationError("Time must be formatted as HH:MM 24-hour time")
+    
 def date_validate(form, field):
-    data = field.data.strip()
-    match = re.match("")
+    if field.data:
+        data = field.data.strip()
+        try:
+            valid = time.strptime(data, "%Y-%m-%d")
+        except ValueError:
+            raise ValidationError("Date must be formated YYYY-MM-DD")
     
 class CreateClassForm(Form):
-    name = TextField("What's the name of your course?", [validators.Required])
+    name = TextField("What's the name of your course?", [validators.Required()])
     section = TextField("What is the section number of your course?")
     code = TextField("And the course code?")
     alternate_codes = TextField("Does it have any cross-listed codes? If not, leave this blank.")
-    start_date = DateField("When does the course's term begin?", [validators.Required], format="%Y-%m-%d")
-    finish_date = DateField("And end?", [validators.Required], format="%Y-%m-%d")
+    start_date = DateField("When does the course's term begin?", [validators.Required()], format="%Y-%m-%d")
+    finish_date = DateField("And end?", [validators.Required()], format="%Y-%m-%d")
     m = TextField("Monday Start", [time_validate])
     m_end = TextField("Monday End", [time_validate])
     t = TextField("Tuesday Start", [time_validate])

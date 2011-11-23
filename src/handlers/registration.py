@@ -1,10 +1,19 @@
 from env import BaseHandler, env, prof_code
-from forms.forms import ProfRegistrationForm
-from db.schools import get_schools
-from db.users import create_user
-from db.logins import db_login
+from src.forms.forms import ProfRegistrationForm
+from src.db.schools import get_schools
+from src.db.users import create_user
+from src.db.logins import db_login
+from src.db.codes import lookup_code
+
 from pymongo.errors import DuplicateKeyError
 
+class StudentRegistration(BaseHandler):
+    #template = env.get_template('registration/student_registration.template')
+    
+    def get(self):
+        code = self.get_secure_cookie("code")
+        code_data = lookup_code(code)
+        
 class ProfessorRegistration(BaseHandler):
     template = env.get_template('registration/professor_registration.template')
     

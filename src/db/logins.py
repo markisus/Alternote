@@ -1,4 +1,4 @@
-from collections import *
+from src.db.collections import *
 
 def db_login(userid):
     session = str(ObjectId())

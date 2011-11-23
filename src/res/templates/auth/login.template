@@ -1,7 +1,7 @@
 {% extends 'main.template' %}
 
 {% block nav %}
-	<li><a href="auth/login">Login</a></li>
+	<li><a href="[[reverse_url('LoginHandler')]]">Login</a></li>
 {% endblock %}
 
 {% block content %}

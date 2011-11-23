@@ -22,7 +22,7 @@
 
 {% block nav %}
 	<li>
-		<a href="auth/login">Login</a>
+		<a href="[[ reverse_url('LoginHandler') ]]">Login</a>
 		<div class="dropdown">
 			<form method="post">
 				[[ with_errors(loginForm.email) ]]

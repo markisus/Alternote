@@ -93,6 +93,7 @@ application = tornado.web.Application([
     
     #Auth
     URLSpec(r"/auth/login", auth.LoginHandler, name="LoginHandler"),
+    URLSpec(r"/auth/logout", auth.LogoutHandler, name="LogoutHandler"),
     
     #Admin Methods
     URLSpec(r"/admin/school/create", admin.CreateSchool, name="CreateSchool"),

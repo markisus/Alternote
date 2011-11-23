@@ -1,7 +1,7 @@
 from env import BaseHandler, env, prof_code
-from db.users import get_user
-from db.logins import db_login
-from forms.forms import LoginForm, RegistrationCodeForm
+from src.db.logins import db_login, db_logout
+from src.db.users import get_user
+from src.forms.forms import LoginForm, RegistrationCodeForm
 from tornado.web import authenticated
 #Handlers related to authentication
         
@@ -36,5 +36,7 @@ class LoginHandler(BaseHandler):
 class LogoutHandler(BaseHandler):
     @authenticated
     def get(self):
-        self.clear_cookie('userid')
+        session = self.get_cookie('session', None)
+        db_logout(session)
+        self.clear_cookie('session')
         self.redirect("/")

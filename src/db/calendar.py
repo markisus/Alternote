@@ -1,7 +1,6 @@
-from db.collections import *
-import db.classes
-from datetime import datetime as dt
-from datetime import timedelta
+from datetime import datetime as dt, timedelta
+from src.db.classes import *
+from src.db.collections import *
 
 dt_format = "%Y-%m-%dT%H:%M"
 d_format = "%Y-%m-%d"
@@ -38,7 +37,7 @@ def create_standalone(class_id, title, start, finish, type, details, attach_conv
         startdt = dt.strptime(start[:16], dt_format)
         tdelta = timedelta(days=day_offset, hours=hour_offset)
         convo_start = (startdt - tdelta).isoformat()[:16]
-        convo_id = db.classes.create_event_for_class(class_id, type, start=convo_start, details=details)
+        convo_id = create_event_for_class(class_id, type, start=convo_start, details=details)
         print("attached convo")
     result = calendar.insert({
                             'title':title,
