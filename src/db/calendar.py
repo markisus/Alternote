@@ -1,6 +1,6 @@
 from datetime import datetime as dt, timedelta
-from src.db.classes import *
-from src.db.collections import *
+from db.classes import *
+from db.collections import *
 
 dt_format = "%Y-%m-%dT%H:%M"
 d_format = "%Y-%m-%d"

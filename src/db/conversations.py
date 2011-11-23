@@ -1,4 +1,4 @@
-from src.db.collections import *
+from db.collections import *
 from time import time
 from datetime import datetime
 

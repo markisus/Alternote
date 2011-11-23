@@ -1,9 +1,9 @@
 from env import BaseHandler, env, prof_code
-from src.forms.forms import ProfRegistrationForm
-from src.db.schools import get_schools
-from src.db.users import create_user
-from src.db.logins import db_login
-from src.db.codes import lookup_code
+from forms.forms import ProfRegistrationForm
+from db.schools import get_schools
+from db.users import create_user
+from db.logins import db_login
+from db.codes import lookup_code
 
 from pymongo.errors import DuplicateKeyError
 

@@ -1,9 +1,9 @@
 from env import BaseHandler, env, check_prof
-from src.forms.forms import CreateClassForm
+from forms.forms import CreateClassForm
 from tornado.web import authenticated
-import src.db.classes
-import src.db.codes
-import src.db.calendar
+import db.classes
+import db.codes
+import db.calendar
 
 class CreateClass(BaseHandler):
     template = env.get_template("classes/create_class.template")

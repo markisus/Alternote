@@ -2,8 +2,8 @@
 
 from jinja2 import Environment, PackageLoader
 import tornado.web
-from src.db.logins import db_get_userid, db_logout
-import src.db.users
+from db.logins import db_get_userid, db_logout
+import db.users
 
 env = Environment(variable_start_string='[[', variable_end_string=']]', loader=PackageLoader('res', 'templates'))
 prof_code = "alternote_rocks"

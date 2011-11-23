@@ -1,7 +1,7 @@
 from env import BaseHandler, env, prof_code
-from src.db.logins import db_login, db_logout
-from src.db.users import get_user
-from src.forms.forms import LoginForm, RegistrationCodeForm
+from db.logins import db_login, db_logout
+from db.users import get_user
+from forms.forms import LoginForm, RegistrationCodeForm
 from tornado.web import authenticated
 #Handlers related to authentication
         

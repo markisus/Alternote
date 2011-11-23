@@ -1,4 +1,4 @@
-from src.db.collections import *
+from db.collections import *
 from random import randint
 
 word_bank = """academic, augur, bookish person, bookworm, brain, critic, disciple, 

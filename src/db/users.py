@@ -1,4 +1,4 @@
-from src.db.collections import *
+from db.collections import *
 
 def create_user(first_name, last_name, password, email, school, type="student"):
     print("Inside create user!")

@@ -1,4 +1,4 @@
-from src.db.collections import *
+from db.collections import *
 
 def __class_query(classid):
     classdoc = classes.find({'_id':classid}, {'name':1, '_id':1}, limit=1).hint([('_id',1), ('name',1)])[0]
