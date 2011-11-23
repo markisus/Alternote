@@ -5,7 +5,7 @@ import json
 from datetime import date
 
 class ViewCalendar(BaseHandler):
-    template = env.get_template('calendar/view_calendar.template')
+    template = env.get_template("calendar/calendar.template")
     @authenticated
     def get(self, class_id, month=None, year=None):
         if not (month and year):
@@ -14,11 +14,48 @@ class ViewCalendar(BaseHandler):
             year = today.year
         #Check if we are member of the class
         if db.classes.check_members(class_id, self.get_current_user()):
-            # Display Calendar
             self.write(self.template.render(class_id=class_id))
         else:
             self.write("You must be a member of this class!") #TODO: Make error pages for auth stuff...
+#Details for some event
+class CalendarDetails(BaseHandler):
+    @authenticated
+    def get(self, calendar_id):
+        item = db.calendar.get_item(calendar_id)
+        self.write(json.dumps(item, skipkeys=True, default=str))
+#JSON Feed
+class CalendarFeed(BaseHandler):
+    @authenticated
+    def get(self, class_id):
+        if db.classes.check_members(class_id, self.get_current_user()):
+            start = self.get_argument("start")
+            end = self.get_argument("end")
+            #The calendar program asks for 
+            start = date.fromtimestamp(int(start))
+            end = date.fromtimestamp(int(end))
             
+            start_string = start.isoformat()[:16] #Lop off the seconds data
+            end_string = end.isoformat()[:16]
+            
+            search_results = db.calendar.search_items(start_string, end_string)
+            translated = list()
+            #Search results is not in the proper format. Translate them
+            for result in search_results:
+                item = {'id':str(result['_id']), 
+                        'title':result.get('title') or result['type'],  
+                        'start':result['start'],
+                        'end':result['finish'],
+                        'url':'/calendar/details/' + str(result['_id']),
+                        'className':result['type'],
+                        'editable':False}
+                translated.append(item)
+                
+            print(search_results)
+            event = [{'id':111, 'title':"Event1", 'start':"2011-11-10", 'url':'http://yahoo.com/'}]
+            self.write(json.dumps(translated))
+        else:
+            self.write("") #Is it better to return 404?
+    
 class CreateCalendarStandalone(BaseHandler):
     @authenticated
     @check_prof

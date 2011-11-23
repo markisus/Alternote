@@ -35,6 +35,16 @@
 		</header>
 	</div> <!-- End head-wrapper -->
 
+	{% block content %}
+ <!-- Container end -->
+{% endblock %}
+<ul id="footer-links">
+	<li>&copy; 2011 Alternote</li>
+	<li><a href="/mark/pages/about">About us</a></li>
+	<li><a href="/mark/pages/privacy">Privacy policy</a></li>
+	<li><a href="/mark/pages/terms">Terms of service</a></li>
+	<li><a href="/mark/pages/contact">Contact</a></li>
+</ul>
 	<div id="main">
     	<div class="container">
 			{% block sidebar %}

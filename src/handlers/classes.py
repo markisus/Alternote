@@ -47,9 +47,10 @@ class CreateClass(BaseHandler):
         day_offset = form.day_offset.data or 0
         hour_offset = form.hour_offset.data or 0
         
-        db.calendar.create_series(class_id, start, finish, "Lecture", "", meet_times, auto_convo, day_offset, hour_offset)
+        db.calendar.create_series(class_id, name + " Lecture", start, finish, "Lecture", "", meet_times, auto_convo, day_offset, hour_offset)
         
         #Redirect to view classes
+        self.redirect(self.reverse_url("ViewClasses"))
         
 class ViewClasses(BaseHandler):
     template = env.get_template("classes/view_classes.template")
