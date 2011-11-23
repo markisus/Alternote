@@ -32,7 +32,7 @@
 			[[ form.finish_date.label ]]
 				[[ with_errors(form.finish_date) ]]
 			[[ form.auto_convo.label ]]
-				[[ form.auto_convo(CHECKED) ]]
+				[[ form.auto_convo(checked="checked") ]]
 			[[ with_errors(form.m) ]]
 			[[ with_errors(form.m_end) ]]
 			[[ with_errors(form.t) ]]

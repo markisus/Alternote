@@ -13,7 +13,7 @@ class RegistrationCodeForm(Form):
     
 class ProfRegistrationForm(Form):
     school = SelectField('Where do you teach?')
-    instructor_type = SelectField('Are you a professor or TA?')
+    #instructor_type = SelectField('Are you a professor or TA?') Do we need this? TAs will sign up through registration codes
     first_name = TextField('What is your first name?', [validators.Length(min=1)])
     last_name = TextField('And last name?', [validators.Length(min=1)])
     email = TextField("Where do your students email you?", [validators.Email()])
