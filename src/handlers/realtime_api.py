@@ -1,5 +1,5 @@
 import tornado
-from src.db.utils import *
+from db.utils import *
 from collections import defaultdict
 import json
 from env import BaseHandler

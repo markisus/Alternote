@@ -39,16 +39,16 @@ class CreateClass(BaseHandler):
                 if field.data and field_end.data:
                     meet_times[day] = [field.data, field_end.data]
             school = user['school']
-            class_id = src.db.classes.create_class(school, user['_id'], name, section, code, start, finish, alternate_codes, meet_times)
+            class_id = db.classes.create_class(school, user['_id'], name, section, code, start, finish, alternate_codes, meet_times)
             #create the codes for this class
-            src.db.codes.create_student_code(class_id)
-            src.db.codes.create_ta_code(class_id)
+            db.codes.create_student_code(class_id)
+            db.codes.create_ta_code(class_id)
             
             auto_convo = form.auto_convo.data
             day_offset = form.day_offset.data or 0
             hour_offset = form.hour_offset.data or 0
             
-            src.db.calendar.create_series(class_id, name + " Lecture", start, finish, "Lecture", "", meet_times, auto_convo, day_offset, hour_offset)
+            db.calendar.create_series(class_id, name + " Lecture", start, finish, "Lecture", "", meet_times, auto_convo, day_offset, hour_offset)
             
             #Redirect to view classes
             self.redirect(self.reverse_url("ViewClasses"))
@@ -61,7 +61,7 @@ class ViewClasses(BaseHandler):
     @authenticated
     def get(self):
         print(self.get_current_user())
-        classes = src.db.users.get_classes(self.get_current_user())
+        classes = db.users.get_classes(self.get_current_user())
         print(classes)
         self.write(self.template.render(classes=classes, reverse_url=self.reverse_url))
     
@@ -71,8 +71,8 @@ class ViewCodes(BaseHandler):
     def get(self, class_id):
         #Check class match
         try:
-            if src.db.classes.check_instructor_and_tas(class_id, self.get_current_user()):
-                codes = src.db.codes.lookup_codes(class_id)
+            if db.classes.check_instructor_and_tas(class_id, self.get_current_user()):
+                codes = db.codes.lookup_codes(class_id)
                 self.write("Everything checks out")
                 for code in codes:
                     self.write("<br/>" + code['type'] + " code: " + code['_id'])

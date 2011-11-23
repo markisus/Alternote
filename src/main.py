@@ -86,13 +86,14 @@ import handlers.env
 #    def get(self):
 #        self.clear_cookie('userid')
 #        self.redirect('/login/')
-        
+
+login_url = r"/auth/login"
 application = tornado.web.Application([
     URLSpec(r"/", misc.LandingPage, name="LandingPage"),
     URLSpec(r"/registration/professor", registration.ProfessorRegistration, name="ProfessorRegistration"),
     
     #Auth
-    URLSpec(r"/auth/login", auth.LoginHandler, name="LoginHandler"),
+    URLSpec(login_url, auth.LoginHandler, name="LoginHandler"),
     URLSpec(r"/auth/logout", auth.LogoutHandler, name="LogoutHandler"),
     
     #Admin Methods
@@ -154,7 +155,7 @@ application = tornado.web.Application([
 ], 
                                       
     cookie_secret="CHANGE THIS EVENTUALLY",
-    login_url= "/auth/login/",
+    login_url= login_url,
     static_path= os.path.join(os.path.dirname(__file__), "res", "static")
 )
 

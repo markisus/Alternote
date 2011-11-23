@@ -12,7 +12,7 @@ prof_code = "alternote_rocks"
 def check_prof(f):
     def wrapper(self, *args, **kwargs):
         #args[0] is self
-        user = self.user = getattr(self, 'user', src.db.users.get_user(self.get_current_user()))
+        user = self.user = getattr(self, 'user', db.users.get_user(self.get_current_user()))
         if not user['type'] in ("professor", "admin"):
             self.write("Permission Denied")
             return
