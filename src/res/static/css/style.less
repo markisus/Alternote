@@ -212,7 +212,7 @@ ul#footer-links {
 
 .sidebar {
 	border-right: solid 1px #DDD;
-	margin-right: 9px;
+	margin-right: -1px;
 	padding-top: 10px;
 	
 	#course_title {
@@ -261,6 +261,10 @@ ul#footer-links {
 		img {
 			width: 20px;
 			margin-right: 5px;
+			
+			&.big {
+			    width: 40px;
+		    }
 		}
 		
 		p {
@@ -289,6 +293,16 @@ ul#footer-links {
 				border: none;
 				&:hover{ background-color: transparent; }
 			}
+		}
+		
+		&#user {
+		    margin-top: 36px;
+		    
+		    li {
+		        border: none;
+		        
+		        p { color: #AAA; font-size: 12px; }
+	        }
 		}
 		
 		li {
@@ -430,8 +444,25 @@ input.new-comment {
 }
 
 .calendar {
-	margin: 10px 0 0 -10px;
-	border-left: solid 1px #CCC;
+	margin: 10px 0 0 0;
+	
+	table.fc-header {
+	    width: 99% !important;
+	    margin: 0 7px;
+	    
+	    span.fc-header-title h2 {
+	        font-size: 20px;
+	        font-weight: normal;
+        }
+    }
+    
+    .fc-content {
+        
+        .fc-widget-content {
+            .transition(background-color 0.1s linear);
+            &:hover { background-color: #F3F3F3; }
+        }
+    }
 	
 	table.main-cal {
 		float: left;
@@ -594,7 +625,8 @@ input.new-comment {
 .registration {
 	float: right;
 	border-left: solid 1px #CCC;
-	padding: 10px 0 0 10px;
+	padding: 10px 0 0 9px;
+	margin: 0;
 	
 	h4 { margin: 8px 0 12px 0; }
 	
@@ -623,10 +655,15 @@ input.new-comment {
 
 	input[type="text"],
 	input[type="password"],
-	input[type="email"], #photo {
+	input[type="email"],
+	input[type="checkbox"], #photo {
 		float: left;
 		width: 260px;
 		margin: 6px 0;
+	}
+	
+	#auto-convo {
+	    margin: 15px 0;
 	}
 	
 	label {
@@ -634,14 +671,14 @@ input.new-comment {
 		font-weight: normal;
 		font-size: 14px;
 		margin: 0 20px 0 0;
-		width: 300px;
+		width: 360px;
 		padding: 12px 0;
 	}
 	
 	form {
 		float: left;
 		
-		.form_field { float: left; }
+		.form_field { float: left; margin: 0 10px;}
 		
 		ul.errors {
 			float: right;
@@ -661,4 +698,19 @@ input.new-comment {
 			}
 		}
 	}
+}
+
+ul#classes {
+    float: left;
+    width: 100%;
+    
+    li {
+        float: left;
+        width: 300px;
+        height: 40px;
+        padding: 5px;
+        margin: 5px;
+        background: #F3F3F3;
+        .border-radius(3px);
+    }
 }

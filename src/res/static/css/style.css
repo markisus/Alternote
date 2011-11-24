@@ -420,7 +420,7 @@ ul#footer-links li a:hover {
 }
 .sidebar {
   border-right: solid 1px #DDD;
-  margin-right: 9px;
+  margin-right: -1px;
   padding-top: 10px;
 }
 .sidebar #course_title {
@@ -473,6 +473,9 @@ ul#footer-links li a:hover {
   width: 20px;
   margin-right: 5px;
 }
+.sidebar ul.sidebar-content img.big {
+  width: 40px;
+}
 .sidebar ul.sidebar-content p {
   font-size: 12px;
 }
@@ -499,6 +502,16 @@ ul#footer-links li a:hover {
 }
 .sidebar ul.sidebar-content#meeting li:hover, .sidebar ul.sidebar-content#honchoes li:hover, .sidebar ul.sidebar-content#classmates li:hover {
   background-color: transparent;
+}
+.sidebar ul.sidebar-content#user {
+  margin-top: 36px;
+}
+.sidebar ul.sidebar-content#user li {
+  border: none;
+}
+.sidebar ul.sidebar-content#user li p {
+  color: #AAA;
+  font-size: 12px;
 }
 .sidebar ul.sidebar-content li {
   float: left;
@@ -654,8 +667,23 @@ input.new-comment {
   margin: -45px 0 0 60px;
 }
 .calendar {
-  margin: 10px 0 0 -10px;
-  border-left: solid 1px #CCC;
+  margin: 10px 0 0 0;
+}
+.calendar table.fc-header {
+  width: 99% !important;
+  margin: 0 7px;
+}
+.calendar table.fc-header span.fc-header-title h2 {
+  font-size: 20px;
+  font-weight: normal;
+}
+.calendar .fc-content .fc-widget-content {
+  -webkit-transition: background-color 0.1s linear;
+  -moz-transition: background-color 0.1s linear;
+  transition: background-color 0.1s linear;
+}
+.calendar .fc-content .fc-widget-content:hover {
+  background-color: #F3F3F3;
 }
 .calendar table.main-cal {
   float: left;
@@ -804,7 +832,8 @@ input.new-comment {
 .registration {
   float: right;
   border-left: solid 1px #CCC;
-  padding: 10px 0 0 10px;
+  padding: 10px 0 0 9px;
+  margin: 0;
 }
 .registration h4 {
   margin: 8px 0 12px 0;
@@ -837,17 +866,21 @@ input.new-comment {
 .registration input[type="text"],
 .registration input[type="password"],
 .registration input[type="email"],
+.registration input[type="checkbox"],
 .registration #photo {
   float: left;
   width: 260px;
   margin: 6px 0;
+}
+.registration #auto-convo {
+  margin: 15px 0;
 }
 .registration label {
   float: left;
   font-weight: normal;
   font-size: 14px;
   margin: 0 20px 0 0;
-  width: 300px;
+  width: 360px;
   padding: 12px 0;
 }
 .registration form {
@@ -855,6 +888,7 @@ input.new-comment {
 }
 .registration form .form_field {
   float: left;
+  margin: 0 10px;
 }
 .registration form ul.errors {
   float: right;
@@ -872,4 +906,18 @@ input.new-comment {
   font-style: italic;
   font-size: 12px;
   line-height: 14px;
+}
+ul#classes {
+  float: left;
+  width: 100%;
+}
+ul#classes li {
+  float: left;
+  width: 300px;
+  height: 40px;
+  padding: 5px;
+  margin: 5px;
+  background: #F3F3F3;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }

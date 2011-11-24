@@ -6,7 +6,11 @@
 			<p><a class="header" href="">You</a></p>
 			<div class="purple-line" style="width:85%"></div>
 			
-			<li><img src="[[ image('default-icon-small.png') ]]" />Professor Albert Bernstein</li>
+			<li>
+				<img class="big" src="[[ image('default-icon.png') ]]" />
+				Professor Albert Bernstein <br/>
+				<p>abernstein@school.edu</p>
+			</li>
 			<li><a href="registration/edit">Edit this section</a></li>
 		</ul>
 	</div>
