@@ -99,6 +99,10 @@ select {
 	width: 100%;
 }
 
+#main {
+    .container { min-height: 85%; }
+}
+
 header {
 	margin: 0 auto !important;
 	float: none !important;
@@ -212,7 +216,7 @@ ul#footer-links {
 
 .sidebar {
 	border-right: solid 1px #DDD;
-	margin-right: -1px;
+	margin-right: -1px !important;
 	padding-top: 10px;
 	
 	#course_title {
@@ -444,8 +448,10 @@ input.new-comment {
 }
 
 .calendar {
-	margin: 10px 0 0 0;
+	margin: 10px 0 0 0 !important;
+	border-left: solid 1px #CCC;
 	
+	#calendar { margin-left: -1px; }
 	table.fc-header {
 	    width: 99% !important;
 	    margin: 0 7px;
@@ -463,7 +469,7 @@ input.new-comment {
             &:hover { background-color: #F3F3F3; }
         }
     }
-	
+	/*
 	table.main-cal {
 		float: left;
 		width : 100%;
@@ -514,22 +520,21 @@ input.new-comment {
 			color: #346;
 		}
 	}
-	
+	*/
 	.new-event {
-		display: none;
-		float: left;
-		width: 97%;
-		padding: 10px;
+		/* display: none; */
 		border-right: solid 1px #CCC;
 		border-bottom: solid 1px #CCC;
-		margin-bottom: 5px;
+		margin: 0 0 5px -1px;
 		
+		form { padding: 10px; }
+				
 		span { 
 			float: left; 
 			margin: 5px 5px 11px 5px;
 		}
 		
-		input { float: left; }
+		.form_field, input { float: left; }
 		
 		input[type="text"] { 
 			width: 70px; 
@@ -537,8 +542,8 @@ input.new-comment {
 		}
 		
 		#name {
-			height: 24px;
-			padding: 3px;
+			height: 32px;
+			padding: 5px;
 			margin: 2px 10px 5px 0;
 			width: 70%;
 		}
@@ -581,14 +586,12 @@ input.new-comment {
 		}
 		
 		#details {
-			float: left;
-			width: 480px;
-			margin-right: 20px;
+			margin: 0 20px 0 0 !important;
+			
+			#begin_date { margin-left: 0; }
 		}
 		
 		#files {
-			float: left;
-			
 			a { .link-blue; text-decoration: underline; }
 		}
 	}
@@ -623,10 +626,9 @@ input.new-comment {
 }
 
 .registration {
-	float: right;
 	border-left: solid 1px #CCC;
 	padding: 10px 0 0 9px;
-	margin: 0;
+	margin: 0 !important;
 	
 	h4 { margin: 8px 0 12px 0; }
 	
@@ -644,13 +646,13 @@ input.new-comment {
 		}
 	}
 	
-	select { height: 25px; width: 270px; }
+	select { height: 25px; width: 260px; }
 	
 	.chzn-container { margin-bottom: 15px; }
 	
 	input[type="submit"] {
 		float: right;
-		margin: 10px 120px 0 0;
+		margin: 10px 50px 0 0;
 	}
 
 	input[type="text"],
@@ -658,20 +660,21 @@ input.new-comment {
 	input[type="email"],
 	input[type="checkbox"], #photo {
 		float: left;
-		width: 260px;
+		width: 250px;
 		margin: 6px 0;
 	}
 	
-	#auto-convo {
-	    margin: 15px 0;
-	}
+	input.has_error { background: #FEE; }
+	
+	input#auto_convo { margin: 15px 0; }
+	
+	#photo { margin: 6px 10px; }
 	
 	label {
 		float: left;
 		font-weight: normal;
 		font-size: 14px;
-		margin: 0 20px 0 0;
-		width: 360px;
+		margin: 0 10px 0 0 !important;
 		padding: 12px 0;
 	}
 	
@@ -681,12 +684,11 @@ input.new-comment {
 		.form_field { float: left; margin: 0 10px;}
 		
 		ul.errors {
-			float: right;
-			margin: 4px 0 0 10px;
+			position: absolute;
+			margin: 4px 0 0 270px;
 			padding: 5px;
 			width: 100px;
 			min-height: 30px;
-			background: #FEE;
 			.border-radius(3px);
 			
 			li { 
@@ -710,7 +712,8 @@ ul#classes {
         height: 40px;
         padding: 5px;
         margin: 5px;
-        background: #F3F3F3;
+        #gradient.vertical(#FFF, #F3F3F3);
         .border-radius(3px);
+        border: solid 1px #DDD;
     }
 }

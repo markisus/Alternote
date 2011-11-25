@@ -1,3 +1,4 @@
+from forms.forms import CreateEventForm
 from env import env, BaseHandler, check_prof
 from tornado.web import authenticated
 import db.classes
@@ -14,7 +15,9 @@ class ViewCalendar(BaseHandler):
             year = today.year
         #Check if we are member of the class
         if db.classes.check_members(class_id, self.get_current_user()):
-            self.write(self.template.render(class_id=class_id))
+            form = CreateEventForm()
+            # form.event_type.choices = {'Lecture':'Lecture'}
+            self.write(self.template.render(class_id=class_id, form=form, month=month, year=year))
         else:
             self.write("You must be a member of this class!") #TODO: Make error pages for auth stuff...
 #Details for some event

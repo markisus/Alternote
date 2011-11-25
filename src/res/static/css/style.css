@@ -230,6 +230,7 @@ a {
   height: 2px;
   width: 2px;
   background: #424242;
+  -webkit-border-radius: 1px;
   -moz-border-radius: 1px;
   border-radius: 1px;
   float: left;
@@ -299,6 +300,9 @@ select {
   height: 60px;
   width: 100%;
 }
+#main .container {
+  min-height: 85%;
+}
 header {
   margin: 0 auto !important;
   float: none !important;
@@ -323,6 +327,7 @@ header ul#nav li a {
   background-color: transparent;
   border: solid 1px transparent;
   border-bottom: none;
+  -webkit-border-radius: 3px 3px 0px 0px;
   -moz-border-radius: 3px 3px 0px 0px;
   border-radius: 3px 3px 0px 0px;
   -webkit-transition-property: background-color, border-color;
@@ -349,6 +354,7 @@ header ul#nav li div.dropdown {
   background: #FFF;
   border: solid 1px #CCC;
   border-top: none;
+  -webkit-border-radius: 0px 0px 3px 3px;
   -moz-border-radius: 0px 0px 3px 3px;
   border-radius: 0px 0px 3px 3px;
   display: none;
@@ -420,7 +426,7 @@ ul#footer-links li a:hover {
 }
 .sidebar {
   border-right: solid 1px #DDD;
-  margin-right: -1px;
+  margin-right: -1px !important;
   padding-top: 10px;
 }
 .sidebar #course_title {
@@ -667,7 +673,64 @@ input.new-comment {
   margin: -45px 0 0 60px;
 }
 .calendar {
-  margin: 10px 0 0 0;
+  margin: 10px 0 0 0 !important;
+  border-left: solid 1px #CCC;
+  /*
+	table.main-cal {
+		float: left;
+		width : 100%;
+		margin-left: -1px;
+	}
+	
+	tr.cal {
+		td {
+			height: 70px;
+			width: 100px;
+			padding: 5px;
+			border: solid 1px #CCC;
+			.transition(background-color 0.1s linear);
+			
+			&:hover {
+				background: #F3F3F3;
+			}
+			
+			div.content {
+				font-size: 12px;
+				white-space: nowrap;
+				max-width: 100px;
+				overflow: hidden;
+			}
+		}
+	}
+	
+	tr.week {
+		td {
+			text-align: center;
+			color: #000;
+		}
+	}
+	
+	tr.head {
+		th {
+			font-size: 12px;
+			text-align: left;
+			padding-left: 10px;
+		}
+	}
+	
+	a.arrow {
+		color: #679;
+		font-size: 12px;
+		
+		&:hover {
+			color: #346;
+		}
+	}
+	*/
+
+}
+.calendar #calendar {
+  margin-left: -1px;
 }
 .calendar table.fc-header {
   width: 99% !important;
@@ -685,59 +748,21 @@ input.new-comment {
 .calendar .fc-content .fc-widget-content:hover {
   background-color: #F3F3F3;
 }
-.calendar table.main-cal {
-  float: left;
-  width: 100%;
-  margin-left: -1px;
-}
-.calendar tr.cal td {
-  height: 70px;
-  width: 100px;
-  padding: 5px;
-  border: solid 1px #CCC;
-  -webkit-transition: background-color 0.1s linear;
-  -moz-transition: background-color 0.1s linear;
-  transition: background-color 0.1s linear;
-}
-.calendar tr.cal td:hover {
-  background: #F3F3F3;
-}
-.calendar tr.cal td div.content {
-  font-size: 12px;
-  white-space: nowrap;
-  max-width: 100px;
-  overflow: hidden;
-}
-.calendar tr.week td {
-  text-align: center;
-  color: #000;
-}
-.calendar tr.head th {
-  font-size: 12px;
-  text-align: left;
-  padding-left: 10px;
-}
-.calendar a.arrow {
-  color: #679;
-  font-size: 12px;
-}
-.calendar a.arrow:hover {
-  color: #346;
-}
 .calendar .new-event {
-  display: none;
-  float: left;
-  width: 97%;
-  padding: 10px;
+  /* display: none; */
+
   border-right: solid 1px #CCC;
   border-bottom: solid 1px #CCC;
-  margin-bottom: 5px;
+  margin: 0 0 5px -1px;
+}
+.calendar .new-event form {
+  padding: 10px;
 }
 .calendar .new-event span {
   float: left;
   margin: 5px 5px 11px 5px;
 }
-.calendar .new-event input {
+.calendar .new-event .form_field, .calendar .new-event input {
   float: left;
 }
 .calendar .new-event input[type="text"] {
@@ -745,8 +770,8 @@ input.new-comment {
   margin: 0 5px 5px 5px;
 }
 .calendar .new-event #name {
-  height: 24px;
-  padding: 3px;
+  height: 32px;
+  padding: 5px;
   margin: 2px 10px 5px 0;
   width: 70%;
 }
@@ -781,12 +806,10 @@ input.new-comment {
   margin-right: 200px;
 }
 .calendar .new-event #details {
-  float: left;
-  width: 480px;
-  margin-right: 20px;
+  margin: 0 20px 0 0 !important;
 }
-.calendar .new-event #files {
-  float: left;
+.calendar .new-event #details #begin_date {
+  margin-left: 0;
 }
 .calendar .new-event #files a {
   color: #619ecf;
@@ -830,10 +853,9 @@ input.new-comment {
   color: #444;
 }
 .registration {
-  float: right;
   border-left: solid 1px #CCC;
   padding: 10px 0 0 9px;
-  margin: 0;
+  margin: 0 !important;
 }
 .registration h4 {
   margin: 8px 0 12px 0;
@@ -854,14 +876,14 @@ input.new-comment {
 }
 .registration select {
   height: 25px;
-  width: 270px;
+  width: 260px;
 }
 .registration .chzn-container {
   margin-bottom: 15px;
 }
 .registration input[type="submit"] {
   float: right;
-  margin: 10px 120px 0 0;
+  margin: 10px 50px 0 0;
 }
 .registration input[type="text"],
 .registration input[type="password"],
@@ -869,18 +891,23 @@ input.new-comment {
 .registration input[type="checkbox"],
 .registration #photo {
   float: left;
-  width: 260px;
+  width: 250px;
   margin: 6px 0;
 }
-.registration #auto-convo {
+.registration input.has_error {
+  background: #FEE;
+}
+.registration input#auto_convo {
   margin: 15px 0;
+}
+.registration #photo {
+  margin: 6px 10px;
 }
 .registration label {
   float: left;
   font-weight: normal;
   font-size: 14px;
-  margin: 0 20px 0 0;
-  width: 360px;
+  margin: 0 10px 0 0 !important;
   padding: 12px 0;
 }
 .registration form {
@@ -891,12 +918,12 @@ input.new-comment {
   margin: 0 10px;
 }
 .registration form ul.errors {
-  float: right;
-  margin: 4px 0 0 10px;
+  position: absolute;
+  margin: 4px 0 0 270px;
   padding: 5px;
   width: 100px;
   min-height: 30px;
-  background: #FEE;
+  -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
@@ -917,7 +944,37 @@ ul#classes li {
   height: 40px;
   padding: 5px;
   margin: 5px;
-  background: #F3F3F3;
+  background-color: #f3f3f3;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#ffffff), to(#f3f3f3));
+  /* Konqueror */
+
+  background-image: -moz-linear-gradient(#ffffff, #f3f3f3);
+  /* FF 3.6+ */
+
+  background-image: -ms-linear-gradient(#ffffff, #f3f3f3);
+  /* IE10 */
+
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #f3f3f3));
+  /* Safari 4+, Chrome 2+ */
+
+  background-image: -webkit-linear-gradient(#ffffff, #f3f3f3);
+  /* Safari 5.1+, Chrome 10+ */
+
+  background-image: -o-linear-gradient(#ffffff, #f3f3f3);
+  /* Opera 11.10 */
+
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f3f3f3', GradientType=0);
+  /* IE6 & IE7 */
+
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f3f3f3', GradientType=0)";
+  /* IE8+ */
+
+  background-image: linear-gradient(#ffffff, #f3f3f3);
+  /* the standard */
+
+  -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
+  border: solid 1px #DDD;
 }
