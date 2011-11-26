@@ -4,7 +4,6 @@ from tornado.web import authenticated
 import db.classes
 import json
 from datetime import date
-from env import render_sidebar
 
 class ViewCalendar(BaseHandler):
     template = env.get_template("calendar/calendar.template")
@@ -18,7 +17,7 @@ class ViewCalendar(BaseHandler):
         if db.classes.check_members(class_id, self.get_current_user()):
             form = CreateEventForm()
             # form.event_type.choices = {'Lecture':'Lecture'}
-            sidebar = render_sidebar(class_id)
+            sidebar = self.render_sidebar(class_id)
             self.write(self.template.render(class_id=class_id, form=form, month=month, year=year, sidebar=sidebar))
         else:
             self.write("You must be a member of this class!") #TODO: Make error pages for auth stuff...

@@ -11,13 +11,13 @@ class CreateSchool(BaseHandler):
         self.write(self.template.render(form=CreateSchoolForm()))
     
     def post(self):
-        form = CreateSchoolForm(**self.get_params())
+        form = CreateSchoolForm(formdata=self.get_params())
         if form.validate():
             #Process tags:
             tags_data = form.tags.data or ""
             tags = [t.strip() for t in tags_data.split(" ") if t.strip()]
             school_name = form.school_name.data
             create_school(school_name, tags)
-            self.redirect(reverse_url('LoginHandler'))
+            self.redirect(self.reverse_url('LoginHandler'))
         else:
             self.write(self.template.render(form=form))

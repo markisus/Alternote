@@ -35,18 +35,6 @@ def check_prof(f):
     #Upcoming
         #Class_id
         
-def render_sidebar(class_id):
-    template = env.get_template('ui/sidebar.template')
-    start = "0"
-    finish = "9"
-    now = datetime.datetime.now().isoformat()[:16]
-    class_doc = db.classes.get_class(class_id)
-
-    files = db.files.get_records(class_id)
-    conversations = db.calendar.search_items(class_id, start, now)
-    upcoming = db.calendar.search_items(class_id, now, finish, limit=10)
-    return template.render(class_id=class_id, class_doc=class_doc, files=files, conversations=conversations, upcoming=upcoming)
-
 #Some custom logic for auth and param handling
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -72,3 +60,20 @@ class BaseHandler(tornado.web.RequestHandler):
         params.getlist = lambda key:params[key] #wtforms needs this
         return params
         
+    def render_sidebar(self, class_id):
+        template = env.get_template('ui/sidebar.template')
+        start = "0"
+        finish = "9"
+        now = datetime.datetime.now().isoformat()[:16]
+        class_doc = db.classes.get_class(class_id)
+    
+        files = db.files.get_records(class_id)
+        conversations = db.calendar.search_items(class_id, start, now)
+        upcoming = db.calendar.search_items(class_id, now, finish, limit=10)
+        return template.render(class_id=class_id, class_doc=class_doc, files=files, conversations=conversations, upcoming=upcoming)
+    
+    def render_navbar(self):
+        links = dict()
+        links['Logout'] = self.reverse_url("LogoutHandler")
+        links['Classes'] = self.reverse_url("ViewClasses")
+        links['Create Class'] = self.reverse_url("CreateClass")
