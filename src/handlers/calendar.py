@@ -4,6 +4,7 @@ from tornado.web import authenticated
 import db.classes
 import json
 from datetime import date
+from env import render_sidebar
 
 class ViewCalendar(BaseHandler):
     template = env.get_template("calendar/calendar.template")
@@ -17,15 +18,18 @@ class ViewCalendar(BaseHandler):
         if db.classes.check_members(class_id, self.get_current_user()):
             form = CreateEventForm()
             # form.event_type.choices = {'Lecture':'Lecture'}
-            self.write(self.template.render(class_id=class_id, form=form, month=month, year=year))
+            sidebar = render_sidebar(class_id)
+            self.write(self.template.render(class_id=class_id, form=form, month=month, year=year, sidebar=sidebar))
         else:
             self.write("You must be a member of this class!") #TODO: Make error pages for auth stuff...
+            
 #Details for some event
 class CalendarDetails(BaseHandler):
     @authenticated
     def get(self, calendar_id):
         item = db.calendar.get_item(calendar_id)
         self.write(json.dumps(item, skipkeys=True, default=str))
+        
 #JSON Feed
 class CalendarFeed(BaseHandler):
     @authenticated
@@ -40,11 +44,10 @@ class CalendarFeed(BaseHandler):
             start_string = start.isoformat()[:16] #Lop off the seconds data
             end_string = end.isoformat()[:16]
             
-            search_results = db.calendar.search_items(start_string, end_string)
+            search_results = db.calendar.search_items(class_id, start_string, end_string)
             translated = list()
             #Search results is not in the proper format. Translate them
             for result in search_results:
-                print(result)
                 item = {'id':str(result['_id']), 
                         'title':result.get('title') or result['type'],  
                         'start':result['start'],
@@ -54,7 +57,6 @@ class CalendarFeed(BaseHandler):
                         'editable':False}
                 translated.append(item)
                 
-            print(search_results)
             self.write(json.dumps(translated))
         else:
             self.write("") #Is it better to return 404?

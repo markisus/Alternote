@@ -14,26 +14,36 @@ def get_all(class_id):
     return list(events.find({'class_id':class_id}))
 
 #Finds standlone items
-def search_items(start, finish):
-    print("inside seach_items with " + start + " " + finish)
-    result = events.find({'$or':[
+def search_items(class_id, start, finish, convos_only=False, limit=None):
+    query = {'$or':[
                             #S s f F - Complete Overlap within the search range
                             {'start':{'$gt':start},
                              'finish':{'$lt':finish},
-                             'broadcast':False
+                             'broadcast':False,
+                             'class._id':class_id
                              },
                             #s S f - Intersects the start of the search range
                            {'start':{'$lt':start},
                             'finish':{'gt':start},
                             'broadcast':False,
+                            'class._id':class_id
                             },
                             #s F f - Intersects the end of the search range
                            {'start':{'$lt':finish},
                             'finish':{'$gt':finish},
-                            'broadcast':False
+                            'broadcast':False,
+                            'class._id':class_id
                             }
                            ]}
-                           )
+    #Only look for conversations
+    if convos_only:
+        for item in query['$or']:
+            item['dummy'] = False
+    
+    if limit:
+        result = events.find(query).sort('start', 1).limit(limit)
+    else:
+        result = events.find(query).sort('start', 1)
     return list(result)
 
 #def create_standalone(class_id, title, start, finish, type, details, attach_convo=False, day_offset=0, hour_offset=0, series_id=None):

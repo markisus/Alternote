@@ -5,7 +5,7 @@ import tornado.web
 from db.logins import db_get_userid, db_logout
 import db.users
 import os
-
+import datetime
 env = Environment(variable_start_string='[[', variable_end_string=']]', loader=PackageLoader('res', 'templates'))
 prof_code = "alternote_rocks"
 
@@ -21,7 +21,32 @@ def check_prof(f):
         else:
             return f(self, *args, **kwargs)
     return wrapper
-    
+
+#UI Stuff
+#Sidebar needs:
+    #Instructors, Classmates
+        #Class_id
+    #Meeting Times
+        #Class_id
+    #Files
+        #Class_id
+    #Conversations
+        #Class_id
+    #Upcoming
+        #Class_id
+        
+def render_sidebar(class_id):
+    template = env.get_template('ui/sidebar.template')
+    start = "0"
+    finish = "9"
+    now = datetime.datetime.now().isoformat()[:16]
+    class_doc = db.classes.get_class(class_id)
+
+    files = db.files.get_records(class_id)
+    conversations = db.calendar.search_items(class_id, start, now)
+    upcoming = db.calendar.search_items(class_id, now, finish, limit=10)
+    return template.render(class_id=class_id, class_doc=class_doc, files=files, conversations=conversations, upcoming=upcoming)
+
 #Some custom logic for auth and param handling
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):

@@ -1,21 +1,14 @@
 from db.collections import *
 from time import time
 from datetime import datetime
+from db.users import get_user_display_info
 
 def record_anon_item(userid, objectid):
     objectid = ObjectId(objectid)
     users.insert({'_id':userid}, {"$addToSet":{"anonymous_items":objectid}})
     
 #Get the user object with only the info we need for display purposes
-def get_user_display_info(userid, anon=False):
-    print("Getting user disiplay info, anon: " + str(anon))
-    result = users.find_one({'_id':userid}, {'_id':1, 'first_name':1, 'last_name':1, 'type':1}) #TODO: Index type for covered query?
-    if result == None:
-        raise KeyError("No user with key " + str(userid) + " exists")
-    if anon:
-        anonymize(result)
-    print(result)
-    return result
+
 
 def get_event(eventid):
     eventid = ObjectId(eventid)
@@ -53,9 +46,7 @@ def get_eventid_of_comment(commentid):
 
 def create_post_for_event(userid, eventid, post, anonymous=False):
     timestamp=datetime.now().isoformat()
-    author = get_user_display_info(userid)
-    if anonymous: #Wipe identifying info
-        anonymize(author)
+    author = get_user_display_info(userid, anonymous=anonymous)
     result = posts.insert(
                  {'message':post,
                   'votes':0,
@@ -74,20 +65,13 @@ def get_top_posts_for_event(eventid):
     eventid = ObjectId(eventid)
     return posts.find({'event':ObjectId(eventid)}).sort('timestamp', direction=ASCENDING).hint([('event',1),('timestamp',1)])
 
-def anonymize(author):
-    author['_id'] = "Anonymous"
-    author['first_name'] = "Anonymous"
-    author['last_name'] = "" 
-    author['type'] = "student"
-    return author
 
 def create_comment_for_post(userid, postid, comment, anonymous=False):
     timestamp=datetime.now().isoformat()
     postid = ObjectId(postid)
     comment_id = ObjectId()
-    author = get_user_display_info(userid)
+    author = get_user_display_info(userid, anonymous)
     if anonymous: #Wipe identifying info
-        anonymize(author)
         record_anon_item(userid, comment_id)
         #Save this commentid into the user
     comment = {

@@ -1,6 +1,7 @@
 from db.collections import *
 from datetime import datetime as dt
 from datetime import timedelta
+from db.users import get_user_display_info
 
 def __class_query(classid):
     classdoc = classes.find({'_id':classid}, {'name':1, '_id':1}, limit=1).hint([('_id',1), ('name',1)])[0]
@@ -18,7 +19,7 @@ def create_class(school, instructor_id, name, section, code, start_date, finish_
                     'section':section,
                     'start':start_date,
                     'finish':finish_date,
-                    'instructors':[instructor_id],
+                    'instructors':[],
                     'tas':[],
                     'students':[],
                     'meet_times':meet_times,
@@ -47,10 +48,11 @@ def register_user_for_class(user_id, class_id, category="students"):
                     {'classes':__class_query(class_id)}
                 }
             )
+    user_doc = get_user_display_info(user_id)
     classes.update(
-                  {'id':class_id},
+                  {'_id':class_id},
                   {'$addToSet':
-                   {category:user_id}
+                   {category:user_doc}
                   }
             )
     
@@ -88,7 +90,7 @@ def check_instructor_and_tas(class_id, user_id):
     course = classes.find_one({"_id":class_id})
     if not course:
         raise KeyError("Course with id " + str(class_id) + " does not exist.")
-    if user_id in course['instructors'] + course['tas']:
+    if user_id in __unpack_userids(course['instructors']) + __unpack_userids(course['tas']):
         return True
     else:
         return False
@@ -97,10 +99,14 @@ def check_members(class_id, user_id):
     course = classes.find_one({"_id":class_id})
     if not course:
         raise KeyError("Course with id " + str(class_id) + " does not exist.")
-    if user_id in course['instructors'] + course['tas'] + course['students']:
+    if user_id in __unpack_userids(course['instructors']) + __unpack_userids(course['tas']) + __unpack_userids(course['students']):
         return True
     else:
         return False    
-                            
+    
+#List of userdocs
+def __unpack_userids(docs):  
+    return [doc['_id'] for doc in docs]
+
 def get_events_for_class(class_id):
     return events.find({'class._id':class_id})

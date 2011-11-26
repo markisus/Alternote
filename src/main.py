@@ -10,6 +10,7 @@ import tornado.ioloop
 import tornado.web
 import handlers
 from constants import static_path
+import datetime
 
 login_url = r"/auth/login"
 
@@ -98,7 +99,14 @@ globals['reverse_url'] = application.reverse_url
 globals['css'] = lambda path: ("/static/css/" + path).replace("//", "/")
 globals['script'] = lambda path: ("/static/scripts/" + path).replace("//", "/")
 globals['image'] = lambda path: ("/static/images/" + path).replace("//", "/")
-
+globals['file_path'] = lambda class_id, file_name: ("/static/files/" + class_id + "/" + file_name).replace("//", "/")
+#Date formatter
+def date_format(date_string):
+    date_string = date_string[:10] #Lop off the hours and minutes
+    my_date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+    return datetime.datetime.strftime(my_date, "%a, %m/%d")
+globals['date_format'] = date_format
+    
 if __name__ == "__main__":
     application.listen(8888)
     tornado.ioloop.IOLoop.instance().start()

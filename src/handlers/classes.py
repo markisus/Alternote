@@ -31,7 +31,7 @@ class CreateClass(BaseHandler):
             finish = form.finish_date.data.isoformat()[:10]
             days = ["m", "t", "w", "r", "f", "s", "u"]
             meet_times = dict()
-            #Some magic
+            #Some magic to parse meet times
             for day in days:
                 field = getattr(form, day)
                 field_end = getattr(form, day + "_end")

@@ -6,89 +6,13 @@
 
 {% block page_specific_scripts %}
 <script type='text/javascript' src='[[ script('fullcalendar.min.js') ]]'></script>
-<script type="text/javascript">
-	var day_number = "01";
-	$(document).ready(function() {
-		$("td.fc-widget-content").click(function(e) {
-			e.preventDefault();
-			day_number = $(this).children("div").children(".fc-day-number").innerHTML();
-			if (day_number.length == 1) {
-				day_number = "0" + day_number;
-			}
-			$(".new-event").slideToggle();
-		});
-		
-		$("form#create_event_form button").click(function(e) {
-			e.preventDefault();
-			$(".new-event").slideUp();
-		});
-		
-		$(".chzn-select").chosen();
-		
-		$("input#submit").hover(function() {
-			var name = $("input[name='name']");
-			var begin_date = $("input[name='begin_date']");
-			var begin_time = $("input[name='begin_time']");
-			var end_date = $("input[name='end_date']");
-			var end_time = $("input[name='end_time']");
-			var all_day = $("input[name='all_day']");
-			var day_offset = $("input[name='day_offset']");
-			var hour_offset = $("input[name='hour_offset']");
-			var attach_conversation = $("input[name='attach_conversation']");
-			var type = $("select[name='type']");
-			
-			var inputs = new Array(name, begin_date, begin_time, end_date, end_time);
-			var offsets = new Array(day_offset, hour_offset);
-			
-			for (field in inputs) {
-				if (inputs[field].val() == '') {
-					inputs[field].addClass('highlight');
-					return false;
-				} else inputs[field].removeClass('highlight');
-			}
-			
-			if (attach_conversation.val() == true) {
-				for (field in offsets) {
-					if (offsets[field].val() == '') {
-						offsets[field].addClass('highlight');
-						return false;
-					} else offsets[field].removeClass('highlight');
-				}
-			}
-			
-			var start_year = begin_date.val().split("/")[2];
-			var start_day = begin_date.val().split("/")[1];
-			var start_month = begin_date.val().split("/")[0];
-			begin_time = begin_time.val().substring(0,6) + ":00";
-			if (begin_time.charAt(2) != ":") {
-				begin_time = "0" + begin_time;		// Add leading 0 if not present
-			}
-			
-			var end_year = end_date.val().split("/")[2];
-			var end_day = end_date.val().split("/")[1];
-			var end_month = end_date.val().split("/")[0];
-			var end_time = end_time.val().substring(0,6) + ":00";
-			if (end_time.charAt(2) != ":") {
-				end_time = "0" + end_time;			// Add leading 0 if not present
-			}
-			
-			// Tranform to ISO date standard
-			var start_time = start_year + "-" + start_month + "-" + start_day + "T" + begin_time;
-			var finish_time = end_year + "-" + end_month + "-" + end_day + "T" + end_time;
-			
-			$("input[name='start_time']").val(start_time);
-			$("input[name='finish_time']").val(finish_time);
-		});
-		
-	});
-</script>
 <script type='text/javascript'>
 	$(document).ready(function() {
 		var date = new Date();
 		var d = date.getDate();
 		var m = date.getMonth();
 		var y = date.getFullYear();
-		
+
 		$('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',
@@ -98,7 +22,7 @@
 			editable: false,
 			events: "[[ reverse_url('CalendarFeed', class_id) ]]"
 		});
-		
+
 		$("a.header").click(function(event) {
 			event.preventDefault();
 			$(this).parent().parent().children("li").fadeToggle('fast');
@@ -124,168 +48,93 @@
 	});
 </script>
 <script type="text/javascript">
-	//Ajax request point:
-	var address = 'calendar/get_data/' + [[ course_id ]];
-	//Get the month and year from php
-	var month = [[ month ]];
-	var year = [[ year ]];
-	
-	var next_month = function(month, year) {
-		if (month === '12') {
-			return '1'; //January comes after december!			
-		} else return (parseInt(month)+1).toString();
-	}
-	var next_year = function(month, year) {
-		if (month === '12') {
-			return (parseInt(year) + 1).toString();
-		} else return year;
-	}
+	var day_number = "01";
+	$(document).ready(function() {
+		$("td.fc-widget-content").click(function(e) {
+			e.preventDefault();
+			day_number = $(this).children("div").children(".fc-day-number")[0].innerHTML;
+			if (day_number.length == 1) {
+				day_number = "0" + day_number;
+			}
+			$(".new-event").slideUp();
+			$(".new-event").slideDown();
+		});
 
-	var month2 = next_month(month, year);
-	var year2 = next_year(month, year);
-	//Ask for events this month:
-	var process = function(data) {
-		//data will be json data we receive from the server
-		for (i in data) {
-			var item = data[i];
-			var name = item['name'];
-			var start_time = item['start_time'];
-			//Pull the day and time out of start_time:
-			var daytime = start_time.split("-")[2];
-			var day = daytime.split("T")[0];
-			var time = daytime.split("T")[1];
-			//Check if there is an associated convo
-			var conversation_id = undefined;
-			if (item['conversation_id']) {
-				conversation_id = item['conversation_id']['$id'];
+		$("form#create_event_form button").click(function(e) {
+			e.preventDefault();
+			$(".new-event").slideUp();
+		});
+
+		$(".chzn-select").chosen();
+
+		$("input#submit").hover(function() {
+			var name = $("input[name='name']");
+			var begin_date = $("input[name='begin_date']");
+			var begin_time = $("input[name='begin_time']");
+			var end_date = $("input[name='end_date']");
+			var end_time = $("input[name='end_time']");
+			var all_day = $("input[name='all_day']");
+			var day_offset = $("input[name='day_offset']");
+			var hour_offset = $("input[name='hour_offset']");
+			var attach_conversation = $("input[name='attach_conversation']");
+			var type = $("select[name='type']");
+
+			var inputs = new Array(name, begin_date, begin_time, end_date, end_time);
+			var offsets = new Array(day_offset, hour_offset);
+
+			for (field in inputs) {
+				if (inputs[field].val() == '') {
+					inputs[field].addClass('highlight');
+					return false;
+				} else inputs[field].removeClass('highlight');
 			}
-			var conversation_link = "";
-			if (conversation_id) {
-				conversation_link = "<a href='#'>Associated Conversation</a>";
+
+			if (attach_conversation.val() == true) {
+				for (field in offsets) {
+					if (offsets[field].val() == '') {
+						offsets[field].addClass('highlight');
+						return false;
+					} else offsets[field].removeClass('highlight');
+				}
 			}
-			//Leading 0 for single digit days kludge, sorry
-			day = parseInt(day).toString();
-			$("#cal_" + day).append(name + " " + time + " " + conversation_link);
-		}
-	}
-	var call = address + '/' + year + '-' + month + '-01/' + year2 + '-' + month2 + '-01T00:00:00';
-	$.getJSON(call, process);
+
+			var start_year = begin_date.val().split("/")[2];
+			var start_day = begin_date.val().split("/")[1];
+			var start_month = begin_date.val().split("/")[0];
+			begin_time = begin_time.val().substring(0,6) + ":00";
+			if (begin_time.charAt(2) != ":") {
+				begin_time = "0" + begin_time;		// Add leading 0 if not present
+			}
+
+			var end_year = end_date.val().split("/")[2];
+			var end_day = end_date.val().split("/")[1];
+			var end_month = end_date.val().split("/")[0];
+			var end_time = end_time.val().substring(0,6) + ":00";
+			if (end_time.charAt(2) != ":") {
+				end_time = "0" + end_time;			// Add leading 0 if not present
+			}
+
+			// Tranform to ISO date standard
+			var start_time = start_year + "-" + start_month + "-" + start_day + "T" + begin_time;
+			var finish_time = end_year + "-" + end_month + "-" + end_day + "T" + end_time;
+
+			$("input[name='start_time']").val(start_time);
+			$("input[name='finish_time']").val(finish_time);
+		});
+
+	});
 </script>
-<script type="text/javascript">
-	sorted_days = ["m", "t", "w", "r", "f", "s", "u"];
-	day_names = {"m":"Mon", "t":"Tue", "w":"Wed", "r":"Thu", "f":"Fri", "s":"Sat", "u":"Sun"};
-	var nonce = 0;
-	var get_nonce = function() {
-		nonce++;
-		return nonce;
-	}
-	var course_id = '<?= $course_id ?>';
-	var sidebar = '<?= site_url("sidebar"); ?>';
-	//NOTICE: DUPLICATED CODE FROM CLASS_VIEW, CLEAN UP LATER
-	var inject_upcoming = function(data) {
-		MAX_UPCOMING = 5;
-//<tr>
-//					<td><?=$month?> / 10</td>
-//					<td>10:30a &ndash; 12:00p</td>
-//					<td>d>
-				//</tr>
-		htmls = Array();
-		for (key in data) {
-			event = data[key];
-			start_time = event['start_time'];
-			console.log(start_time);
-			finish_time = event['finish_time'];
-			datetime = new Date(start_time);
-			datetime2 = new Date(finish_time);
-			name = event['name'];
-			html = "<tr><td>" + day_names[sorted_days[datetime.getDay()]] + " " + (datetime.getMonth() + 1) + "/" + datetime.getDate() + "</td><td>" + start_time.split("T")[1].substring(0,5) + " &ndash; " + finish_time.split("T")[1].substring(0,5) + "</td><td>" + name + "</td></tr>";
-			htmls.push([html, Date.parse(start_time)]);
-		}
-		console.log("htmls!");
-		var htmls_sorter = function(a,b) {
-			return a[1] - b[1];
-		}
-		htmls.sort(htmls_sorter);
-		for (key in htmls) {
-			html = htmls[key][0];
-			$("#upcoming_items").append(html);
-		}
-	}
-	$.getJSON(sidebar + "/get_upcoming/" + course_id + "?" + get_nonce(), inject_upcoming);
-</script>
+
 {% endblock %}
 
 {% block sidebar %}
-	<div class="four columns content sidebar">
-		<h4><span id="course_title"></span></h4>
-		<p>
-			<a href="#" id="nav-link" class="active">Navigation</a>
-			<a href="#" id="info-link">Information</a>
-		</p>
-
-		<div id="nav-content">
-			<ul id="conversations" class="sidebar-content">
-				<p><a href="">Conversations</a></p><div class="purple-line"></div>
-				<li>
-					<a href="">Broadcast</a>
-					<p class="date">All semester</p>
-				</li>
-
-				<li id="conversations_end">
-					<a href="">Entire conversation history</a>
-				</li>
-			</ul>
-
-			<ul id="upcoming" class="sidebar-content">
-				<p><a href="">Upcoming</a></p><div class="purple-line" style="width: 65%;"></div>
-
-				<li id="upcoming_end">
-					<a href="">Full calendar</a>
-				</li>
-			</ul>
-		</div><!-- End nav content -->
-
-		<div id="info-content">
-			<ul id="honchoes" class="sidebar-content">
-				<p><a href="">Honchoes</a></p><div class="purple-line" style="width: 60%;"></div>
-				<li><img src="[[ image('default-icon-small.png') ]]" />Professor</li>
-				<li><img src="[[ image('default-icon-small.png') ]]" />TA John Doe</li>
-				<li><img src="[[ image('default-icon-small.png') ]]" />TA Jane Doe</li>
-				<li></li>
-			</ul>
-
-			<ul id="meeting" class="sidebar-content">
-				<p><a href="">Meeting</a></p><div class="purple-line" style="width: 70%;"></div>
-			</ul>
-
-			<ul id="files" class="sidebar-content">
-				<p><a href="">Files</a></p><div class="purple-line" style="width: 78%;"></div>
-				<li>
-					<a href="#">lecture13-slides.pdf</a>
-					<p class="date">Lecture 13</p>
-				</li>
-				<li>
-					<a href="#">lecture12-slides.pdf</a>
-					<p class="date">Lecture 12</p>
-				</li>
-					<li><a href="">All files</a></li>
-			</ul>
-
-			<ul id="classmates" class="sidebar-content">
-				<p><a href="">Classmates</a></p><div class="purple-line" style="width: 55%;"></div>
-				<li><img src="[[ image('default-icon-small.png') ]]" />Ankit Shah</li>
-				<li><img src="[[ image('default-icon-small.png') ]]" />Mark Liu</li>
-				<li><img src="[[ image('default-icon-small.png') ]]" />Adi Dahiya</li>
-				<li><a href="">Full roster</a></li>
-			</ul>
-		</div> <!-- End info content -->
-	</div>
+[[sidebar]]
 {% endblock %}
 
 {% block content %}
 	<div class="twelve columns content calendar">
 		<div id="calendar"></div>
-		
+
 		<div class="new-event twelve columns">
 			<form id="create_event_form" method="post">
 				[[ form.name(placeholder="Event Name") ]]
@@ -297,23 +146,23 @@
 					<span>to</span>
 					[[ with_errors(form.end_date) ]]
 					[[ with_errors(form.end_time) ]]
-					
+
 					<div style="display: none">
 						[[ form.start_time() ]]
 						[[ form.finish_time() ]]
 					</div>
-					
+
 					[[ form.all_day() ]]
 					<span>All Day</span>
 					[[ form.attach_conversation.label ]]
 						[[ form.attach_conversation(id="convo", checked="checked") ]]
-					
+
 					[[ form.days_before.label ]]
 					[[ with_errors(form.day_offset) ]]
 						[[ form.day_offset.label ]]
 					[[ with_errors(form.hour_offset) ]]
 						[[ form.hour_offset.label ]]
-						
+
 					[[ form.event_type.label ]]
 				</div>
 				<div id="files" class="three columns">
@@ -322,7 +171,7 @@
 				</div>
 			</form>
 		</div>
-		
+
 		<div class="upcoming">
 			<h4>Upcoming Events</h4>
 			<table border="0" cellpadding="0" cellspacing="0">

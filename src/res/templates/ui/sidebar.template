@@ -1,0 +1,76 @@
+	<div class="four columns content sidebar">
+		<h4><span id="course_title"></span></h4>
+		<p>
+			<a href="#" id="nav-link" class="active">Navigation</a>
+			<a href="#" id="info-link">Information</a>
+		</p>
+
+		<div id="nav-content">
+			<ul id="conversations" class="sidebar-content">
+				<p><a href="">Conversations</a></p><div class="purple-line"></div>
+				<li>
+					<a href="">Broadcast</a>
+					<p class="date">All semester</p>
+				</li>
+				{% for convo in conversations %}
+				<li>
+					<a href="">[[ convo.title ]]</a>
+					<p class="date">[[ date_format(convo.start)]]</p>
+				</li>
+				{% endfor %}
+				<li id="conversations_end">
+					<a href="">Entire conversation history</a>
+				</li>
+			</ul>
+
+			<ul id="upcoming" class="sidebar-content">
+				<p><a href="">Upcoming</a></p><div class="purple-line" style="width: 65%;"></div>
+				{% for event in upcoming %}
+				<li>
+					<a href="">[[ event.title ]]</a>
+					<p class="date">[[ date_format(event.start)]]</p>
+				</li>
+				{% endfor %}
+				<li id="upcoming_end">
+					<a href="">Full calendar</a>
+				</li>
+			</ul>
+		</div><!-- End nav content -->
+
+		<div id="info-content">
+			<ul id="honchoes" class="sidebar-content">
+				<p><a href="">Honchoes</a></p><div class="purple-line" style="width: 60%;"></div>
+				{% for honcho in class_doc.instructors %}
+				<li><img src="[[ image('default-icon-small.png') ]]" />Professor [[ honcho.first_name ]] [[ honcho.last_name ]]</li>
+				{% endfor %}
+				{% for ta in class_doc.tas %}
+				<li><img src="[[ image('default-icon-small.png') ]]" />TA [[ ta.first_name ]] [[ ta.last_name ]]</li>
+				{% endfor %}
+			</ul>
+
+			<ul id="meeting" class="sidebar-content">
+				<p><a href="">Meeting</a></p><div class="purple-line" style="width: 70%;"></div>
+			</ul>
+
+			<ul id="files" class="sidebar-content">
+				<p><a href="">Files</a></p><div class="purple-line" style="width: 78%;"></div>
+				{% for file in files %}
+				<li>
+					<a href="[[ file_path(class_id, file.name) ]]">[[ file.name ]]</a>
+					{% for tag in file.tags %}
+						<p class="date">[[ tag.title ]] ([[ date_format(tag.start) ]])</p>
+					{% endfor %}
+				</li>
+				{% endfor %}
+				<li><a href="">All files</a></li>
+			</ul>
+
+			<ul id="classmates" class="sidebar-content">
+				<p><a href="">Classmates</a></p><div class="purple-line" style="width: 55%;"></div>
+				{% for student in class_doc.students %}
+				<li><img src="[[ image('default-icon-small.png') ]]" />[[ student.first_name ]] [[ student.last_name ]]</li>
+				{% endfor %}
+				<li><a href="">Full roster</a></li>
+			</ul>
+		</div> <!-- End info content -->
+	</div>
