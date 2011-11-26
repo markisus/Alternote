@@ -9,6 +9,9 @@
 	<link rel="stylesheet" type="text/css" href="[[ css('style.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="[[ css('chosen.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" />
+	
+	{% block page_specific_css %}
+	{% endblock %}
 {% endblock %}
 
 {% block scripts %}
@@ -29,7 +32,8 @@
 			<a href="/"><img src="[[ image('logo-bubbles.png') ]]" /></a>
 			<ul id="nav">
 				{% block nav %}
-				<li>!<a href="[[ reverse_url('LoginHandler') ]]">Login</a></li>
+				<li><a href="#">Default Nav</a></li>
+				<li><a href="[[ reverse_url('LoginHandler') ]]">Login</a></li>
 				{% endblock %}
 			</ul>
 		</header>

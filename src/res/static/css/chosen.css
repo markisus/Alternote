@@ -94,7 +94,7 @@
   width: 18px;
 }
 .chzn-container-single .chzn-single div b {
-  background: url('chosen-sprite.png') no-repeat 0 1px;
+  background: url('../images/chosen-sprite.png') no-repeat 0 1px;
   display: block;
   width: 100%;
   height: 100%;

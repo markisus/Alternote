@@ -8,6 +8,11 @@
 	</script>
 {% endblock %}
 
+{% block sidebar %}
+	<div class="four columns content sidebar">
+	</div>
+{% endblock %}
+
 {% block content %}
 	<div class="twelve columns content registration">
 		<h4>Let's get you and your class set up. This won't take long at all.</h4>
@@ -16,7 +21,7 @@
 		
 		<form method="post">
 			[[ form.school.label ]]
-				[[ form.school(class_="chzn-select") ]]
+				<div class="form_field">[[ form.school(class_="chzn-select") ]]</div>
 			[[ form.first_name.label ]]
 				[[ with_errors(form.first_name) ]]
 			[[ form.last_name.label ]]

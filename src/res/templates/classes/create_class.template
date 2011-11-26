@@ -6,7 +6,11 @@
 			<p><a class="header" href="">You</a></p>
 			<div class="purple-line" style="width:85%"></div>
 			
-			<li><img src="[[ image('default-icon-small.png') ]]" />Professor Albert Bernstein</li>
+			<li>
+				<img class="big" src="[[ image('default-icon.png') ]]" />
+				Professor Albert Bernstein <br/>
+				<p>abernstein@school.edu</p>
+			</li>
 			<li><a href="registration/edit">Edit this section</a></li>
 		</ul>
 	</div>
@@ -19,20 +23,19 @@
 		<p>Now we need to know a little bit about the class your students are learning in.</p> <br/>
 		
 		<form method="post">
-			[[ form.name.label ]]
+			[[ form.name.label(class="six columns") ]]
 				[[ with_errors(form.name) ]]
-			[[ form.section.label ]]
+			[[ form.section.label(class="six columns")  ]]
 				[[ with_errors(form.section) ]]
-			[[ form.code.label ]]
+			[[ form.code.label(class="six columns")  ]]
 				[[ with_errors(form.code) ]]
-			[[ form.alternate_codes.label ]]
+			[[ form.alternate_codes.label(class="six columns")  ]]
 				[[ with_errors(form.alternate_codes) ]]
-			[[ form.start_date.label ]]
+			[[ form.start_date.label(class="six columns")  ]]
 				[[ with_errors(form.start_date) ]]
-			[[ form.finish_date.label ]]
+			[[ form.finish_date.label(class="six columns")  ]]
 				[[ with_errors(form.finish_date) ]]
-				
-			[[ form.auto_convo.label ]]
+			[[ form.auto_convo.label(class="six columns")  ]]
 				[[ form.auto_convo(checked="checked") ]]
 			[[ form.hour_offset.label ]]				
 				[[ with_errors(form.hour_offset) ]]
