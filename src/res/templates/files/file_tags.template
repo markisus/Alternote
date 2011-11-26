@@ -1,0 +1,17 @@
+{% extends 'main.template' %}
+
+{% block content %}
+<form method="post" action="">
+
+<h1>Associated Events</h1> (Check to disassociate) <br/>
+{% for tag in tagged %}
+[[ tag.title ]] ([[ tag.start]]) <input type="checkbox" name="untag_event_id" value="[[tag._id]]"> <br />
+{% endfor %}
+<hr />
+<h1>Non-Associated Events</h1> (Check to associate)<br/>
+{% for tag in untagged %}
+[[ tag.title ]] ([[ tag.start]]) <input type="checkbox" name="tag_event_id" value="[[tag._id]]"> <br />
+{% endfor %}
+<input type="submit" value="Submit" />
+</form>
+{% endblock %}

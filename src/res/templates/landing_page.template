@@ -24,7 +24,7 @@
 	<li>
 		<a href="[[ reverse_url('LoginHandler') ]]">Login</a>
 		<div class="dropdown">
-			<form method="post">
+			<form method="post" action="[[ reverse_url('LoginHandler')]]">
 				[[ with_errors(loginForm.email) ]]
 				[[ with_errors(loginForm.password) ]]
 				[[ loginForm.submit() ]]

@@ -1,0 +1,14 @@
+{% extends 'main.template' %}
+{% block content %}
+File Editing!
+
+<form action="" method="post" enctype="multipart/form-data; charset=utf-8">
+[[ with_errors(form.file) ]]
+[[ form.submit ]]
+</form>
+
+{% for file in files %}
+Name: <a href="/static/files/[[class_id]]/[[file.name]]">[[ file.name ]]</a> / <a href="[[ reverse_url('FileTags', file._id) ]]">Tags</a>: [[ file.tags ]]  <br /> <form action="[[reverse_url('FileDelete', class_id)]]" method="post"><input type="hidden" name="file_id" value="[[ file._id ]]" /><input type="submit" value="Delete"></form>
+{% endfor %}
+
+{% endblock %}

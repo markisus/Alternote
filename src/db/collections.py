@@ -32,3 +32,5 @@ logins = alternote.logins
 logins.ensure_index([('userid',1)])
 
 codes = alternote.codes
+
+files = alternote.files

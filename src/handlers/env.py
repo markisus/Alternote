@@ -1,12 +1,14 @@
 #Things that all handlers need to access
-
+from UserDict import UserDict
 from jinja2 import Environment, PackageLoader
 import tornado.web
 from db.logins import db_get_userid, db_logout
 import db.users
+import os
 
 env = Environment(variable_start_string='[[', variable_end_string=']]', loader=PackageLoader('res', 'templates'))
 prof_code = "alternote_rocks"
+
 
 #Takes a Handler, checks if the user is prof
 def check_prof(f):
@@ -19,7 +21,7 @@ def check_prof(f):
         else:
             return f(self, *args, **kwargs)
     return wrapper
-
+    
 #Some custom logic for auth and param handling
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -40,4 +42,8 @@ class BaseHandler(tornado.web.RequestHandler):
         return unpacked
     
     def get_params(self):
-        return self.__unpack_params(self.request.arguments)
+        #return self.__unpack_params(self.request.arguments)
+        params = UserDict(self.request.arguments)
+        params.getlist = lambda key:params[key] #wtforms needs this
+        return params
+        

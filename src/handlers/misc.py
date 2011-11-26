@@ -11,22 +11,6 @@ class LandingPage(BaseHandler):
         self.write(self.template.render(regForm=RegistrationCodeForm(), loginForm=LoginForm()))
         
     def post(self):
-        #Handle the login form
-        form = LoginForm(**self.get_params())
-        if form.validate():
-            try:
-                user = get_user(form.email.data)
-            except KeyError:
-                self.write("No username or wrong password")
-                return
-            if user['password'] == form.password.data:
-                session = db_login(user['_id'])
-                self.set_cookie('session', session)
-                next = self.get_argument("next", "/")
-                self.redirect(next)
-                return
-            else:
-                self.write("No username or wrong password")
         #Handle the registration code
         code = self.get_argument("code")
         if (code == prof_code):

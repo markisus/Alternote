@@ -42,9 +42,10 @@ class CreateSchoolForm(Form):
 def time_validate(form, field):
     if field.data:
         data = field.data.strip()
-        match = re.match("^(?:0[1-9])|(?:[1-2]:[0-4]):[0-5][0-9]$", data)
-        if not match:
-            raise ValidationError("Time must be formatted as HH:MM 24-hour time")
+        try:
+            valid = time.strptime(data, "%H:%M")
+        except ValueError:
+            raise ValidationError("Date must be formated YYYY-MM-DD")
     
 def date_validate(form, field):
     if field.data:
@@ -59,8 +60,8 @@ class CreateClassForm(Form):
     section = TextField("What is the section number of your course?")
     code = TextField("And the course code?")
     alternate_codes = TextField("Does it have any cross-listed codes? If not, leave this blank.")
-    start_date = DateField("When does the course's term begin?", [validators.Required()], format="%Y-%m-%d")
-    finish_date = DateField("And end?", [validators.Required()], format="%Y-%m-%d")
+    start_date = DateField("When does the course's term begin?", [validators.Required(message="YYYY-MM-DD")], format="%Y-%m-%d")
+    finish_date = DateField("And end?", [validators.Required(message="YYYY-MM-DD")], format="%Y-%m-%d")
     m = TextField("Monday Start", [time_validate])
     m_end = TextField("Monday End", [time_validate])
     t = TextField("Tuesday Start", [time_validate])
@@ -76,6 +77,10 @@ class CreateClassForm(Form):
     u = TextField("Sunday", [time_validate])
     u_end = TextField("Sunday End", [time_validate])
     auto_convo = BooleanField("Create a conversation around every class")
-    day_offset = IntegerField("Day offset", [validators.NumberRange(min=0, max=100)])
-    hour_offset = IntegerField("Hour offset", [validators.NumberRange(min=0, max=59)])
+    day_offset = IntegerField("Day offset", [validators.NumberRange(min=0, max=100)], default=0)
+    hour_offset = IntegerField("Hour offset", [validators.NumberRange(min=0, max=59)], default=0)
     submit = SubmitField("Create Class")
+
+class FileForm(Form):
+    file = FileField("File Path")
+    submit = SubmitField("Upload")

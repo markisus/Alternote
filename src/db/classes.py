@@ -1,4 +1,6 @@
 from db.collections import *
+from datetime import datetime as dt
+from datetime import timedelta
 
 def __class_query(classid):
     classdoc = classes.find({'_id':classid}, {'name':1, '_id':1}, limit=1).hint([('_id',1), ('name',1)])[0]
@@ -14,8 +16,8 @@ def create_class(school, instructor_id, name, section, code, start_date, finish_
                     'alternate_codes':alternate_codes,
                     'name':name,
                     'section':section,
-                    'start_date':start_date,
-                    'finish_date':finish_date,
+                    'start':start_date,
+                    'finish':finish_date,
                     'instructors':[instructor_id],
                     'tas':[],
                     'students':[],
@@ -52,14 +54,32 @@ def register_user_for_class(user_id, class_id, category="students"):
                   }
             )
     
-
-def create_event_for_class(class_id, type, start="0", end="9", details=""):
+def create_broadcast_for_class(class_id):
+    create_event_for_class(class_id, "Broadcast", "Broadcast", broadcast=True)
+    
+def create_event_for_class(class_id, type, title, start="0", finish="9", hours_before=0, days_before=0, details="", dummy=False, broadcast=False):
+    #We want to differentiate between the "real" start time and the listed start time
+    if broadcast and dummy:
+        print("Warning: Marking Broadcast as dummy")
+    
+    convo_start = start 
+    try:
+        listed_start = dt.strptime(start[:16], "%Y-%m-%dT%H:%M")
+        delta = timedelta(hours=hours_before, days=days_before)
+        convo_start = (listed_start - delta).isoformat()[:16] #Lop off the seconds data
+    except ValueError:
+        pass #Ignore parse error
+    
     return events.insert(
                     {'type':type,
-                     'class':__class_query(class_id),
+                     'title':title,
+                     'class':__class_query(class_id), #Should this be changed to just class_id?
+                     'convo_start':convo_start,
                      'start':start,
-                     'end':end,
-                     'details':details
+                     'finish':finish,
+                     'details':details,
+                     'dummy':dummy, #Dummy decides if the event is visible in the convos
+                     'broadcast':broadcast
                     }
                   , safe = True
                   )

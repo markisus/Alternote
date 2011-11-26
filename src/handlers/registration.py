@@ -7,10 +7,14 @@ from db.codes import lookup_code
 
 from pymongo.errors import DuplicateKeyError
 
-class StudentRegistration(BaseHandler):
+class RegularRegistration(BaseHandler):
     #template = env.get_template('registration/student_registration.template')
-    
     def get(self):
+        code = self.get_secure_cookie("code")
+        code_data = lookup_code(code)
+        code_type = code_data['type']
+        
+    def post(self):
         code = self.get_secure_cookie("code")
         code_data = lookup_code(code)
         
@@ -32,7 +36,7 @@ class ProfessorRegistration(BaseHandler):
             
     def post(self):
         print(self.school_choices)
-        form = ProfRegistrationForm(**self.get_params())
+        form = ProfRegistrationForm(formdata=self.get_params())
         form.school.choices = self.school_choices
         if form.validate():
             school = form.school.data

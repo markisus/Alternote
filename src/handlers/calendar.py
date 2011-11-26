@@ -41,6 +41,7 @@ class CalendarFeed(BaseHandler):
             translated = list()
             #Search results is not in the proper format. Translate them
             for result in search_results:
+                print(result)
                 item = {'id':str(result['_id']), 
                         'title':result.get('title') or result['type'],  
                         'start':result['start'],
@@ -51,7 +52,6 @@ class CalendarFeed(BaseHandler):
                 translated.append(item)
                 
             print(search_results)
-            event = [{'id':111, 'title':"Event1", 'start':"2011-11-10", 'url':'http://yahoo.com/'}]
             self.write(json.dumps(translated))
         else:
             self.write("") #Is it better to return 404?
@@ -68,7 +68,7 @@ class CreateCalendarStandalone(BaseHandler):
         attach_convo = data['attach_convo']
         day_offset = data.get('day_offset', 0)
         hour_offset = data.get('hour_offset', 0)
-        db.calendar.create_standalone(class_id, start, finish, type, details, attach_convo, day_offset, hour_offset)
+        #db.calendar.create_standalone(class_id, start, finish, type, details, attach_convo, day_offset, hour_offset)
         
 
 class CreateCalendarSeries(BaseHandler):

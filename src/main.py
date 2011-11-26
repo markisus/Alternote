@@ -1,6 +1,6 @@
 from forms import *
 from forms.forms import RegistrationCodeForm, ProfRegistrationForm
-from handlers import admin, registration, classes, misc, auth, calendar
+from handlers import admin, registration, classes, misc, auth, calendar, files
 from jinja2 import Environment, PackageLoader
 from tornado.web import URLSpec
 import cgi
@@ -8,86 +8,11 @@ import json
 import os.path
 import tornado.ioloop
 import tornado.web
-import handlers.env
-
-#class ViewPostsHandler(BaseHandler):
-#    template = env.get_template('view_posts.template')
-#    
-#    @tornado.web.authenticated
-#    def get(self, eventid):
-#        get_event(eventid)
-#        self.write(self.template.render(eventid=eventid, userid=self.get_current_user(), event=get_event(eventid)))   
-#        
-#        
-#class UserHandler(BaseHandler):
-#    template = env.get_template('user.template')
-#    
-#    @tornado.web.authenticated
-#    def get(self, userid=None):
-#        if not userid:
-#            userid = self.get_current_user()
-#        user = get_user(userid)
-#        self.write(self.template.render(user=user))
-#
-#
-#class ClassHandler(BaseHandler):
-#    template = env.get_template('class.template')
-#    
-#    #@tornado.web.authenticated
-#    def get(self, classid):
-#        aclass = get_class(classid)
-#        self.write(self.template.render(Class=aclass))
-#
-#        
-#class EventHandler(BaseHandler):
-#    template = env.get_template('event.template')
-#    
-#    @tornado.web.authenticated
-#    def get(self, classid):
-#        events = get_events_for_class(classid)
-#        self.write(self.template.render(events=events))
-#        
-#
-#class LoginHandler(BaseHandler):
-#    template = env.get_template('login.template')
-#
-#    def get(self):
-#        form = LoginForm()
-#        
-#        userid = self.get_current_user()
-#        if userid:
-#            self.write("Note: You are already logged in as " + userid)
-#            
-#        self.write(self.template.render(form=form))
-#
-#    def post(self):
-#        form = LoginForm(**self.get_params())
-#        if form.validate():
-#            try:
-#                user = get_user(form.email.data)
-#            except KeyError:
-#                self.write("No username or wrong password")
-#                return
-#            if user['password'] == form.password.data:
-#                session = db_login(user['_id'])
-#                self.set_cookie('session', session)
-#                self.redirect('/me/')
-#                return
-#            
-#            else:
-#                self.write("No username or wrong password")
-#        self.write(self.template.render(form=form))
-#    
-#    def delete(self):
-#        self.set_secure_cookie('userid', None)
-#        
-#class LogoutHandler(BaseHandler):
-#    @tornado.web.authenticated
-#    def get(self):
-#        self.clear_cookie('userid')
-#        self.redirect('/login/')
+import handlers
+from constants import static_path
 
 login_url = r"/auth/login"
+
 application = tornado.web.Application([
     URLSpec(r"/", misc.LandingPage, name="LandingPage"),
     URLSpec(r"/registration/professor", registration.ProfessorRegistration, name="ProfessorRegistration"),
@@ -109,11 +34,19 @@ application = tornado.web.Application([
     URLSpec(r"/classes/view", classes.ViewClasses, name="ViewClasses"),
     URLSpec(r"/classes/codes/([\w|\-|%]+)", classes.ViewCodes, name="ViewCodes"),
 
+    #Files
+    URLSpec(r"/files/view/([\w|\-|%]+)", files.Files, name="Files"),
+    URLSpec(r"/files/delete/([\w|\-|%]+)", files.FileDelete, name="FileDelete"),
+    URLSpec(r"/files/tags/(\w+)", files.FileTags, name="FileTags"),
+    
 	#Pages
 	URLSpec(r"/pages/about", misc.About, name="About"),
 	URLSpec(r"/pages/privacy", misc.Privacy, name="Privacy"),
 	URLSpec(r"/pages/terms", misc.Terms, name="Terms"),
 	URLSpec(r"/pages/contact", misc.Contact, name="Contact"),
+    
+    #Test
+
     
     #Calendar
 #    (r"/", LoginHandler),
@@ -156,7 +89,7 @@ application = tornado.web.Application([
                                       
     cookie_secret="CHANGE THIS EVENTUALLY",
     login_url= login_url,
-    static_path= os.path.join(os.path.dirname(__file__), "res", "static")
+    static_path= static_path
 )
 
 #Add methods to the template environment

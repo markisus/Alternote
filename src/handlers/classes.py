@@ -18,7 +18,8 @@ class CreateClass(BaseHandler):
     def post(self):
         #The user is set by the professor checker
         user = self.user
-        form = CreateClassForm(**self.get_params())
+        form = CreateClassForm(formdata=self.get_params())
+        #return
         if form.validate():
             name = form.name.data
             section = form.section.data
@@ -26,8 +27,8 @@ class CreateClass(BaseHandler):
             alternate_codes = []
             if form.alternate_codes.data:
                 alternate_codes = [c.strip() for c in form.alternate_codes.data.split(",") if c.strip()]
-            start = form.start_date.data
-            finish = form.finish_date.data
+            start = form.start_date.data.isoformat()[:10]
+            finish = form.finish_date.data.isoformat()[:10]
             days = ["m", "t", "w", "r", "f", "s", "u"]
             meet_times = dict()
             #Some magic
@@ -49,10 +50,11 @@ class CreateClass(BaseHandler):
             hour_offset = form.hour_offset.data or 0
             
             db.calendar.create_series(class_id, name + " Lecture", start, finish, "Lecture", "", meet_times, auto_convo, day_offset, hour_offset)
-            
+            db.classes.create_broadcast_for_class(class_id)
             #Redirect to view classes
             self.redirect(self.reverse_url("ViewClasses"))
         else:
+            print("Validation failed" + str(form.errors))
             self.write(self.template.render(form=form))
         
 class ViewClasses(BaseHandler):
@@ -60,9 +62,7 @@ class ViewClasses(BaseHandler):
     
     @authenticated
     def get(self):
-        print(self.get_current_user())
         classes = db.users.get_classes(self.get_current_user())
-        print(classes)
         self.write(self.template.render(classes=classes, reverse_url=self.reverse_url))
     
 class ViewCodes(BaseHandler):

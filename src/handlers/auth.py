@@ -16,7 +16,7 @@ class LoginHandler(BaseHandler):
         self.write(self.template.render(form=form))
 
     def post(self):
-        form = LoginForm(**self.get_params())
+        form = LoginForm(formdata=self.get_params())
         if form.validate():
             try:
                 user = get_user(form.email.data)
@@ -26,7 +26,7 @@ class LoginHandler(BaseHandler):
             if user['password'] == form.password.data:
                 session = db_login(user['_id'])
                 self.set_cookie('session', session)
-                next = self.get_argument("next", "/")
+                next = self.get_argument("next", self.reverse_url('ViewClasses'))
                 self.redirect(next)
                 return
             else:
