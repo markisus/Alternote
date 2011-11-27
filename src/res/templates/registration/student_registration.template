@@ -1,0 +1,40 @@
+{% extends 'main.template' %}
+
+{% block page_specific_scripts %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".chzn-select").chosen();
+		});
+	</script>
+{% endblock %}
+
+{% block sidebar %}
+	<div class="four columns content sidebar">
+	</div>
+{% endblock %}
+
+{% block content %}
+	<div class="twelve columns content registration">
+	<p>We'd love to know a little more about you.</p> <br/>
+		
+		<form method="post">
+			[[ form.first_name.label ]]
+				[[ with_errors(form.first_name) ]]
+			[[ form.last_name.label ]]
+				[[ with_errors(form.last_name) ]]
+			[[ form.email.label ]]
+				[[ with_errors(form.email) ]]
+			[[ form.password.label ]]
+				[[ with_errors(form.password) ]]
+			[[ form.password1.label ]]
+				[[ with_errors(form.password1) ]]
+			[[ form.image.label ]]
+			<div id="photo">
+				<img src="[[ image('default-icon-small.png') ]]" />
+				[[ form.image() ]]
+			</div>
+			[[ form.submit() ]]
+		</form>
+	</div>
+	
+{% endblock content %}

@@ -21,3 +21,10 @@ class CreateSchool(BaseHandler):
             self.redirect(self.reverse_url('LoginHandler'))
         else:
             self.write(self.template.render(form=form))
+            
+class Account(BaseHandler):
+    def get(self):
+        self.write("TODO")
+        #Provide links to:
+        #Calendar
+        #

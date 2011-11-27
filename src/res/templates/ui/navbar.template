@@ -1,0 +1,3 @@
+{% for link in links %}
+<li><a href="[[ link.1 ]]">[[ link.0 ]]</a></li>
+{% endfor %}

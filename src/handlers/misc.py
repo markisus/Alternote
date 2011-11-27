@@ -13,11 +13,11 @@ class LandingPage(BaseHandler):
     def post(self):
         #Handle the registration code
         code = self.get_argument("code")
+        self.set_secure_cookie("code", code, expires_days=1)
         if (code == prof_code):
-            self.set_secure_cookie("code", code, expires_days=1)
             self.redirect(self.reverse_url('ProfessorRegistration'))
         else:
-            pass #Try student signup
+            self.redirect(self.reverse_url('RegularRegistration'))
 
 class About(BaseHandler):
     template = env.get_template('pages/about.template')

@@ -21,7 +21,7 @@ def check_prof(f):
         else:
             return f(self, *args, **kwargs)
     return wrapper
-
+                                                      
 #UI Stuff
 #Sidebar needs:
     #Instructors, Classmates
@@ -72,8 +72,25 @@ class BaseHandler(tornado.web.RequestHandler):
         upcoming = db.calendar.search_items(class_id, now, finish, limit=10)
         return template.render(class_id=class_id, class_doc=class_doc, files=files, conversations=conversations, upcoming=upcoming)
     
-    def render_navbar(self):
-        links = dict()
-        links['Logout'] = self.reverse_url("LogoutHandler")
-        links['Classes'] = self.reverse_url("ViewClasses")
-        links['Create Class'] = self.reverse_url("CreateClass")
+    #Clean this up
+    def render_navbar(self, class_id=None, priveledged=False):
+        template = env.get_template('ui/navbar.template')
+        links = list()
+        links += [
+            #('Create Class', self.reverse_url("CreateClass")),
+            ('Choose Class', self.reverse_url("ViewClasses")),
+        ]
+        if class_id:
+            links += [
+                ('Calendar', self.reverse_url("ViewCalendar", class_id)),
+                ]
+            if priveledged:
+                links += [
+                          ('Files', self.reverse_url("Files", class_id)),
+                          ('Codes', self.reverse_url("ViewCodes", class_id))
+                          ]
+        links += [
+              ('Logout', self.reverse_url("LogoutHandler")),
+        ]
+        return template.render(class_id=class_id, links=links)
+    

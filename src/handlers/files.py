@@ -18,9 +18,9 @@ class Files(BaseHandler):
         if db.classes.check_instructor_and_tas(class_id, self.get_current_user()):
             files = db.files.get_records(class_id)
             sorted_files = sorted(files, cmp=lambda x,y: cmp(x['name'], y['name'])) #Lexicographic sort
-            print("FILES")
-            print(sorted_files)
-            self.write(self.template.render(form=FileForm(), files=sorted_files, class_id=class_id))
+            navbar = self.render_navbar(class_id, True)
+            sidebar = self.render_sidebar(class_id)
+            self.write(self.template.render(form=FileForm(), files=sorted_files, class_id=class_id, navbar=navbar, sidebar=sidebar))
         else:
             self.write("Insufficient Permissions")
 
@@ -91,7 +91,7 @@ class FileTags(BaseHandler):
     template = env.get_template('files/file_tags.template')
     @authenticated
     @check_prof
-    def get(self, record_id):
+    def get(self, class_id, record_id):
         class_id = db.files.get_class_id_for_record(record_id)
         if db.classes.check_instructor_and_tas(class_id, self.get_current_user()):
             record = db.files.get_record(record_id)
@@ -100,13 +100,14 @@ class FileTags(BaseHandler):
             #Sort by date
             tagged = sorted(tagged, cmp=lambda x,y: cmp(x['start'], y['start']))
             untagged = sorted(untagged, cmp=lambda x,y: cmp(x['start'], y['start']))
-            self.write(self.template.render(tagged=tagged, untagged=untagged))
+            navbar = self.render_navbar(class_id, True)
+            self.write(self.template.render(tagged=tagged, untagged=untagged, navbar=navbar))
         else:
             self.write("Insufficient Permissions")
             
     @authenticated
     @check_prof
-    def post(self, record_id):
+    def post(self, class_id, record_id):
         class_id = db.files.get_class_id_for_record(record_id)
         if db.classes.check_instructor_and_tas(class_id, self.get_current_user()):
             #TODO: Check that the record and event belong to the same class?
@@ -116,6 +117,6 @@ class FileTags(BaseHandler):
                 db.files.add_tags(record_id, tag_event_ids)
             if untag_event_ids:
                 db.files.remove_tags(record_id, untag_event_ids)
-            self.redirect(self.reverse_url('FileTags', record_id))
+            self.redirect(self.reverse_url('FileTags', class_id, record_id))
         else:
             self.write("Insufficient Permissions")
