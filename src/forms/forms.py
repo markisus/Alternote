@@ -68,7 +68,7 @@ class CreateClassForm(Form):
     name = TextField("What's the name of your course?", [validators.Required()])
     section = TextField("What is the section number of your course?")
     code = TextField("And the course code?")
-    alternate_codes = TextField("Does it have any cross-listed codes? If not, leave this blank.")
+    alternate_codes = TextField("Does the course have any cross-listed codes? If not, leave this blank.")
     start_date = DateField("When does the course's term begin?", [validators.Required(message="YYYY-MM-DD")], format="%Y-%m-%d")
     finish_date = DateField("And end?", [validators.Required(message="YYYY-MM-DD")], format="%Y-%m-%d")
     m = TextField("Monday Start", [time_validate])

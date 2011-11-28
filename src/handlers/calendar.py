@@ -3,6 +3,7 @@ from env import env, BaseHandler, check_prof
 from tornado.web import authenticated
 import db.classes
 import json
+import datetime
 from datetime import date
 
 class ViewCalendar(BaseHandler):
@@ -16,13 +17,39 @@ class ViewCalendar(BaseHandler):
         #Check if we are member of the class
         if db.classes.check_members(class_id, self.get_current_user()):
             form = CreateEventForm()
-            #Check if we are professor of the class
+            # Check if we are professor of the class
             priveledged = db.classes.check_instructor_and_tas(class_id, self.get_current_user())
+            # Grab upcoming events
+            start = "0"
+            finish = "9"
+            now = datetime.datetime.now().isoformat()[:16]
+            upcoming = db.calendar.search_items(class_id, now, finish, limit=10)
+            # Render ui elements
             navbar = self.render_navbar(class_id, priveledged)
             sidebar = self.render_sidebar(class_id)
-            self.write(self.template.render(class_id=class_id, form=form, month=month, year=year, sidebar=sidebar, navbar=navbar))
+            self.write(self.template.render(class_id=class_id, form=form, month=month, year=year, sidebar=sidebar, navbar=navbar, upcoming=upcoming))
         else:
             self.write("You must be a member of this class!") #TODO: Make error pages for auth stuff...
+    
+    @authenticated
+    @check_prof
+    def post(self, class_id):
+        form = CreateEventForm(formdata=self.get_params())
+        if form.validate():
+            name = form.name.data
+            start_time = form.start_time.data
+            finish_time = form.finish_time.data
+            all_day = form.all_day.data
+            day_offset = form.day_offset.data
+            hour_offset = form.hour_offset.data
+            attach_conversation = form.attach_conversation.data
+            event_type = form.event_type.data
+            files = form.files.data
+            #TODO: Call the create_standalone method in db.calendar
+            db.calendar.create_standalone(class_id, name, start_time, finish_time, event_type, details, attach_conversation, day_offset, hour_offset)
+        else:
+            print("Validation failed" + str(form.errors))
+        self.write(self.template.render(class_id=class_id, form=form, month=month, year=year, sidebar=sidebar, navbar=navbar, upcoming=upcoming))
             
 #Details for some event
 class CalendarDetails(BaseHandler):

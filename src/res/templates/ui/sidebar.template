@@ -7,7 +7,7 @@
 
 		<div id="nav-content">
 			<ul id="conversations" class="sidebar-content">
-				<p><a href="">Conversations</a></p><div class="purple-line"></div>
+				<p><a href="" class="header">Conversations</a></p><div class="purple-line"></div>
 				<li>
 					<a href="">Broadcast</a>
 					<p class="date">All semester</p>
@@ -24,11 +24,11 @@
 			</ul>
 
 			<ul id="upcoming" class="sidebar-content">
-				<p><a href="">Upcoming</a></p><div class="purple-line" style="width: 65%;"></div>
+				<p><a href="" class="header">Upcoming</a></p><div class="purple-line" style="width: 65%;"></div>
 				{% for event in upcoming %}
 				<li>
 					<a href="">[[ event.title ]]</a>
-					<p class="date">[[ date_format(event.start)]]</p>
+					<p class="date">[[ date_format(event.start) ]]</p>
 				</li>
 				{% endfor %}
 				<li id="upcoming_end">
@@ -53,7 +53,7 @@
 			</ul>
 
 			<ul id="files" class="sidebar-content">
-				<p><a href="">Files</a></p><div class="purple-line" style="width: 78%;"></div>
+				<p><a href="" class="header">Files</a></p><div class="purple-line" style="width: 78%;"></div>
 				{% for file in files %}
 				<li>
 					<a href="[[ file_path(class_id, file.name) ]]">[[ file.name ]]</a>
@@ -66,7 +66,7 @@
 			</ul>
 
 			<ul id="classmates" class="sidebar-content">
-				<p><a href="">Classmates</a></p><div class="purple-line" style="width: 55%;"></div>
+				<p><a href="" class="header">Classmates</a></p><div class="purple-line" style="width: 55%;"></div>
 				{% for student in class_doc.students %}
 				<li><img src="[[ image('default-icon-small.png') ]]" />[[ student.first_name ]] [[ student.last_name ]]</li>
 				{% endfor %}

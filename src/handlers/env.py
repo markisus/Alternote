@@ -76,10 +76,6 @@ class BaseHandler(tornado.web.RequestHandler):
     def render_navbar(self, class_id=None, priveledged=False):
         template = env.get_template('ui/navbar.template')
         links = list()
-        links += [
-            #('Create Class', self.reverse_url("CreateClass")),
-            ('Choose Class', self.reverse_url("ViewClasses")),
-        ]
         if class_id:
             links += [
                 ('Calendar', self.reverse_url("ViewCalendar", class_id)),
@@ -90,6 +86,8 @@ class BaseHandler(tornado.web.RequestHandler):
                           ('Codes', self.reverse_url("ViewCodes", class_id))
                           ]
         links += [
+              ('Choose Class', self.reverse_url("ViewClasses")),
+              #('Create Class', self.reverse_url("CreateClass")),
               ('Logout', self.reverse_url("LogoutHandler")),
         ]
         return template.render(class_id=class_id, links=links)

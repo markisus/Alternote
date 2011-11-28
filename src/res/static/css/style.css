@@ -519,6 +519,13 @@ ul#footer-links li a:hover {
   color: #AAA;
   font-size: 12px;
 }
+.sidebar ul.sidebar-content#conversations {
+  max-height: 189px;
+  overflow: hidden;
+}
+.sidebar ul.sidebar-content#conversations:hover {
+  overflow-y: scroll;
+}
 .sidebar ul.sidebar-content li {
   float: left;
   margin: 0;
@@ -749,8 +756,7 @@ input.new-comment {
   background-color: #F3F3F3;
 }
 .calendar .new-event {
-  /* display: none; */
-
+  display: none;
   border-right: solid 1px #CCC;
   border-bottom: solid 1px #CCC;
   margin: 0 0 5px -1px;
@@ -902,12 +908,20 @@ input.new-comment {
 .registration #photo {
   margin: 6px 10px;
 }
+.registration #offsets {
+  float: left;
+  width: 87%;
+}
+.registration #offsets input {
+  width: 30px;
+}
 .registration label {
   float: left;
   font-weight: normal;
   font-size: 14px;
   margin: 0 10px 0 0 !important;
   padding: 12px 0;
+  height: 18px;
 }
 .registration form {
   float: left;

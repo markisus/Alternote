@@ -309,6 +309,13 @@ ul#footer-links {
 	        }
 		}
 		
+		&#conversations {
+		    max-height: 189px;
+		    overflow: hidden;
+		    
+		    &:hover { overflow-y: scroll; }
+		}
+		
 		li {
 			float: left;
 			margin: 0;
@@ -522,7 +529,7 @@ input.new-comment {
 	}
 	*/
 	.new-event {
-		/* display: none; */
+		display: none;
 		border-right: solid 1px #CCC;
 		border-bottom: solid 1px #CCC;
 		margin: 0 0 5px -1px;
@@ -667,12 +674,20 @@ input.new-comment {
 	
 	#photo { margin: 6px 10px; }
 	
+	#offsets {
+	    float: left;
+	    width: 87%;
+	    
+	    input { width: 30px; }
+	}
+	
 	label {
 		float: left;
 		font-weight: normal;
 		font-size: 14px;
 		margin: 0 10px 0 0 !important;
 		padding: 12px 0;
+		height: 18px;
 	}
 	
 	form {

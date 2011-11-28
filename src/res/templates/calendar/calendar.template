@@ -27,6 +27,20 @@
 			event.preventDefault();
 			$(this).parent().parent().children("li").fadeToggle('fast');
 		});
+		
+		$("#conversations a.header").click(function(event) {
+			var ul = $(this).parent().parent();
+			var newHeight = 'auto';
+			
+			if (ul.css("max-height") == "auto")
+				newHeight = '189px';
+			
+			ul.animate({
+				'max-height': newHeight
+			}, 500, function() {
+				// Animation complete
+			});
+		});
 
 		$("#nav-link").click(function(event) {
 			event.preventDefault();
@@ -56,8 +70,7 @@
 			if (day_number.length == 1) {
 				day_number = "0" + day_number;
 			}
-			$(".new-event").slideUp();
-			$(".new-event").slideDown();
+			$(".new-event").slideToggle();
 		});
 
 		$("form#create_event_form button").click(function(e) {
@@ -128,7 +141,7 @@
 {% endblock %}
 
 {% block sidebar %}
-[[sidebar]]
+	[[sidebar]]
 {% endblock %}
 
 {% block content %}
@@ -176,31 +189,13 @@
 			<h4>Upcoming Events</h4>
 			<table border="0" cellpadding="0" cellspacing="0">
 				<tbody id="upcoming_items">
+					{% for event in upcoming %}
 					<tr>
-						<td>[[ month ]] 10</td>
-						<td>10:30a &ndash; 12:00p</td>
-						<td><a href="#">Class 1</a></td>
+						<td class="date">[[ date_format(event.start) ]]</td>
+						<td class="time">[[ event.start ]] &ndash; [[ event.finish ]]</td>
+						<td><a href="#">[[ event.title ]]</td>
 					</tr>
-					<tr>
-						<td>[[ month ]] 12</td>
-						<td>10:30a &ndash; 12:00p</td>
-						<td><a href="#">Class 2</a></td>
-					</tr>
-					<tr>
-						<td>[[ month ]] 13</td>
-						<td>1:00p &ndash; 2:00p</td>
-						<td><a href="#">Class 3</a></td>
-					</tr>
-					<tr>
-						<td>[[ month ]] 17</td>
-						<td>10:30a &ndash; 12:00p</td>
-						<td><a href="#">Class 4</a></td>
-					</tr>
-					<tr>
-						<td>[[ month ]] 19</td>
-						<td>All day</td>
-						<td><a href="#">Class Homework 1</a></td>
-					</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>

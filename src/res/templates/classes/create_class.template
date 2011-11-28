@@ -36,11 +36,13 @@
 			[[ form.finish_date.label(class="six columns")  ]]
 				[[ with_errors(form.finish_date) ]]
 			[[ form.auto_convo.label(class="six columns")  ]]
-				[[ form.auto_convo(checked="checked") ]]
-			[[ form.hour_offset.label ]]				
-				[[ with_errors(form.hour_offset) ]]
-			[[ form.day_offset.label ]]
-				[[ with_errors(form.day_offset) ]] 
+				<div class="form_field" style="margin-right: 30px;">[[ form.auto_convo(checked="checked") ]]</div>
+			<div id="offsets">
+				[[ form.hour_offset.label ]]				
+					[[ with_errors(form.hour_offset) ]]
+				[[ form.day_offset.label ]]
+					[[ with_errors(form.day_offset) ]]
+			</div>
 			
 			[[ with_errors(form.m) ]]
 			[[ with_errors(form.m_end) ]]
