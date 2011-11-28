@@ -20,7 +20,7 @@ class ProfRegistrationForm(Form):
     email = TextField("Where do your students email you?", [validators.Email()])
     password = PasswordField("Create a password", [validators.Length(min=4)])
     password1 = PasswordField("Repeat password", [validators.EqualTo('password', message="Passwords must match")])
-    image = FileField("It'd be nice (for us and the students) to see your face around here. Mind uploading a photo?")
+    image = FileField("It'd be nice to see your face around here. Mind uploading a photo?")
     submit = SubmitField("Register")
     
 def validate_image(form, field):

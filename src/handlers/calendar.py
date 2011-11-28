@@ -16,7 +16,6 @@ class ViewCalendar(BaseHandler):
         #Check if we are member of the class
         if db.classes.check_members(class_id, self.get_current_user()):
             form = CreateEventForm()
-            # form.event_type.choices = {'Lecture':'Lecture'}
             sidebar = self.render_sidebar(class_id)
             self.write(self.template.render(class_id=class_id, form=form, month=month, year=year, sidebar=sidebar))
         else:

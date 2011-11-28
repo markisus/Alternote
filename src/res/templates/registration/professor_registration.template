@@ -20,24 +20,27 @@
 		<p>We'd love to know a little more about you.</p> <br/>
 		
 		<form method="post">
-			[[ form.school.label ]]
+			[[ form.school.label(class="six columns") ]]
 				<div class="form_field">[[ form.school(class_="chzn-select") ]]</div>
-			[[ form.first_name.label ]]
+			[[ form.first_name.label(class="six columns") ]]
 				[[ with_errors(form.first_name) ]]
-			[[ form.last_name.label ]]
+			[[ form.last_name.label(class="six columns") ]]
 				[[ with_errors(form.last_name) ]]
-			[[ form.email.label ]]
+			[[ form.email.label(class="six columns") ]]
 				[[ with_errors(form.email) ]]
-			[[ form.password.label ]]
+			[[ form.password.label(class="six columns") ]]
 				[[ with_errors(form.password) ]]
-			[[ form.password1.label ]]
+			[[ form.password1.label(class="six columns") ]]
 				[[ with_errors(form.password1) ]]
-			[[ form.image.label ]]
+			[[ form.image.label(class="six columns") ]]
 			<div id="photo">
 				<img src="[[ image('default-icon-small.png') ]]" />
 				[[ form.image() ]]
 			</div>
-			[[ form.submit() ]]
+			<label for="submit" class="six columns"></label>
+			<div class="form_field" style="width: 250px;">
+				[[ form.submit() ]]
+			</div>
 		</form>
 	</div>
 	

@@ -1,8 +1,6 @@
 from db.schools import create_school
 from env import env, BaseHandler
 from forms.forms import CreateSchoolForm
-from tornado.web import Application
-from tornado.web import URLSpec
 
 class CreateSchool(BaseHandler):
     template = env.get_template("admin/create_school.template")
@@ -18,6 +16,6 @@ class CreateSchool(BaseHandler):
             tags = [t.strip() for t in tags_data.split(" ") if t.strip()]
             school_name = form.school_name.data
             create_school(school_name, tags)
-            self.redirect(self.reverse_url('LoginHandler'))
+            self.redirect(self.reverse_url('LandingPage'))
         else:
             self.write(self.template.render(form=form))
