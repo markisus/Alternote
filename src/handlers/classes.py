@@ -11,7 +11,7 @@ class CreateClass(BaseHandler):
     @authenticated
     @check_prof
     def get(self):
-        self.write(self.template.render(form=CreateClassForm()))
+        self.write(self.template.render(form=CreateClassForm(), navbar=self.render_navbar()))
     
     @authenticated
     @check_prof
@@ -55,7 +55,7 @@ class CreateClass(BaseHandler):
             self.redirect(self.reverse_url("ViewClasses"))
         else:
             print("Validation failed" + str(form.errors))
-            self.write(self.template.render(form=form))
+            self.write(self.template.render(form=form, navbar=self.render_navbar()))
         
 class ViewClasses(BaseHandler):
     template = env.get_template("classes/view_classes.template")
@@ -63,7 +63,7 @@ class ViewClasses(BaseHandler):
     @authenticated
     def get(self):
         classes = db.users.get_classes(self.get_current_user())
-        self.write(self.template.render(classes=classes, reverse_url=self.reverse_url))
+        self.write(self.template.render(classes=classes, navbar=self.render_navbar()))
     
 class ViewCodes(BaseHandler):
     @authenticated

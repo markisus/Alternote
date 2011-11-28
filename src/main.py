@@ -17,6 +17,7 @@ login_url = r"/auth/login"
 application = tornado.web.Application([
     URLSpec(r"/", misc.LandingPage, name="LandingPage"),
     URLSpec(r"/registration/professor", registration.ProfessorRegistration, name="ProfessorRegistration"),
+    URLSpec(r"/registration/standard", registration.RegularRegistration, name="RegularRegistration"),
     
     #Auth
     URLSpec(login_url, auth.LoginHandler, name="LoginHandler"),
@@ -26,19 +27,19 @@ application = tornado.web.Application([
     URLSpec(r"/admin/school/create", admin.CreateSchool, name="CreateSchool"),
     
     #Calendar
-    URLSpec(r"/calendar/view/([\w|\-|%]+)", calendar.ViewCalendar, name="ViewCalendar"),
-    URLSpec(r"/calendar/feed/([\w|\-|%]+)", calendar.CalendarFeed, name="CalendarFeed"),
-    URLSpec(r"/calendar/details/(\w+)", calendar.CalendarDetails, name="CalendarDetails"),
+    URLSpec(r"/calendar/view/(?P<class_id>[\w|\-|%]+)", calendar.ViewCalendar, name="ViewCalendar"),
+    URLSpec(r"/calendar/feed/(?P<class_id>[\w|\-|%]+)", calendar.CalendarFeed, name="CalendarFeed"),
+    URLSpec(r"/calendar/details/(?P<class_id>[\w|\-|%]+)/(?P<event_id>\w+)", calendar.CalendarDetails, name="CalendarDetails"),
     
     #Classes
     URLSpec(r"/classes/create", classes.CreateClass, name="CreateClass"),
     URLSpec(r"/classes/view", classes.ViewClasses, name="ViewClasses"),
-    URLSpec(r"/classes/codes/([\w|\-|%]+)", classes.ViewCodes, name="ViewCodes"),
+    URLSpec(r"/classes/codes/(?P<class_id>[\w|\-|%]+)", classes.ViewCodes, name="ViewCodes"),
 
     #Files
-    URLSpec(r"/files/view/([\w|\-|%]+)", files.Files, name="Files"),
-    URLSpec(r"/files/delete/([\w|\-|%]+)", files.FileDelete, name="FileDelete"),
-    URLSpec(r"/files/tags/(\w+)", files.FileTags, name="FileTags"),
+    URLSpec(r"/files/edit/(?P<class_id>[\w|\-|%]+)", files.Files, name="Files"),
+    URLSpec(r"/files/delete/(?P<class_id>[\w|\-|%]+)", files.FileDelete, name="FileDelete"),
+    URLSpec(r"/files/tags/(?P<class_id>[\w|\-|%]+)/(?P<record_id>\w+)", files.FileTags, name="FileTags"),
     
 	#Pages
 	URLSpec(r"/pages/about", misc.About, name="About"),

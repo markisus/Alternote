@@ -32,8 +32,7 @@
 			<a href="/"><img src="[[ image('logo-bubbles.png') ]]" /></a>
 			<ul id="nav">
 				{% block nav %}
-				<li><a href="#">Default Nav</a></li>
-				<li><a href="[[ reverse_url('LoginHandler') ]]">Login</a></li>
+					[[ navbar ]]
 				{% endblock %}
 			</ul>
 		</header>

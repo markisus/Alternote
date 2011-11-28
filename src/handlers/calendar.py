@@ -16,8 +16,11 @@ class ViewCalendar(BaseHandler):
         #Check if we are member of the class
         if db.classes.check_members(class_id, self.get_current_user()):
             form = CreateEventForm()
+            #Check if we are professor of the class
+            priveledged = db.classes.check_instructor_and_tas(class_id, self.get_current_user())
+            navbar = self.render_navbar(class_id, priveledged)
             sidebar = self.render_sidebar(class_id)
-            self.write(self.template.render(class_id=class_id, form=form, month=month, year=year, sidebar=sidebar))
+            self.write(self.template.render(class_id=class_id, form=form, month=month, year=year, sidebar=sidebar, navbar=navbar))
         else:
             self.write("You must be a member of this class!") #TODO: Make error pages for auth stuff...
             

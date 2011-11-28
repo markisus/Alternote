@@ -25,7 +25,7 @@ def lookup_codes(class_id):
     return result
 
 def lookup_code(code_id):
-    result = codes.findOne({'_id':code_id})
+    result = codes.find_one({'_id':code_id})
     if not result:
         raise KeyError("Code " + code_id + " does not exist!")
     else:
