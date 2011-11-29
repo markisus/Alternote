@@ -6,6 +6,15 @@ import json
 import datetime
 from datetime import date
 
+#Time formatter
+def time_format(time_string):
+    time_string = time_string[11:]
+    if int(time_string[0:2]) > 12:
+        time_string = str(int(time_string[0:2]) - 12) + time_string[2:] + "p"
+    else:
+        time_string += "a"
+    return time_string
+
 class ViewCalendar(BaseHandler):
     template = env.get_template("calendar/calendar.template")
     @authenticated
@@ -76,8 +85,11 @@ class CalendarFeed(BaseHandler):
             translated = list()
             #Search results is not in the proper format. Translate them
             for result in search_results:
+                title_time = time_format(result['start'][:16])
+                result_title = result.get('title') or result['type']
+                result_title = title_time + " " + result_title
                 item = {'id':str(result['_id']), 
-                        'title':result.get('title') or result['type'],  
+                        'title':result_title,  
                         'start':result['start'],
                         'end':result['finish'],
                         'url':'/calendar/details/' + str(result['_id']),

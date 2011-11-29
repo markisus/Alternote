@@ -12,6 +12,8 @@
 		var d = date.getDate();
 		var m = date.getMonth();
 		var y = date.getFullYear();
+		var transparent = "rgba(255,255,255,0)";
+		var blue = $(".link-blue").css("color");
 
 		$('#calendar').fullCalendar({
 			header: {
@@ -20,7 +22,9 @@
 				right: 'month,basicWeek,basicDay'
 			},
 			editable: false,
-			events: "[[ reverse_url('CalendarFeed', class_id) ]]"
+			events: "[[ reverse_url('CalendarFeed', class_id) ]]",
+			eventBackgroundColor: transparent,
+			eventBorderColor: transparent,
 		});
 
 		$("a.header").click(function(event) {
@@ -70,6 +74,7 @@
 			if (day_number.length == 1) {
 				day_number = "0" + day_number;
 			}
+			$("input#begin_date").html([[ year ]] + "-" + [[ month ]] + "-" + day_number);
 			$(".new-event").slideToggle();
 		});
 
@@ -133,6 +138,14 @@
 
 			$("input[name='start_time']").val(start_time);
 			$("input[name='finish_time']").val(finish_time);
+			
+			var newEvent = {'title':name,  
+                    'start':start_time,
+                    'end':finish_time,
+                    'url':'/calendar/details/',
+                    'className':type,
+                    'editable':False};
+			$('#calendar').fullCalendar( 'renderEvent', newEvent, true );
 		});
 
 	});
@@ -192,7 +205,7 @@
 					{% for event in upcoming %}
 					<tr>
 						<td class="date">[[ date_format(event.start) ]]</td>
-						<td class="time">[[ event.start ]] &ndash; [[ event.finish ]]</td>
+						<td class="time">[[ time_format(event.start) ]] &ndash; [[ time_format(event.finish) ]]</td>
 						<td><a href="#">[[ event.title ]]</td>
 					</tr>
 					{% endfor %}

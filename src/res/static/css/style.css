@@ -240,7 +240,9 @@ a {
   float: right;
 }
 .link-blue {
-  color: #619ecf;
+  /* color: #619ecf; */
+
+  color: #009ed9;
   -webkit-transition: color 0.1s linear;
   -moz-transition: color 0.1s linear;
   transition: color 0.1s linear;
@@ -376,7 +378,9 @@ ul#footer-links li {
   margin: 0 5px;
 }
 ul#footer-links li a {
-  color: #619ecf;
+  /* color: #619ecf; */
+
+  color: #009ed9;
   -webkit-transition: color 0.1s linear;
   -moz-transition: color 0.1s linear;
   transition: color 0.1s linear;
@@ -460,7 +464,7 @@ ul#footer-links li a:hover {
   float: left;
 }
 .sidebar #info-link {
-  color: #619ecf;
+  color: #009ed9;
 }
 .sidebar #info-link.active:before {
   content: url('../images/info-icon.png');
@@ -547,7 +551,9 @@ ul#footer-links li a:hover {
   font-size: 12px;
   float: right;
   margin-right: 5px;
-  color: #619ecf;
+  /* color: #619ecf; */
+
+  color: #009ed9;
   -webkit-transition: color 0.1s linear;
   -moz-transition: color 0.1s linear;
   transition: color 0.1s linear;
@@ -616,7 +622,9 @@ ul#footer-links li a:hover {
   line-height: 1.5em;
 }
 .post .author a {
-  color: #619ecf;
+  /* color: #619ecf; */
+
+  color: #009ed9;
   -webkit-transition: color 0.1s linear;
   -moz-transition: color 0.1s linear;
   transition: color 0.1s linear;
@@ -641,7 +649,9 @@ ul#footer-links li a:hover {
   float: left;
 }
 .post .actions a {
-  color: #619ecf;
+  /* color: #619ecf; */
+
+  color: #009ed9;
   -webkit-transition: color 0.1s linear;
   -moz-transition: color 0.1s linear;
   transition: color 0.1s linear;
@@ -682,59 +692,6 @@ input.new-comment {
 .calendar {
   margin: 10px 0 0 0 !important;
   border-left: solid 1px #CCC;
-  /*
-	table.main-cal {
-		float: left;
-		width : 100%;
-		margin-left: -1px;
-	}
-	
-	tr.cal {
-		td {
-			height: 70px;
-			width: 100px;
-			padding: 5px;
-			border: solid 1px #CCC;
-			.transition(background-color 0.1s linear);
-			
-			&:hover {
-				background: #F3F3F3;
-			}
-			
-			div.content {
-				font-size: 12px;
-				white-space: nowrap;
-				max-width: 100px;
-				overflow: hidden;
-			}
-		}
-	}
-	
-	tr.week {
-		td {
-			text-align: center;
-			color: #000;
-		}
-	}
-	
-	tr.head {
-		th {
-			font-size: 12px;
-			text-align: left;
-			padding-left: 10px;
-		}
-	}
-	
-	a.arrow {
-		color: #679;
-		font-size: 12px;
-		
-		&:hover {
-			color: #346;
-		}
-	}
-	*/
-
 }
 .calendar #calendar {
   margin-left: -1px;
@@ -747,6 +704,12 @@ input.new-comment {
   font-size: 20px;
   font-weight: normal;
 }
+.calendar .fc-content .fc-widget-header {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  width: 99px;
+}
 .calendar .fc-content .fc-widget-content {
   -webkit-transition: background-color 0.1s linear;
   -moz-transition: background-color 0.1s linear;
@@ -754,6 +717,15 @@ input.new-comment {
 }
 .calendar .fc-content .fc-widget-content:hover {
   background-color: #F3F3F3;
+}
+.calendar .fc-content .fc-event-skin {
+  color: #009ed9;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.calendar .fc-content .fc-event-skin:hover {
+  color: #005473;
 }
 .calendar .new-event {
   display: none;
@@ -763,6 +735,31 @@ input.new-comment {
 }
 .calendar .new-event form {
   padding: 10px;
+}
+.calendar .new-event #submit, .calendar .new-event button {
+  color: #FFF;
+  text-shadow: none;
+  font-size: 14px;
+  width: 80px;
+  height: 40px;
+  margin: 2px 5px 10px 5px;
+  -webkit-transition: background-color 0.15s linear;
+  -moz-transition: background-color 0.15s linear;
+  transition: background-color 0.15s linear;
+}
+.calendar .new-event #submit {
+  background: #009ed9;
+  border-color: #a6e7ff;
+}
+.calendar .new-event #submit:hover {
+  background-color: #0dbdff;
+}
+.calendar .new-event button {
+  background: #c6272b;
+  border-color: #f4c5c7;
+}
+.calendar .new-event button:hover {
+  background-color: #da4649;
 }
 .calendar .new-event span {
   float: left;
@@ -776,9 +773,10 @@ input.new-comment {
   margin: 0 5px 5px 5px;
 }
 .calendar .new-event #name {
-  height: 32px;
+  height: 40px;
   padding: 5px;
   margin: 2px 10px 5px 0;
+  font-size: 16px;
   width: 70%;
 }
 .calendar .new-event input[type="checkbox"] {
@@ -818,7 +816,9 @@ input.new-comment {
   margin-left: 0;
 }
 .calendar .new-event #files a {
-  color: #619ecf;
+  /* color: #619ecf; */
+
+  color: #009ed9;
   -webkit-transition: color 0.1s linear;
   -moz-transition: color 0.1s linear;
   transition: color 0.1s linear;
@@ -850,7 +850,9 @@ input.new-comment {
   transition: color 0.1s linear;
 }
 .calendar .upcoming table a {
-  color: #619ecf;
+  /* color: #619ecf; */
+
+  color: #009ed9;
   -webkit-transition: color 0.1s linear;
   -moz-transition: color 0.1s linear;
   transition: color 0.1s linear;
