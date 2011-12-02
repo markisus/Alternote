@@ -23,6 +23,8 @@
 	
 	{% block page_specific_scripts %}
 	{% endblock %}
+	{% block sidebar_scripts %}
+	{% endblock %}
 {% endblock %}
 
 {% block body %}
@@ -48,9 +50,9 @@
 	
 	<ul id="footer-links">
 		<li>&copy; 2011 Alternote</li>
-		<li><a href="./pages/about">About us</a></li>
-		<li><a href="./pages/privacy">Privacy policy</a></li>
-		<li><a href="./pages/terms">Terms of service</a></li>
-		<li><a href="./pages/contact">Contact</a></li>
+		<li><a href="[[ reverse_url('About') ]]">About us</a></li>
+		<li><a href="[[ reverse_url('Privacy') ]]">Privacy policy</a></li>
+		<li><a href="[[ reverse_url('Terms') ]]">Terms of service</a></li>
+		<li><a href="[[ reverse_url('Contact') ]]">Contact</a></li>
 	</ul>
 {% endblock %}

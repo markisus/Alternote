@@ -1,12 +1,57 @@
-<h1>{{ Class.university }}: {{ Class.name }}, Section {{ Class.section }}</h1>
-<b>Instructor:</b> {{ Class.instructor }}
-<br />
-<b>Finish Date:</b> {{ Class.finish_date }}
-<br />
-<b>Tags:</b>
-<ul>
-{% for tag in Class.tags %}
-	<li>{{ tag }}</li>
-{% endfor %}
-</ul>
-<a href="/events/{{ Class._id }}" ><b>Events</b></a>
+{% extends 'main.template' %}
+
+{% block sidebar_scripts %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("a.header").click(function(event) {
+			event.preventDefault();
+			$(this).parent().parent().children("li").fadeToggle('fast');
+		});
+		
+		$("#conversations a.header").click(function(event) {
+			var ul = $(this).parent().parent();
+			var newHeight = 'auto';
+			
+			if (ul.css("max-height") == "auto")
+				newHeight = '189px';
+			
+			ul.animate({
+				'max-height': newHeight
+			}, 500, function() {
+				// Animation complete
+			});
+		});
+
+		$("#conversations li a").click(function() {
+			var link = $(this).attr("href");
+			$(".twelve.columns").load(link);
+		});
+
+		$("#nav-link").click(function(event) {
+			event.preventDefault();
+			$(this).addClass("active");
+			$("#info-link").removeClass("active");
+
+			$("#info-content").hide();
+			$("#nav-content").fadeIn();
+		});
+
+		$("#info-link").click(function(event) {
+			event.preventDefault();
+			$(this).addClass("active");
+			$("#nav-link").removeClass("active");
+
+			$("#nav-content").hide();
+			$("#info-content").fadeIn();
+		});
+	});
+</script>
+{% endblock %}
+
+{% block sidebar %}
+	[[ sidebar ]]
+{% endblock %}
+
+{% block content %}
+	[[ content ]]
+{% endblock %}

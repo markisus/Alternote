@@ -76,7 +76,7 @@ class BaseHandler(tornado.web.RequestHandler):
         return template.render(class_id=class_id, class_doc=class_doc, files=files, conversations=conversations, upcoming=upcoming)
     
     #Clean this up
-    def render_navbar(self, class_id=None, priveledged=False):
+    def render_navbar(self, class_id=None, priveledged=False, logged_in=True):
         template = env.get_template('ui/navbar.template')
         links = list()
         if class_id:

@@ -52,7 +52,6 @@
 		</tbody>
 	</table>
 </div>
-
 <script type='text/javascript' src='[[ script('fullcalendar.min.js') ]]'></script>
 <script type='text/javascript'>
 	$(document).ready(function() {

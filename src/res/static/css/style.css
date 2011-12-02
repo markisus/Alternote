@@ -993,3 +993,7 @@ ul#classes li {
   border-radius: 3px;
   border: solid 1px #DDD;
 }
+.content.pages .twelve.columns {
+  margin: 10px 0;
+  padding-left: 10px;
+}

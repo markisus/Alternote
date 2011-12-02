@@ -22,19 +22,23 @@ class LandingPage(BaseHandler):
 class About(BaseHandler):
     template = env.get_template('pages/about.template')
     def get(self):
-        self.write(self.template.render())
+        navbar = self.render_navbar(None, False, True)
+        self.write(self.template.render(navbar=navbar, loginForm=LoginForm()))
     
 class Privacy(BaseHandler):
     template = env.get_template('pages/privacy.template')
     def get(self):
-        self.write(self.template.render())
+        navbar = self.render_navbar(None, False, True)
+        self.write(self.template.render(navbar=navbar, loginForm=LoginForm()))
 
 class Terms(BaseHandler):
     template = env.get_template('pages/terms.template')
     def get(self):
-        self.write(self.template.render())
+        navbar = self.render_navbar(None, False, True)
+        self.write(self.template.render(navbar=navbar, loginForm=LoginForm()))
         
 class Contact(BaseHandler):
     template = env.get_template('pages/contact.template')
     def get(self):
-        self.write(self.template.render())
+        navbar = self.render_navbar(None, False, True)
+        self.write(self.template.render(navbar=navbar, loginForm=LoginForm()))
