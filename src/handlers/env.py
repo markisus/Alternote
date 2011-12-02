@@ -73,7 +73,7 @@ class BaseHandler(tornado.web.RequestHandler):
         return template.render(class_id=class_id, class_doc=class_doc, files=files, conversations=conversations, upcoming=upcoming)
     
     #Clean this up
-    def render_navbar(self, class_id=None, priveledged=False):
+    def render_navbar(self, class_id=None, priveledged=False, logged_in=True):
         template = env.get_template('ui/navbar.template')
         links = list()
         if class_id:
@@ -82,13 +82,14 @@ class BaseHandler(tornado.web.RequestHandler):
                 ]
             if priveledged:
                 links += [
-                          ('Files', self.reverse_url("Files", class_id)),
-                          ('Codes', self.reverse_url("ViewCodes", class_id))
-                          ]
-        links += [
-              ('Choose Class', self.reverse_url("ViewClasses")),
-              #('Create Class', self.reverse_url("CreateClass")),
-              ('Logout', self.reverse_url("LogoutHandler")),
-        ]
-        return template.render(class_id=class_id, links=links)
+                    ('Files', self.reverse_url("Files", class_id)),
+                    ('Codes', self.reverse_url("ViewCodes", class_id))
+                    ]
+        if logged_in:
+            links += [
+                  ('Choose Class', self.reverse_url("ViewClasses")),
+                  #('Create Class', self.reverse_url("CreateClass")),
+                  ('Logout', self.reverse_url("LogoutHandler")),
+            ]
+        return template.render(class_id=class_id, links=links, logged_in=logged_in)
     

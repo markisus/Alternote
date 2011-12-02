@@ -9,8 +9,12 @@ from datetime import date
 #Time formatter
 def time_format(time_string):
     time_string = time_string[11:]
-    if int(time_string[0:2]) > 12:
-        time_string = str(int(time_string[0:2]) - 12) + time_string[2:] + "p"
+    hour = int(time_string[0:2])
+    if hour > 11:
+        if (hour == 12):
+            time_string = str(hour) + time_string[2:] + "p"
+        else:
+            time_string = str(hour - 12) + time_string[2:] + "p"
     else:
         time_string += "a"
     return time_string

@@ -8,8 +8,8 @@
 	<link rel="stylesheet" type="text/css" href="[[ css('skeleton.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="[[ css('chosen.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" />
-	{% block page_specific_css %}
-	{% endblock %}
+
+	<link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="[[ css('style.css') ]]" />
 {% endblock %}
 
@@ -22,6 +22,8 @@
 	<script type="text/javascript" src="[[ script('chosen.jquery.min.js') ]]"></script>
 	
 	{% block page_specific_scripts %}
+	{% endblock %}
+	{% block sidebar_scripts %}
 	{% endblock %}
 {% endblock %}
 
@@ -49,9 +51,9 @@
 	
 	<ul id="footer-links">
 		<li>&copy; 2011 Alternote</li>
-		<li><a href="./pages/about">About us</a></li>
-		<li><a href="./pages/privacy">Privacy policy</a></li>
-		<li><a href="./pages/terms">Terms of service</a></li>
-		<li><a href="./pages/contact">Contact</a></li>
+		<li><a href="[[ reverse_url('About') ]]">About us</a></li>
+		<li><a href="[[ reverse_url('Privacy') ]]">Privacy policy</a></li>
+		<li><a href="[[ reverse_url('Terms') ]]">Terms of service</a></li>
+		<li><a href="[[ reverse_url('Contact') ]]">Contact</a></li>
 	</ul>
 {% endblock %}

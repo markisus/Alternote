@@ -1,9 +1,5 @@
 {% extends 'main.template' %}
 
-{% block page_specific_css %}
-<link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
-{% endblock %}
-
 {% block page_specific_scripts %}
 <script type='text/javascript' src='[[ script('fullcalendar.min.js') ]]'></script>
 <script type='text/javascript'>
@@ -25,43 +21,6 @@
 			events: "[[ reverse_url('CalendarFeed', class_id) ]]",
 			eventBackgroundColor: transparent,
 			eventBorderColor: transparent,
-		});
-
-		$("a.header").click(function(event) {
-			event.preventDefault();
-			$(this).parent().parent().children("li").fadeToggle('fast');
-		});
-		
-		$("#conversations a.header").click(function(event) {
-			var ul = $(this).parent().parent();
-			var newHeight = 'auto';
-			
-			if (ul.css("max-height") == "auto")
-				newHeight = '189px';
-			
-			ul.animate({
-				'max-height': newHeight
-			}, 500, function() {
-				// Animation complete
-			});
-		});
-
-		$("#nav-link").click(function(event) {
-			event.preventDefault();
-			$(this).addClass("active");
-			$("#info-link").removeClass("active");
-
-			$("#info-content").hide();
-			$("#nav-content").fadeIn();
-		});
-
-		$("#info-link").click(function(event) {
-			event.preventDefault();
-			$(this).addClass("active");
-			$("#nav-link").removeClass("active");
-
-			$("#nav-content").hide();
-			$("#info-content").fadeIn();
 		});
 	});
 </script>

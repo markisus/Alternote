@@ -1,14 +1,33 @@
 {% extends 'main.template' %}
 
-{% block content %}
+{% block page_specific_scripts %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("ul#nav li a").click(function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				$(this).addClass("active");
+				$(".dropdown").fadeToggle();
+			});
+			$(".dropdown").click(function(e) {
+				e.stopPropagation();
+			});
+			$("body").click(function(e) {
+				$(".dropdown").fadeOut();
+				$("ul#nav li a").removeClass("active");
+			});
+		});
+	</script>
+{% endblock %}
 
-	<div class="sixteen columns content" class="pages">
+{% block content %}
+	<div class="sixteen columns content pages">
 	    <div class="four columns content sidebar">
 	        <ul>
-				<li><a href="./pages/about">About us</a></li>
-				<li><a href="./pages/privacy">Privacy policy</a></li>
-				<li><a href="./pages/terms">Terms of service</a></li>
-				<li><a href="./pages/contact">Contact</a></li>
+				<li><a href="[[ reverse_url('About') ]]">About us</a></li>
+				<li><a href="[[ reverse_url('Privacy') ]]">Privacy policy</a></li>
+				<li><a href="[[ reverse_url('Terms') ]]">Terms of service</a></li>
+				<li><a href="[[ reverse_url('Contact') ]]">Contact</a></li>
 			</ul>
 		</div>
 		<div class="twelve columns content">
