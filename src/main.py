@@ -11,7 +11,7 @@ import tornado.web
 import handlers
 from constants import static_path
 import datetime
-from handlers.calendar import time_format
+from handlers.calendar import time_format, twelve_hour_time
 
 login_url = r"/auth/login"
 
@@ -110,7 +110,7 @@ def date_format(date_string):
 #Add formatters to globals dict
 globals['time_format'] = time_format
 globals['date_format'] = date_format
-    
+globals['twelve_hour_time'] = twelve_hour_time
 if __name__ == "__main__":
     application.listen(8888)
     tornado.ioloop.IOLoop.instance().start()

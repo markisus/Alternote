@@ -1,5 +1,5 @@
 from forms.forms import CreateEventForm
-from env import env, BaseHandler, check_prof
+from env import env, BaseHandler, check_prof, ClassViewHandler
 from tornado.web import authenticated
 import db.classes
 import json
@@ -15,50 +15,51 @@ def time_format(time_string):
         time_string += "a"
     return time_string
 
-class ViewCalendar(BaseHandler):
+def twelve_hour_time(hour_string):
+    hour, min = hour_string.split(":")
+    hour = int(hour)
+    hour = int(hour_string[:2])
+    if hour > 12:
+        hour_string = str(hour - 12) + ":" + min + "p"
+    else:
+        hour_string = str(hour) + ":" + min + "a"
+    return hour_string
+
+class ViewCalendar(ClassViewHandler):
     template = env.get_template("calendar/calendar.template")
-    @authenticated
-    def get(self, class_id, month=None, year=None):
+    def render_get(self, class_id, month=None, year=None):
         if not (month and year):
             today = date.today()
             month = today.month
             year = today.year
-        #Check if we are member of the class
-        if db.classes.check_members(class_id, self.get_current_user()):
             form = CreateEventForm()
-            # Check if we are professor of the class
-            priveledged = db.classes.check_instructor_and_tas(class_id, self.get_current_user())
             # Grab upcoming events
             start = "0"
             finish = "9"
             now = datetime.datetime.now().isoformat()[:16]
             upcoming = db.calendar.search_items(class_id, now, finish, limit=10)
-            # Render ui elements
-            navbar = self.render_navbar(class_id, priveledged)
-            sidebar = self.render_sidebar(class_id)
-            self.write(self.template.render(class_id=class_id, form=form, month=month, year=year, sidebar=sidebar, navbar=navbar, upcoming=upcoming))
-        else:
-            self.write("You must be a member of this class!") #TODO: Make error pages for auth stuff...
-    
-    @authenticated
-    @check_prof
-    def post(self, class_id):
+            return self.template.render(class_id=class_id, form=form, month=month, year=year)
+
+    def render_post(self, class_id):
+        if not (self.user_type in ['professor', 'ta']):
+            raise ValueError("Insufficient Priveleges")
+            
         form = CreateEventForm(formdata=self.get_params())
         if form.validate():
             name = form.name.data
             start_time = form.start_time.data
             finish_time = form.finish_time.data
-            all_day = form.all_day.data
+            #all_day = form.all_day.data TODO
             day_offset = form.day_offset.data
             hour_offset = form.hour_offset.data
             attach_conversation = form.attach_conversation.data
             event_type = form.event_type.data
-            files = form.files.data
-            #TODO: Call the create_standalone method in db.calendar
-            db.calendar.create_standalone(class_id, name, start_time, finish_time, event_type, details, attach_conversation, day_offset, hour_offset)
+            #files = form.files.data TODO
+            
+            db.classes.create_event_for_class(class_id, event_type, name, start_time, finish_time, hour_offset, day_offset, dummy=(not attach_conversation))
         else:
             print("Validation failed" + str(form.errors))
-        self.write(self.template.render(class_id=class_id, form=form, month=month, year=year, sidebar=sidebar, navbar=navbar, upcoming=upcoming))
+        return "OK"
             
 #Details for some event
 class CalendarDetails(BaseHandler):

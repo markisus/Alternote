@@ -107,6 +107,7 @@ def check_members(class_id, user_id):
 #List of userdocs
 def __unpack_userids(docs):  
     return [doc['_id'] for doc in docs]
+unpack_userids = __unpack_userids
 
 def get_events_for_class(class_id):
     return events.find({'class._id':class_id})

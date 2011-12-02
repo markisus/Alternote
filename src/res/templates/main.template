@@ -8,8 +8,8 @@
 	<link rel="stylesheet" type="text/css" href="[[ css('skeleton.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="[[ css('chosen.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" />
-	{% block page_specific_css %}
-	{% endblock %}
+
+	<link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="[[ css('style.css') ]]" />
 {% endblock %}
 
@@ -31,7 +31,6 @@
 			<a href="/"><img src="[[ image('logo-bubbles.png') ]]" /></a>
 			<ul id="nav">
 				{% block nav %}
-					[[ navbar ]]
 				{% endblock %}
 			</ul>
 		</header>
@@ -42,8 +41,8 @@
 			{% block sidebar %}
 			{% endblock %}
 			
-			{% block content %}
-			{% endblock %}
+			<div class="twelve columns content">
+			</div>
 		</div>
 	</div>
 	

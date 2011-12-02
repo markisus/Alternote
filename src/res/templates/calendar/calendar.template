@@ -1,10 +1,58 @@
-{% extends 'main.template' %}
+{% from 'macros.template' import with_errors %}
+<div id="calendar"></div>
 
-{% block page_specific_css %}
-<link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
-{% endblock %}
+<div class="new-event twelve columns">
+	<form id="create_event_form" method="post">
+		[[ form.name(placeholder="Event Name") ]]
+		[[ form.submit() ]]
+		<button name="Cancel">Cancel</button>
+		<div id="details" class="eight columns">
+			[[ with_errors(form.begin_date) ]]
+			[[ with_errors(form.begin_time) ]]
+			<span>to</span>
+			[[ with_errors(form.end_date) ]]
+			[[ with_errors(form.end_time) ]]
 
-{% block page_specific_scripts %}
+			<div style="display: none">
+				[[ form.start_time() ]]
+				[[ form.finish_time() ]]
+			</div>
+
+			[[ form.all_day() ]]
+			<span>All Day</span>
+			[[ form.attach_conversation.label ]]
+				[[ form.attach_conversation(id="convo", checked="checked") ]]
+
+			[[ form.days_before.label ]]
+			[[ with_errors(form.day_offset) ]]
+				[[ form.day_offset.label ]]
+			[[ with_errors(form.hour_offset) ]]
+				[[ form.hour_offset.label ]]
+
+			[[ form.event_type.label ]]
+		</div>
+		<div id="files" class="three columns">
+			<p>[[ form.files.label ]]</p> <br/>
+			[[ form.files() ]]
+		</div>
+	</form>
+</div>
+
+<div class="upcoming">
+	<h4>Upcoming Events</h4>
+	<table border="0" cellpadding="0" cellspacing="0">
+		<tbody id="upcoming_items">
+			{% for event in upcoming %}
+			<tr>
+				<td class="date">[[ date_format(event.start) ]]</td>
+				<td class="time">[[ time_format(event.start) ]] &ndash; [[ time_format(event.finish) ]]</td>
+				<td><a href="#">[[ event.title ]]</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
 <script type='text/javascript' src='[[ script('fullcalendar.min.js') ]]'></script>
 <script type='text/javascript'>
 	$(document).ready(function() {
@@ -25,43 +73,6 @@
 			events: "[[ reverse_url('CalendarFeed', class_id) ]]",
 			eventBackgroundColor: transparent,
 			eventBorderColor: transparent,
-		});
-
-		$("a.header").click(function(event) {
-			event.preventDefault();
-			$(this).parent().parent().children("li").fadeToggle('fast');
-		});
-		
-		$("#conversations a.header").click(function(event) {
-			var ul = $(this).parent().parent();
-			var newHeight = 'auto';
-			
-			if (ul.css("max-height") == "auto")
-				newHeight = '189px';
-			
-			ul.animate({
-				'max-height': newHeight
-			}, 500, function() {
-				// Animation complete
-			});
-		});
-
-		$("#nav-link").click(function(event) {
-			event.preventDefault();
-			$(this).addClass("active");
-			$("#info-link").removeClass("active");
-
-			$("#info-content").hide();
-			$("#nav-content").fadeIn();
-		});
-
-		$("#info-link").click(function(event) {
-			event.preventDefault();
-			$(this).addClass("active");
-			$("#nav-link").removeClass("active");
-
-			$("#nav-content").hide();
-			$("#info-content").fadeIn();
 		});
 	});
 </script>
@@ -138,7 +149,7 @@
 
 			$("input[name='start_time']").val(start_time);
 			$("input[name='finish_time']").val(finish_time);
-			
+
 			var newEvent = {'title':name,  
                     'start':start_time,
                     'end':finish_time,
@@ -150,67 +161,3 @@
 
 	});
 </script>
-
-{% endblock %}
-
-{% block sidebar %}
-	[[sidebar]]
-{% endblock %}
-
-{% block content %}
-	<div class="twelve columns content calendar">
-		<div id="calendar"></div>
-
-		<div class="new-event twelve columns">
-			<form id="create_event_form" method="post">
-				[[ form.name(placeholder="Event Name") ]]
-				[[ form.submit() ]]
-				<button name="Cancel">Cancel</button>
-				<div id="details" class="eight columns">
-					[[ with_errors(form.begin_date) ]]
-					[[ with_errors(form.begin_time) ]]
-					<span>to</span>
-					[[ with_errors(form.end_date) ]]
-					[[ with_errors(form.end_time) ]]
-
-					<div style="display: none">
-						[[ form.start_time() ]]
-						[[ form.finish_time() ]]
-					</div>
-
-					[[ form.all_day() ]]
-					<span>All Day</span>
-					[[ form.attach_conversation.label ]]
-						[[ form.attach_conversation(id="convo", checked="checked") ]]
-
-					[[ form.days_before.label ]]
-					[[ with_errors(form.day_offset) ]]
-						[[ form.day_offset.label ]]
-					[[ with_errors(form.hour_offset) ]]
-						[[ form.hour_offset.label ]]
-
-					[[ form.event_type.label ]]
-				</div>
-				<div id="files" class="three columns">
-					<p>[[ form.files.label ]]</p> <br/>
-					[[ form.files() ]]
-				</div>
-			</form>
-		</div>
-
-		<div class="upcoming">
-			<h4>Upcoming Events</h4>
-			<table border="0" cellpadding="0" cellspacing="0">
-				<tbody id="upcoming_items">
-					{% for event in upcoming %}
-					<tr>
-						<td class="date">[[ date_format(event.start) ]]</td>
-						<td class="time">[[ time_format(event.start) ]] &ndash; [[ time_format(event.finish) ]]</td>
-						<td><a href="#">[[ event.title ]]</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
-{% endblock content %}

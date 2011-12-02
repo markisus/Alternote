@@ -1,11 +1,14 @@
 #Things that all handlers need to access
 from UserDict import UserDict
-from jinja2 import Environment, PackageLoader
-import tornado.web
 from db.logins import db_get_userid, db_logout
+from jinja2 import Environment, PackageLoader
+from tornado.web import authenticated
+import datetime
 import db.users
 import os
-import datetime
+import tornado.web
+import db.classes
+from db.classes import unpack_userids
 env = Environment(variable_start_string='[[', variable_end_string=']]', loader=PackageLoader('res', 'templates'))
 prof_code = "alternote_rocks"
 
@@ -92,3 +95,85 @@ class BaseHandler(tornado.web.RequestHandler):
         ]
         return template.render(class_id=class_id, links=links)
     
+#Use this handler for "in-class" pages
+class ClassViewHandler(BaseHandler):
+    
+    def enforce_credentials(self, class_id):
+        user_id = self.get_current_user()
+        self.class_doc = db.classes.get_class(class_id)
+        self.students = unpack_userids(self.class_doc['students'])
+        self.tas = unpack_userids(self.class_doc['tas'])
+        self.profs = unpack_userids(self.class_doc['instructors'])
+        if user_id in self.profs:
+            self.user_type = "professor"
+        elif user_id in self.tas:
+            self.user_type = "ta"
+        elif user_id in self.students:
+            self.user_type = "student"
+        else:
+            raise ValueError(user_id + " is not a member of " + class_id)
+
+    @authenticated
+    def get(self, class_id, *args, **kwargs):
+        #Enforce credentials
+        self.enforce_credentials(class_id)
+        #Check if the request is IE
+        #If it is IE - render complete
+        if self.get_argument("ie", None):
+            content = self.render_get(class_id, *args, **kwargs)
+            out = self.render_frame(class_id, content=content)
+        #Check if the request is ajax
+        #If is, render partial
+        elif self.request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            out = self.render_get(class_id, *args, **kwargs)
+        #Else: Render frame
+        else:
+            out = self.render_frame(class_id)
+        self.write(out)
+        
+    def post(self, class_id, *args, **kwargs):
+        #Enforce credentials
+        self.enforce_credentials(class_id)
+        #Check if the request is IE
+        #If it is IE - render complete
+        if self.get_argument("ie", None):
+            content = self.render_post(class_id, *args, **kwargs)
+            out = self.render_frame(class_id, content=content)
+        #Check if the request is ajax
+        #If is, render partial
+        elif self.request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            out = self.render_post(class_id, *args, **kwargs)
+        #Else: Render frame (How would we ever get here with a post request (maybe user has no js)??)
+        else:
+            out = self.render_frame(class_id)
+        self.write(out)
+    
+    #Override: return html string
+    def render_post(self, *args, **kwargs):
+        pass
+    
+    #Override: return html string
+    def render_get(self, *args, **kwargs): 
+        #Return the html string, rendered from template
+        pass
+    
+    #Render frame expects enforce_credentials to be called before it to populate necessary variables like class_doc
+    frame_template = env.get_template('class_view.template')
+    def render_frame(self, class_id, content=None):
+        start = "0"
+        finish = "9"
+        now = datetime.datetime.now().isoformat()[:16]
+        files = db.files.get_records(class_id)
+        conversations = db.calendar.search_items(class_id, start, now)
+        upcoming = db.calendar.search_items(class_id, now, finish, limit=10)
+        #Return the frame with content injected
+        data = {'class_doc':self.class_doc,
+                'class_id':class_id,
+                'files':files,
+                'upcoming':upcoming,
+                'conversations':conversations,
+                'user_type':self.user_type
+                }
+        if content:
+            data.update({'content':content})    
+        return self.frame_template.render(**data)
