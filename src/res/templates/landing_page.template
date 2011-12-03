@@ -34,7 +34,6 @@
 {% endblock %}
 
 {% block content %}
-
 	<div class="sixteen columns content" id="index">
 		<img id="main-logo" src="[[ image('logo-large.png') ]]" />
 		<div class="ten columns content" id="join">
@@ -46,5 +45,4 @@
 			</form>
 		</div>
 	</div> <!-- 16 columns content end -->
-
 {% endblock content %}

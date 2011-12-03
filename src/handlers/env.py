@@ -62,38 +62,6 @@ class BaseHandler(tornado.web.RequestHandler):
         params = UserDict(self.request.arguments)
         params.getlist = lambda key:params[key] #wtforms needs this
         return params
-        
-    def render_sidebar(self, class_id):
-        template = env.get_template('ui/sidebar.template')
-        start = "0"
-        finish = "9"
-        now = datetime.datetime.now().isoformat()[:16]
-        class_doc = db.classes.get_class(class_id)
-    
-        files = db.files.get_records(class_id)
-        conversations = db.calendar.search_items(class_id, start, now)
-        upcoming = db.calendar.search_items(class_id, now, finish, limit=10)
-        return template.render(class_id=class_id, class_doc=class_doc, files=files, conversations=conversations, upcoming=upcoming)
-    
-    #Clean this up
-    def render_navbar(self, class_id=None, priveledged=False, logged_in=True):
-        template = env.get_template('ui/navbar.template')
-        links = list()
-        if class_id:
-            links += [
-                ('Calendar', self.reverse_url("ViewCalendar", class_id)),
-                ]
-            if priveledged:
-                links += [
-                          ('Files', self.reverse_url("Files", class_id)),
-                          ('Codes', self.reverse_url("ViewCodes", class_id))
-                          ]
-        links += [
-              ('Choose Class', self.reverse_url("ViewClasses")),
-              #('Create Class', self.reverse_url("CreateClass")),
-              ('Logout', self.reverse_url("LogoutHandler")),
-        ]
-        return template.render(class_id=class_id, links=links)
     
 #Use this handler for "in-class" pages
 class ClassViewHandler(BaseHandler):

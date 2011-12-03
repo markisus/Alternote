@@ -2,29 +2,26 @@
 
 {% block title %}Alternote Alpha{% endblock %}
 
-{% block css %}
-	<link rel="stylesheet" type="text/css" href="[[ css('base.css') ]]" />
-	<link rel="stylesheet" type="text/css" href="[[ css('layout.css') ]]" />
-	<link rel="stylesheet" type="text/css" href="[[ css('skeleton.css') ]]" />
-	<link rel="stylesheet" type="text/css" href="[[ css('chosen.css') ]]" />
-	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" />
-
-	<link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
-	<link rel="stylesheet" type="text/css" href="[[ css('style.css') ]]" />
-{% endblock %}
-
 {% block scripts %}
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="[[ script('ajax_dialog.js') ]]"></script>
 	<script type="text/javascript" src="[[ script('tabs.js') ]]"></script>
-	<script type="text/javascript" src="[[ script('global.js') ]]"></script>
 	<script type="text/javascript" src="[[ script('chosen.jquery.min.js') ]]"></script>
 	
 	{% block page_specific_scripts %}
 	{% endblock %}
 	{% block sidebar_scripts %}
 	{% endblock %}
+{% endblock %}
+
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="[[ css('base.css') ]]" />
+	<link rel="stylesheet" type="text/css" href="[[ css('layout.css') ]]" />
+	<link rel="stylesheet" type="text/css" href="[[ css('skeleton.css') ]]" />
+	<link rel="stylesheet" type="text/css" href="[[ css('chosen.css') ]]" />
+	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
+	<link rel="stylesheet" type="text/css" href="[[ css('style.css') ]]" />
 {% endblock %}
 
 {% block body %}
@@ -43,8 +40,11 @@
 			{% block sidebar %}
 			{% endblock %}
 			
-			<div class="twelve columns content">
+			<div id="ajax-inject">
+			{% block content %}
+			{% endblock %}
 			</div>
+
 		</div>
 	</div>
 	

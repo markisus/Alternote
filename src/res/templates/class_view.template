@@ -1,16 +1,22 @@
 {% extends 'main.template' %}
 
 {% block nav %}
+<ul>
 {% if user_type in ['professor'] %}
-Professor links (create class)
+
 {% endif %}
+
 {% if user_type in ['professor', 'ta'] %}
-TA links + Professor links (none?)
+
 {% endif %}
+
 {% if user_type in ['professor', 'ta', 'student'] %}
-Student links only (account, logout)
+<li><a href="#">Account</a></li>
+<li><a href="[[reverse_url('ViewClasses')]]">Change Classes</a></li>
+<li><a href="[[reverse_url('LogoutHandler')]]">Log Out</a></li>
 {% endif %}
-NAV [[ user_type ]]
+
+</ul>
 {% endblock %}
 
 {% block sidebar %}
@@ -124,12 +130,15 @@ NAV [[ user_type ]]
 <!-- end navbar script -->
 <!-- get an ajax call to the current page -->
 <script>
-	console.log(window.location);
-	var complete = function(data) {
-		console.log(data);
-		$('.twelve.columns').append(data);
-		};
-	//Ajax request to this page to load the rest of the content
-	$.get(window.location, complete);
+	var load_page = function(location) {
+		console.log(location);
+		var complete = function(data) {
+			$('#ajax-inject').html(data);
+			};
+		//Ajax request to this page to load the rest of the content
+		$.get(window.location, {'ajax':'true'}, complete);
+	};
+	
+	load_page(window.location);
 </script>
 {% endblock %}

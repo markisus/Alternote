@@ -1,4 +1,4 @@
-from env import BaseHandler, env, check_prof
+from env import BaseHandler, env, check_prof, ClassViewHandler
 from tornado.web import authenticated
 from constants import static_path
 import os
@@ -9,58 +9,49 @@ import urllib
 #File Uploading/Management
 
 
-class Files(BaseHandler):
+class Files(ClassViewHandler):
     template = env.get_or_select_template("files/edit_files.template")
 
-    @authenticated
-    @check_prof    
-    def get(self, class_id):
-        if db.classes.check_instructor_and_tas(class_id, self.get_current_user()):
+    def render_get(self, class_id):
             files = db.files.get_records(class_id)
             sorted_files = sorted(files, cmp=lambda x,y: cmp(x['name'], y['name'])) #Lexicographic sort
-            navbar = self.render_navbar(class_id, True)
-            sidebar = self.render_sidebar(class_id)
-            self.write(self.template.render(form=FileForm(), files=sorted_files, class_id=class_id, navbar=navbar, sidebar=sidebar))
-        else:
-            self.write("Insufficient Permissions")
+            return self.template.render(form=FileForm(), files=sorted_files)
 
-    @authenticated
-    @check_prof        
-    def post(self, class_id):
-        if db.classes.check_instructor_and_tas(class_id, self.get_current_user()):
-            found = True
-            try:
-                f = self.request.files['file'][0]
-            except KeyError as e:
-                found = False
-                print(e.message)
-                
-            if found:
-                name = f['filename']
-                type = f['content_type']
-                body = f['body']
-                
-                #Check if file exists in database
-                if db.files.check_record(class_id, name):
-                    self.write("A file with this name already exists!")
-                    return
-                else:
-                    upload_path = os.path.join(static_path, "files", class_id)
-                    if not os.path.exists(upload_path):
-                        os.makedirs(upload_path)
-                    print(upload_path)
-                    file_path = os.path.join(upload_path, name)
-                    file = open(file_path, 'wb')
-                    file.write(body)
-                    #Add meta data to the database
-                    db.files.create_record(class_id, name, type)
-                    #Everything Okay?
-                    print(self.reverse_url("Files", class_id))
-                    self.redirect(self.reverse_url("Files", urllib.quote(class_id)))
+       
+    def render_post(self, class_id):
+        if not self.user_type in ['professor', 'ta']:
+            raise ValueError("You need to be a prof or a ta")
+        found = True
+        try:
+            f = self.request.files['file'][0]
+        except KeyError as e:
+            found = False
+            print(e.message)
+            
+        if found:
+            name = f['filename']
+            type = f['content_type']
+            body = f['body']
+            
+            #Check if file exists in database
+            if db.files.check_record(class_id, name):
+                self.write("A file with this name already exists!")
+                return
             else:
-                self.write("Did you forget to choose a file?")
+                upload_path = os.path.join(static_path, "files", class_id)
+                if not os.path.exists(upload_path):
+                    os.makedirs(upload_path)
+                print(upload_path)
+                file_path = os.path.join(upload_path, name)
+                file = open(file_path, 'wb')
+                file.write(body)
+                #Add meta data to the database
+                db.files.create_record(class_id, name, type)
+                #Everything Okay?
+                print(self.reverse_url("Files", class_id))
+                self.redirect(self.reverse_url("Files", urllib.quote(class_id)))
         else:
-            self.write("Insufficient Permissions")
+            self.write("Did you forget to choose a file?")
             
 class FileDelete(BaseHandler):           
     @authenticated

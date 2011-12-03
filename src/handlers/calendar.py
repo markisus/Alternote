@@ -41,8 +41,9 @@ class ViewCalendar(ClassViewHandler):
             start = "0"
             finish = "9"
             now = datetime.datetime.now().isoformat()[:16]
-            upcoming = db.calendar.search_items(class_id, now, finish, limit=10)
-            return self.template.render(class_id=class_id, form=form, month=month, year=year)
+            upcoming = db.calendar.search_items(class_id, now, finish)
+            print(upcoming)
+            return self.template.render(class_id=class_id, user_type=self.user_type, upcoming=upcoming, form=form, month=month, year=year)
 
     def render_post(self, class_id):
         if not (self.user_type in ['professor', 'ta']):

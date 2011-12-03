@@ -63,7 +63,7 @@ class ViewClasses(BaseHandler):
     @authenticated
     def get(self):
         classes = db.users.get_classes(self.get_current_user())
-        self.write(self.template.render(classes=classes, navbar=self.render_navbar()))
+        self.write(self.template.render(classes=classes))
     
 class ViewCodes(BaseHandler):
     @authenticated

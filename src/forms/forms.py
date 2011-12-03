@@ -108,5 +108,5 @@ class CreateEventForm(Form):
     day_offset = TextField("Day(s)")
     hour_offset = TextField("Hour(s)")
     attach_conversation = BooleanField("Auto-conversation for this event")
-    event_type = SelectField("Type of event (optional)")
+    event_type = SelectField("Type of event (optional)", choices=[('Other', 'Other'), ('Lecture', 'Lecture'), ('Homework', "Homework"), ("Assignment", "Assignment")])
     files = FileField("Associated files")
