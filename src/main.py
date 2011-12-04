@@ -30,7 +30,8 @@ application = tornado.web.Application([
     #Calendar
     URLSpec(r"/calendar/view/(?P<class_id>[\w|\-|%]+)", calendar.ViewCalendar, name="ViewCalendar"),
     URLSpec(r"/calendar/feed/(?P<class_id>[\w|\-|%]+)", calendar.CalendarFeed, name="CalendarFeed"),
-    URLSpec(r"/calendar/details/(?P<class_id>[\w|\-|%]+)/(?P<event_id>\w+)", calendar.CalendarDetails, name="CalendarDetails"),
+    URLSpec(r"/calendar/details/(?P<class_id>[\w|\-|%]+)/(?P<calendar_id>\w+)", calendar.CalendarDetails, name="CalendarDetails"),
+    URLSpec(r"/calendar/create/(?P<class_id>[\w|\-|%]+)", calendar.CreateCalendarStandalone, name="CreateCalendarStandalone"),
     
     #Classes
     URLSpec(r"/classes/create", classes.CreateClass, name="CreateClass"),

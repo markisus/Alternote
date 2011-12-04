@@ -1,4 +1,5 @@
 from forms.forms import CreateEventForm
+import db.conversations
 from env import env, BaseHandler, check_prof, ClassViewHandler
 from tornado.web import authenticated
 import db.classes
@@ -42,10 +43,10 @@ class ViewCalendar(ClassViewHandler):
             finish = "9"
             now = datetime.datetime.now().isoformat()[:16]
             upcoming = db.calendar.search_items(class_id, now, finish)
-            print(upcoming)
             return self.template.render(class_id=class_id, user_type=self.user_type, upcoming=upcoming, form=form, month=month, year=year)
 
     def render_post(self, class_id):
+        print("POST CALLED!!!")
         if not (self.user_type in ['professor', 'ta']):
             raise ValueError("Insufficient Priveleges")
             
@@ -69,7 +70,7 @@ class ViewCalendar(ClassViewHandler):
 #Details for some event
 class CalendarDetails(BaseHandler):
     @authenticated
-    def get(self, calendar_id):
+    def get(self, class_id, calendar_id):
         item = db.calendar.get_item(calendar_id)
         self.write(json.dumps(item, skipkeys=True, default=str))
         
@@ -98,7 +99,7 @@ class CalendarFeed(BaseHandler):
                         'title':result_title,  
                         'start':result['start'],
                         'end':result['finish'],
-                        'url':'/calendar/details/' + str(result['_id']),
+                        'url':self.reverse_url("CalendarDetails", class_id, str(result['_id'])),
                         'className':result['type'],
                         'editable':False}
                 translated.append(item)
@@ -111,16 +112,18 @@ class CreateCalendarStandalone(BaseHandler):
     @authenticated
     @check_prof
     def post(self, class_id):
-        data = json.loads(self.get_argument("data"))
-        start = data['start']
-        finish = data['finish']
-        type = data['type']
-        details = data['details']
-        attach_convo = data['attach_convo']
-        day_offset = data.get('day_offset', 0)
-        hour_offset = data.get('hour_offset', 0)
-        #db.calendar.create_standalone(class_id, start, finish, type, details, attach_convo, day_offset, hour_offset)
-        
+        print("CREATE STANDALONE")
+        print(self.get_params())
+        data = self.get_params()
+        title = data['title'][0]
+        start = data['start'][0]
+        finish = data['end'][0]
+        type = data['type'][0]
+        attach_convo = data['auto_convo'][0]
+        day_offset = data.get('day_offset', [0])[0]
+        hour_offset = data.get('hour_offset', [0])[0]
+        db.classes.create_event_for_class(class_id, type, title, start, finish, hour_offset, day_offset, dummy=not attach_convo)
+        self.write("OK")
 
 class CreateCalendarSeries(BaseHandler):
     #Gimme some json data!

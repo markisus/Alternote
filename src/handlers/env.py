@@ -100,20 +100,14 @@ class ClassViewHandler(BaseHandler):
         self.write(out)
         
     def post(self, class_id, *args, **kwargs):
+        print("Post called...")
+        #What should we do on posts...?
         #Enforce credentials
         self.enforce_credentials(class_id)
-        #Check if the request is IE
-        #If it is IE - render complete
-        if self.get_argument("ie", None):
-            content = self.render_post(class_id, *args, **kwargs)
-            out = self.render_frame(class_id, content=content)
-        #Check if the request is ajax
-        #If is, render partial
-        elif self.request.headers.get("X-Requested-With") == "XMLHttpRequest":
-            out = self.render_post(class_id, *args, **kwargs)
-        #Else: Render frame (How would we ever get here with a post request (maybe user has no js)??)
-        else:
-            out = self.render_frame(class_id)
+        #Always render complete?
+        content = self.render_post(class_id, *args, **kwargs)
+        out = self.render_frame(class_id, content=content)
+        
         self.write(out)
     
     #Override: return html string

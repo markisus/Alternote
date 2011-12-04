@@ -9,22 +9,20 @@
 				[[ form.submit() ]]
 				<button name="Cancel">Cancel</button>
 				<div id="details" class="eight columns">
+					[[ form.start_hour(class_="chzn-select") ]] : [[ form.start_minute(class_="chzn-select") ]] [[ form.start_am_pm(class_="chzn-select") ]]
 					[[ with_errors(form.begin_date) ]]
-					[[ with_errors(form.begin_time) ]]
+					<hr />
 					<span>to</span>
+					[[ form.end_hour(class_="chzn-select") ]] : [[ form.end_minute(class_="chzn-select") ]] [[ form.end_am_pm(class_="chzn-select") ]]
 					[[ with_errors(form.end_date) ]]
-					[[ with_errors(form.end_time) ]]
 
-					<div style="display: none">
-						[[ form.start_time() ]]
-						[[ form.finish_time() ]]
-					</div>
-
+					{# Comment
 					[[ form.all_day() ]]
 					<span>All Day</span>
 					[[ form.attach_conversation.label ]]
 						[[ form.attach_conversation(id="convo", checked="checked") ]]
-
+					-->
+					#}
 					[[ form.days_before.label ]]
 					[[ with_errors(form.day_offset) ]]
 						[[ form.day_offset.label ]]
@@ -34,10 +32,12 @@
 					[[ form.event_type.label ]]
 					[[ with_errors(form.event_type) ]]
 				</div>
+				{#
+				<!-- Forget files for now... it's kind of hard to do this with ajax
 				<div id="files" class="three columns">
 					<p>[[ form.files.label ]]</p> <br/>
 					[[ form.files() ]]
-				</div>
+				</div> -->#}
 			</form>
 			{% endif %}
 		</div>
@@ -57,6 +57,11 @@
 			</table>
 		</div>
 	</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".chzn-select").chosen();
+	});
+</script>
 <script type='text/javascript' src='[[ script('fullcalendar.min.js') ]]'></script>
 <script type='text/javascript'>
 	$(document).ready(function() {
@@ -104,7 +109,43 @@
 			e.preventDefault();
 			$(".new-event").slideUp();
 		});
-
+		$("form#create_event_form #submit").click(function(e) {
+			e.preventDefault();
+			start_hour = $("form#create_event_form #start_hour").val();
+			start_minute = $("form#create_event_form #start_minute").val();
+			start_date = $("form#create_event_form #begin_date").val();
+			start_am_pm = $("form#create_event_form #start_am_pm").val();
+			
+			end_hour = $("form#create_event_form #end_hour").val();
+			end_minute = $("form#create_event_form #end_minute").val();
+			end_date = $("form#create_event_form #end_date").val();
+			end_am_pm = $("form#create_event_form #end_am_pm").val();
+			
+			if (start_am_pm == "pm" && start_hour != 12) {
+				start_hour = (parseInt(start_hour) + 12).toString();
+			} else if(start_am_pm == "am" && start_hour == 12) {
+				start_hour = (parseInt(start_hour) - 12).toString();
+			}
+			if (end_am_pm == "pm" && start_hour != 12) {
+				end_hour = (parseInt(end_hour) + 12).toString();
+			} else if(end_am_pm == "am" && end_hour == 12) {
+				end_hour = (parseInt(end_hour) - 12).toString();
+			}
+			
+			var start = start_date + "T" + start_hour + ":" + start_minute;
+			var end = end_date + "T" + end_hour + ":" + end_minute;
+			var event_type = $("form#create_event_form #event_type").val();
+			var day_offset = $("form#create_event_form #day_offset").val();
+			var hour_offset = $("form#create_event_form #hour_offset").val();
+			var title = $("form#create_event_form #name").val();
+			var auto_convo = false;
+			if ($("form#create_event_form #convo").attr('checked')) {
+				auto_convo = true;
+			}
+			var data = {'start':start, 'end':end, 'type':event_type, 'auto_convo':auto_convo, 'day_offset':day_offset, 'hour_offset':hour_offset, 'title':title};
+			$.post("[[reverse_url('CreateCalendarStandalone', class_id)]]", data, function(l){alert(l);});
+		});
+		
 		$(".chzn-select").chosen();
 
 		$("input#submit").hover(function() {/*

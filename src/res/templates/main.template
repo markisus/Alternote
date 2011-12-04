@@ -7,7 +7,6 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="[[ script('tabs.js') ]]"></script>
 	<script type="text/javascript" src="[[ script('chosen.jquery.min.js') ]]"></script>
-	
 	{% block page_specific_scripts %}
 	{% endblock %}
 	{% block sidebar_scripts %}

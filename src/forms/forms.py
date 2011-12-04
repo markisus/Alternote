@@ -101,12 +101,19 @@ class CreateEventForm(Form):
     begin_time = TextField("Start Time", [validators.Required()])
     end_date = TextField("End Date", [validators.Required()])
     end_time = TextField("End Time", [validators.Required()])
-    start_time = TextField("Hidden start time field")
-    finish_time = TextField("Hidden finish time field")
-    all_day = BooleanField("All day")
+    hour_choices = [("%02d" % s, s) for s in range(1,13)]
+    min_choices = [("%02d" % s, "%02d" % s) for s in range(0, 60)]
+    am_pm = [("am", "am"), ("pm", "pm")]
+    start_hour = SelectField("Start Hour", [validators.Required()], choices=hour_choices)
+    start_minute = SelectField("Start Minute", [validators.Required()], choices=min_choices)
+    start_am_pm = SelectField("start am/pm", [validators.Required()], choices=am_pm)
+    end_hour = SelectField("End Hour", [validators.Required()], choices=hour_choices)
+    end_minute = SelectField("End Minute", [validators.Required()], choices=min_choices)
+    end_am_pm = SelectField("start am/pm", [validators.Required()], choices=am_pm)
+    #all_day = BooleanField("All day")
     days_before = TextField("How long before should the conversation start?")
     day_offset = TextField("Day(s)")
     hour_offset = TextField("Hour(s)")
     attach_conversation = BooleanField("Auto-conversation for this event")
     event_type = SelectField("Type of event (optional)", choices=[('Other', 'Other'), ('Lecture', 'Lecture'), ('Homework', "Homework"), ("Assignment", "Assignment")])
-    files = FileField("Associated files")
+    #files = FileField("Associated files")
