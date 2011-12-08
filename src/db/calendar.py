@@ -11,7 +11,7 @@ def get_item(event_id):
     return events.find_one({'_id':event_id})
 #Get all
 def get_all(class_id):
-    return list(events.find({'class_id':class_id}))
+    return list(events.find({'class._id':class_id}))
 
 #Finds standlone items
 def search_items(class_id, start, finish, convos_only=False, limit=None):

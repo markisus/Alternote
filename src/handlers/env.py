@@ -63,6 +63,9 @@ class BaseHandler(tornado.web.RequestHandler):
         params.getlist = lambda key:params[key] #wtforms needs this
         return params
     
+    def render_out(self, *args, **kwargs):
+        self.write(self.template.render(*args, **kwargs))
+        
 #Use this handler for "in-class" pages
 class ClassViewHandler(BaseHandler):
     

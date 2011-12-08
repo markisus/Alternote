@@ -91,8 +91,7 @@ class FileTags(BaseHandler):
             #Sort by date
             tagged = sorted(tagged, cmp=lambda x,y: cmp(x['start'], y['start']))
             untagged = sorted(untagged, cmp=lambda x,y: cmp(x['start'], y['start']))
-            navbar = self.render_navbar(class_id, True)
-            self.write(self.template.render(tagged=tagged, untagged=untagged, navbar=navbar))
+            self.write(self.template.render(tagged=tagged, untagged=untagged))
         else:
             self.write("Insufficient Permissions")
             

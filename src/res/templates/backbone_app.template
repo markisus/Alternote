@@ -1,0 +1,432 @@
+<head>
+	<link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
+</head>
+<script type="text/javascript" src="[[ script('date.format.js') ]]"></script>
+<script type="text/javascript" src="[[ script('json2.js') ]]"></script>
+<script type="text/javascript" src="[[ script('jquery-1.6.4.js') ]]"></script>
+<script type="text/javascript" src="[[ script('jquery.mousewheel.js') ]]"></script>
+<script type="text/javascript" src="[[ script('underscore-1.2.2.js') ]]"></script>
+<script type="text/javascript" src="[[ script('backbone.js') ]]"></script>
+<script type="text/javascript" src="[[ script('mustache.js') ]]"></script>
+
+<script type="text/template" id="upcoming-template">
+	<% var startDate = new Date(model.get('start')) %>
+	<% var files = model.get_files() %>
+	<li id="<%= model.get('id') %>" class="<%= model.get('type') %>">
+		<%= model.get('title') %><br/>
+		<%= startDate.format('m/d h:MMt') %>
+		<% if(!_.isEmpty(files)) { %>
+		<div class="files">
+		Files:
+		<ul>
+			<% _(files).forEach(function(file){ %> 
+				<li><a href="<%= generate_filepath(file.get('name')) %>"><%= file.get('name') %></a></li>
+			<% }) %>
+		</ul>
+		</div>
+		<% } %>
+	</li>
+</script>
+<script type="text/template" id="user-template">
+	<li id="<%= user_id %>">
+		<div class="user">
+			<% if (typeof user_type != 'undefined') {print(user_type)} %> <%= first_name %> <%= last_name %> 
+		</div>
+	</li>
+</script>
+<script type="text/template" id="event_template">
+	<div>Event</div>
+</script>
+<script type="text/template" id="datetime-input-template">
+	<input type="text" class="date"/>
+	<input type="text" class="hour"/>:
+	<input type="text" class="minute"/>
+	<input type="text" class="ap"/>
+</script>
+<script type="text/javascript">
+$(
+//On document ready
+function() {
+	//**************** Useful Global Items *********************
+	//User Id
+	console.log("Bootstrapping user id.");
+	window.user_id = "[[user_id]]";
+	
+	//file_path
+	window.generate_filepath = function(filename) {
+		return "/static/files/" + (class_doc.get('id') || class_doc.get('_id')) + "/" + filename;
+	}
+	
+	//server time
+	window.server_timestamp = "[[server_timestamp]]";
+	
+	//meet time format
+	window.day_names = {'m':'Mon', 't':'Tue', 'w':'Wed', 'r':'Thu', 'f':'Fri', 's':'Sat', 'u':'Sun'};
+	window.meet_time_format = function(meet_time) {
+		d = new Date("0000-01-01T" + meet_time);
+		return d.format("UTC:h:MMt")
+	};
+	window.day_order = ["m", "t", "w", "r", "f", "s", "u"];
+	
+	//**************** MODELS *********************
+	//Class Model
+	console.log("Bootstrapping class doc.");
+	var Class = Backbone.Model.extend({
+		//Instructors and TAs are priveleged
+		is_priveleged: function(some_user_id) {
+			return	_(this.get('instructors')).chain()
+				.union(this.get('tas'))
+				.pluck('_id')
+				.contains(some_user_id)
+				.value();
+		}
+	});
+	window.class_doc = new Class([[class_doc]]);
+	
+	//Calendar Event Model - depends on File Collection
+	console.log("Creating Event model.");
+	var Event = Backbone.Model.extend({
+		get_files: function() {
+			var self = this;
+			//the files global Collection is defined later
+			return files.filter(function(file) {
+				return file.has_tag(self.get('id'));
+			});
+		},
+		
+	});
+	
+	//File Model - depends on Event Collection
+	console.log("Creating File model.");
+	var File = Backbone.Model.extend({
+		has_tag: function(id) {
+			return _(this.get('tags')).chain()
+			.map(function(doc){return doc['_id'];})
+			.contains(id)
+			.value();
+		},
+		get_classes: function() {
+			//events global Collection is defined later
+			var self=this;
+			return events.filter(function(event) {
+				return self.has_tag(event.get('id'));
+			});
+		}
+	});
+	 
+	//**************** COLLECTIONS *********************
+	//Files Collection
+	console.log("Bootstrapping files collection.");
+	var Files = Backbone.Collection.extend({model:File});
+	window.files = new Files([[files]]);
+	
+	//Calendar Events Collection
+	console.log("Bootstrapping events collection.");
+	var Events = Backbone.Collection.extend({model:Event});
+	window.events = new Events([[events]]);
+	//Maintain Calendar Order
+	window.events.comparator = function(event) {
+		return event.get("start");
+	};
+	
+	//**************** VIEWS *********************
+	//Sidebar Upcoming Item
+	var UpcomingItem = Backbone.View.extend({
+		tagName: "li",
+		template: _.template($('#upcoming-template').html()),
+		render: function() {
+			var model = this.model;
+			var result = $(this.el).html(this.template({model:model}));
+			return result;
+		}
+	});
+	
+	//Sidebar UI Component
+	var SideBar = Backbone.View.extend({
+		el:$('#sidebar'),
+		initialize: function(){
+			console.log("Initializing sidebar.");
+			this.max_upcoming = Infinity;
+			this.render();
+		},
+		render: function(){
+			this.render_upcoming();
+			this.render_honchoes();
+			this.render_classmates();
+			this.render_meeting_times();
+			this.render_files();
+		},
+		render_upcoming: function() {
+			var upcoming = events.first(this.max_upcoming);
+			this.$("#upcoming-list").html(""); //Clear current upcoming list
+			_(upcoming)
+			.filter(function(item) {
+				return server_timestamp <= item.get('start');
+			})
+			.forEach(function(item) {
+				var itemView = new UpcomingItem({model:item});
+				this.$("#upcoming-list").append(itemView.render());
+			});		
+		},
+		render_honchoes: function() {
+			var profs = class_doc.get('instructors');
+			var tas = class_doc.get('tas');
+			var user_template = _.template($("#user-template").html());
+			this.$("#honchoes-list").html("");
+			_(profs).forEach(function(item) {
+				this.$("#honchoes-list").append(user_template({user_type:"Professor", first_name:item.first_name, last_name:item.last_name}));
+			});
+			_(tas).forEach(function(item) {
+				this.$("#honchoes-list").append(user_template({user_type:"TA", first_name:item.first_name, last_name:item.last_name}));
+			});
+		},
+		render_classmates: function() {
+			var classmates = class_doc.get('students');
+			var user_template = _.template($("#user-template").html());
+			this.$("#classmates-list").html("");
+			_(classmates).forEach(function(item) {
+				this.$("#classmates-list").append(user_template({first_name:item.first_name, last_name:item.last_name}));
+			});
+		},
+		render_meeting_times: function() {
+			meeting_times = class_doc.get('meet_times');
+			_(day_order).forEach(
+				function(day_code) {
+					if(!_.isUndefined(meeting_times[day_code])) {
+						var meet_time = "<li><%= day_name %>, <%= start %>-<%= end %></li>";
+						var html = _.template(meet_time, {day_name:day_names[day_code], start:meet_time_format(meeting_times[day_code][0]), end:meet_time_format(meeting_times[day_code][1])});
+						this.$('#meeting-list').append(html);
+					}
+				}
+			);
+		},
+		render_files: function() {
+			console.log("Rendering files.");
+			console.log(files);
+			files.forEach(
+				function(file) {
+					var file_format = '<li><a href="<%= generate_filepath(file.get("name")) %>"><%= file.get("name") %></a></li>';
+					this.$("#file-list").append(_.template(file_format, {file:file}));
+				}
+			);
+		}
+		
+	});
+	window.sidebar = new SideBar();
+	
+	//Datetime Input Widget
+	var DatetimeInputWidget = Backbone.View.extend({
+		events: {
+			'mousewheel .date': 'add_day',
+			'mousewheel .hour': 'add_hour',
+			'mousewheel .minute': 'add_five_min',
+			'mousewheel .ap': 'toggle_ap',
+			'blur .date': 'parse_date',
+			'blur .hour': 'parse_hour',
+			'blur .minute': 'parse_minute',
+			'blur .ap': 'parse_hour',
+		},
+		initialize: function() {
+			//Date arithmetic variables
+			this.minute = 60*1000;
+			this.hour = this.minute*60;
+			this.day = this.hour*24;
+			
+			console.log("Compiling template");
+			this.template = _.template($("#datetime-input-template").html());
+			console.log("Done compiling");
+			$(this.el).append(this.template({'a':'b'}));
+			this.set_date(new Date(server_timestamp), true); //Renders
+		},
+		set_date: function(date, default_time) {
+			this.date = date;
+			if(default_time) {
+				//Set the time to 12:00pm
+				this.date.setHours(12);
+				this.date.setMinutes(0);
+			}
+			this.render();
+		},
+		add_day: function(event) {
+			this.scroll_wheel_helper(event, this.day);
+		},
+		add_half_day: function(event) {
+			this.scroll_wheel_helper(event, this.day/2);
+		},
+		add_hour: function(event) {
+			this.scroll_wheel_helper(event, this.hour);
+		},
+		add_five_min: function(event) {
+			this.scroll_wheel_helper(event, this.minute*5);
+		},
+		toggle_ap: function(scroll_event) {
+			scroll_event.preventDefault();
+			if (this.date.getHours() >= 12) {
+				this.set_date(new Date(this.date.valueOf() - 12*this.hour));
+			} else {
+				this.set_date(new Date(this.date.valueOf() + 12*this.hour));
+			}
+		},
+		scroll_wheel_helper: function(scroll_event, change) {
+			scroll_event.preventDefault();
+			var deltaY = scroll_event.originalEvent.wheelDeltaY;
+			if (deltaY < 0) {
+				change *= -1;
+			}
+			this.set_date(new Date(this.date.valueOf() + change));
+		},
+		parse_date: function() {
+			var date = this.$('.date').val();
+			var date_array = _(date.split("/")).map(function(item){return parseInt(item)});
+			this.date.setFullYear(date_array[2]);
+			this.date.setMonth(date_array[0]-1);
+			this.date.setDate(date_array[1]);
+			this.render();
+		},
+		parse_hour: function() {
+			var hour = this.$('.hour').val();
+			var ap = this.$('.ap').val();
+			hour = parseInt(hour);
+			if (ap == 'a' && hour == 12) {
+				hour = 0;
+			}
+			if (ap == 'p' && hour != 12) {
+				hour = (hour + 12)%24;
+			}
+			this.date.setHours(hour);
+			this.render();
+		},
+		parse_minute: function() {
+			var minute = this.$('.minute').val();
+			minute = parseInt(minute);
+			this.date.setMinutes(minute);
+			this.render();
+		},
+		floor: function(date) {
+			console.log("Inside floor");
+			if (date.valueOf() > this.date.valueOf()) {
+				this.set_date(new Date(date.valueOf()));
+			}
+		},
+		ceil: function(date) {
+			console.log("Inside ceil");
+			console.log(date.valueOf());
+			console.log(this.date);
+			if (date.valueOf() < this.date.valueOf()) {
+				this.set_date(new Date(date.valueOf()));
+			}
+		},
+		render: function() {
+			var date = this.date.format('m/d/yyyy');
+			this.$('.date').val(date);
+			var hour = this.date.format('h');
+			this.$('.hour').val(hour);
+			var minute = this.date.format('MM');
+			this.$('.minute').val(minute);
+			var ap = this.date.format('t');
+			this.$('.ap').val(ap);
+			
+			//floor or ceil callback: ie if this is the floor/ceil of another time input, 
+			if (!_.isUndefined(this.options.that_floor)) this.options.that_floor(this.date);
+			if (!_.isUndefined(this.options.that_ceil)) this.options.that_ceil(this.date);
+		},
+	});
+	
+	if (class_doc.is_priveleged(user_id)) {
+		$("#new-event").show();
+		var dtStart = new DatetimeInputWidget(
+			{el:$("#start-widget")}
+		);
+		var dtFinish = new DatetimeInputWidget(
+			{el:$("#finish-widget")}
+		);
+		dtStart.options.that_floor = _(dtFinish.floor).bind(dtFinish);
+		dtFinish.options.that_ceil = _(dtStart.ceil).bind(dtStart);
+	}
+	//Event edit widget
+		
+}
+);
+</script>
+<script type='text/javascript' src='[[ script('fullcalendar.min.js') ]]'></script>
+<script type='text/javascript'>
+	$(document).ready(function() {
+		/*
+		var date = new Date();
+		var d = date.getDate();
+		var m = date.getMonth();
+		var y = date.getFullYear();*/
+		var transparent = "rgba(255,255,255,0)";
+		var blue = $(".link-blue").css("color");
+		console.log("[[reverse_url('CalendarFeed', class_id)]]");
+		$('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,basicWeek,basicDay'
+			},
+			editable: false,
+			events: "[[ reverse_url('CalendarFeed', class_id) ]]",
+			dayClick: function(date) {
+				if(class_doc.is_priveleged(user_id)) {
+					console.log("Is previleged!");
+				}
+			}
+			//eventBackgroundColor: transparent,
+			//eventBorderColor: transparent,
+		});
+	});
+</script>
+This is the backbone application.
+
+<div id="sidebar">
+	<div id="navigation">
+		<div id="conversations">
+			<h1>Conversations</h1>
+			<ul id="conversation-list"></ul>
+		</div>
+		<div id="past-events">
+			<h1>Past Events</h1>
+			<ul id="past-events-list"></ul>
+		</div>
+		<div id="upcoming">
+			<h1>Upcoming</h1>
+			<ul id="upcoming-list"></ul>
+		</div>
+	</div>
+	<div id="information">
+		<div id="honchoes">
+			<h1>Honchoes</h1>
+			<ul id="honchoes-list"></ul>
+		</div>
+		<div id="meeting">
+			<h1>Meeting Times</h1>
+			<ul id="meeting-list"></ul>
+		</div>
+		<div id="files">
+			<h1>Files</h1>
+			<ul id="file-list"></ul>
+		</div>
+		<div id="classmates">
+			<h1>Classmates</h1>
+			<ul id="classmates-list"></ul>
+		</div>
+	</div>
+</div>
+
+<div id="calendar">
+</div>
+
+<div id="new-event" style="display:none;">
+	<input type="text" name="title" placeholder="title"/>
+	<div class="help">Try mouseover and scroll wheel</div>
+	<div id="start-widget" class="datetime-input-widget">start:</div>
+	<div id="finish-widget" class="datetime-input-widget">finish:</div>
+	<textarea class="details" placeholder="details"/></textarea>
+	<select>
+		<option value="Lecture">Lecture</option>
+		<option value="Assignment">Assignment</option>
+		<option value="Other">Other</option>
+	</select>
+	<input type="button" value="save">
+</div>

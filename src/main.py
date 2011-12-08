@@ -12,6 +12,7 @@ import handlers
 from constants import static_path
 import datetime
 from handlers.calendar import time_format, twelve_hour_time
+import handlers.backbone
 
 login_url = r"/auth/login"
 
@@ -50,7 +51,19 @@ application = tornado.web.Application([
 	URLSpec(r"/pages/contact", misc.Contact, name="Contact"),
     
     #Test
-
+    
+    #Backbone Bootstrap
+    URLSpec(r"/class/(?P<class_id>[\w|\-|%]+)", handlers.backbone.Bootstrap, name="Bootstrap"),
+    
+    #Backbone.js Model URLs
+#    URLSpec(r"/class/(?P<class_id>[\w|\-|%]+)", X, name="Class"),
+#    URLSpec(r"/file/(?P<class_id>[\w|\-|%]+)/(?<file_id>\w+)", X, name="File"),
+#    URLSpec(r"/event/(?P<class_id>[\w|\-|%]+)", X, name="Event"),
+#    URLSpec(r"/post/(")
+    #Backbone.js Collections
+#    URLSpec(r"/files/(?P<class_id>[\w|\-|%]+)"),
+#    URLSpec(r"/events/(?P<class_id>[\w|\-|%]+)"),
+#    URLSpec(r"/posts/(?P<class_id>[\w|\-|%]+)"),
     
     #Calendar
 #    (r"/", LoginHandler),

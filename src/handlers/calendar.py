@@ -78,6 +78,7 @@ class CalendarDetails(BaseHandler):
 class CalendarFeed(BaseHandler):
     @authenticated
     def get(self, class_id):
+        print("INSIDE CALENDARFEED")
         if db.classes.check_members(class_id, self.get_current_user()):
             start = self.get_argument("start")
             end = self.get_argument("end")
@@ -103,7 +104,7 @@ class CalendarFeed(BaseHandler):
                         'className':result['type'],
                         'editable':False}
                 translated.append(item)
-                
+            print("DUMPING " + str(translated))
             self.write(json.dumps(translated))
         else:
             self.write("") #Is it better to return 404?
