@@ -214,6 +214,39 @@ function() {
 	});
 	window.sidebar = new SideBar();
 	
+	//Event Edit Widget (also for creating new events)
+	var EventEdit = Backbone.View.extend({
+		el: $("#event-edit"),
+		initialize: function() {
+			//Attach the self-rendering datetimeinput widgets
+			this.dtStart = new DatetimeInputWidget(
+				{el:this.$(".start-widget")}
+			);
+			this.dtFinish = new DatetimeInputWidget(
+				{el:this.$(".finish-widget")}
+			);
+			this.dtStart.options.that_floor = _(this.dtFinish.floor).bind(this.dtFinish);
+			this.dtFinish.options.that_ceil = _(this.dtStart.ceil).bind(this.dtStart);
+		},
+		log: function() {console.log("EventEdit!!!");},
+		bind_event_model: function(event_model) {
+			console.log("Binding event model");
+			this.model = event_model;
+			this.render();
+		},
+		render: function() {
+			if (!_.isUndefined(this.model)) {
+				//Populate the field with model attrs
+				console.log("Populating model");
+				this.$(".event-id").html(this.model.get("id"));
+				this.$(".title").val(this.model.get("title"));
+				this.dtStart.set_date(new Date(this.model.get("start")));
+				this.dtFinish.set_date(new Date(this.model.get("finish")));
+			} else {
+				console.log("Reset model with other stuff");
+			}	
+		}
+	});
 	//Datetime Input Widget
 	var DatetimeInputWidget = Backbone.View.extend({
 		events: {
@@ -235,7 +268,7 @@ function() {
 			console.log("Compiling template");
 			this.template = _.template($("#datetime-input-template").html());
 			console.log("Done compiling");
-			$(this.el).append(this.template({'a':'b'}));
+			$(this.el).append(this.template());
 			this.set_date(new Date(server_timestamp), true); //Renders
 		},
 		set_date: function(date, default_time) {
@@ -333,17 +366,20 @@ function() {
 	});
 	
 	if (class_doc.is_priveleged(user_id)) {
-		$("#new-event").show();
+		window.event_edit = new EventEdit();
+		$("#event-edit").show();
+		/*
 		var dtStart = new DatetimeInputWidget(
-			{el:$("#start-widget")}
+			{el:$(".start-widget")}
 		);
 		var dtFinish = new DatetimeInputWidget(
-			{el:$("#finish-widget")}
+			{el:$(".finish-widget")}
 		);
 		dtStart.options.that_floor = _(dtFinish.floor).bind(dtFinish);
 		dtFinish.options.that_ceil = _(dtStart.ceil).bind(dtStart);
+		*/
 	}
-	//Event edit widget
+	
 		
 }
 );
@@ -417,16 +453,17 @@ This is the backbone application.
 <div id="calendar">
 </div>
 
-<div id="new-event" style="display:none;">
-	<input type="text" name="title" placeholder="title"/>
+<div id="event-edit" style="display:none;">
+	<div class="event-id"></div>
+	<input class="title" type="text" name="title" placeholder="title"/>
 	<div class="help">Try mouseover and scroll wheel</div>
-	<div id="start-widget" class="datetime-input-widget">start:</div>
-	<div id="finish-widget" class="datetime-input-widget">finish:</div>
+	<div class="start-widget" class="datetime-input-widget">start:</div>
+	<div class="finish-widget" class="datetime-input-widget">finish:</div>
 	<textarea class="details" placeholder="details"/></textarea>
-	<select>
+	<select class="type" readonly="readonly">
 		<option value="Lecture">Lecture</option>
 		<option value="Assignment">Assignment</option>
 		<option value="Other">Other</option>
 	</select>
-	<input type="button" value="save">
+	<input class="save" type="button" value="save">
 </div>
