@@ -1,6 +1,7 @@
 from datetime import datetime as dt, timedelta
 from db.classes import *
 from db.collections import *
+import itertools
 
 dt_format = "%Y-%m-%dT%H:%M"
 d_format = "%Y-%m-%d"
@@ -9,10 +10,27 @@ d_format = "%Y-%m-%d"
 def get_item(event_id):
     event_id = ObjectId(event_id)
     return events.find_one({'_id':event_id})
+
+#Delete item
+def delete_item(event_id):
+    event_id = ObjectId(event_id)
+    files.update({"tags._id":event_id}, {"$pull":{"tags":{"_id":event_id}}})
+    events.remove({"_id":event_id})
+    
 #Get all
 def get_all(class_id):
-    return list(events.find({'class._id':class_id}))
+    result = list(events.find({'class._id':class_id, 'broadcast':False}))
+    print(result)
+    return result
 
+#edit 
+def edit_item(event_id, changes):
+    print(changes)
+    m_changes = {"$set":{i:changes[i] for i in changes.keys()}}
+    #m_changes = {"$set":{"title":"Lecture DICKS", "details":"balls"}}
+    print(m_changes)
+    events.update({"_id":ObjectId(event_id)}, m_changes)
+    
 #Finds standlone items
 def search_items(class_id, start, finish, convos_only=False, limit=None):
     query = {'$or':[

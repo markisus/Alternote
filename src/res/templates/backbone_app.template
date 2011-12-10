@@ -14,7 +14,7 @@
 	<% var files = model.get_files() %>
 	<li id="<%= model.get('id') %>" class="<%= model.get('type') %>">
 		<%= model.get('title') %><br/>
-		<%= startDate.format('m/d h:MMt') %>
+		<%= startDate.format('UTC:m/d h:MMt') %>
 		<% if(!_.isEmpty(files)) { %>
 		<div class="files">
 		Files:
@@ -49,7 +49,6 @@ $(
 function() {
 	//**************** Useful Global Items *********************
 	//User Id
-	console.log("Bootstrapping user id.");
 	window.user_id = "[[user_id]]";
 	
 	//file_path
@@ -70,7 +69,6 @@ function() {
 	
 	//**************** MODELS *********************
 	//Class Model
-	console.log("Bootstrapping class doc.");
 	var Class = Backbone.Model.extend({
 		//Instructors and TAs are priveleged
 		is_priveleged: function(some_user_id) {
@@ -84,7 +82,6 @@ function() {
 	window.class_doc = new Class([[class_doc]]);
 	
 	//Calendar Event Model - depends on File Collection
-	console.log("Creating Event model.");
 	var Event = Backbone.Model.extend({
 		get_files: function() {
 			var self = this;
@@ -93,11 +90,15 @@ function() {
 				return file.has_tag(self.get('id'));
 			});
 		},
+		get_date: function(field_name) {
+			var date_string = this.get(field_name);
+			date_string += "-05:00" //Add time zone, Pretend everyone is in eastern time for now
+			return new Date(date_string);
+		}
 		
 	});
 	
 	//File Model - depends on Event Collection
-	console.log("Creating File model.");
 	var File = Backbone.Model.extend({
 		has_tag: function(id) {
 			return _(this.get('tags')).chain()
@@ -116,27 +117,35 @@ function() {
 	 
 	//**************** COLLECTIONS *********************
 	//Files Collection
-	console.log("Bootstrapping files collection.");
 	var Files = Backbone.Collection.extend({model:File});
 	window.files = new Files([[files]]);
 	
 	//Calendar Events Collection
-	console.log("Bootstrapping events collection.");
-	var Events = Backbone.Collection.extend({model:Event});
+	var Events = Backbone.Collection.extend({
+		model: Event,
+		url: "[[ reverse_url("Events", class_id) ]]",
+		comparator: function(event) {
+			return event.get("start");
+		}
+	});
 	window.events = new Events([[events]]);
 	//Maintain Calendar Order
-	window.events.comparator = function(event) {
+	/*window.events.comparator = function(event) {
 		return event.get("start");
-	};
+	};*/
 	
 	//**************** VIEWS *********************
 	//Sidebar Upcoming Item
-	var UpcomingItem = Backbone.View.extend({
+	var SidebarEvent = Backbone.View.extend({
 		tagName: "li",
 		template: _.template($('#upcoming-template').html()),
 		render: function() {
 			var model = this.model;
 			var result = $(this.el).html(this.template({model:model}));
+			//When someone clicks this, it will fill the edit widget
+			$(this.el).bind('click', function() {
+				event_edit.bind_event_model(model);
+			});
 			return result;
 		}
 	});
@@ -145,7 +154,14 @@ function() {
 	var SideBar = Backbone.View.extend({
 		el:$('#sidebar'),
 		initialize: function(){
-			console.log("Initializing sidebar.");
+			_.bindAll(this, 
+				"render", "render_upcoming", 
+				"render_honchoes", "render_classmates", 
+				"render_meeting_times", "render_classmates");
+			var self = this;
+			events.bind('change', function(){ events.sort(); self.render_upcoming() });
+			events.bind('destroy', self.render_upcoming);
+			events.bind('add', self.render_upcoming);
 			this.max_upcoming = Infinity;
 			this.render();
 		},
@@ -164,9 +180,21 @@ function() {
 				return server_timestamp <= item.get('start');
 			})
 			.forEach(function(item) {
-				var itemView = new UpcomingItem({model:item});
+				var itemView = new SidebarEvent({model:item});
 				this.$("#upcoming-list").append(itemView.render());
 			});		
+		},
+		render_past: function() {
+			var past = events;
+			this.$("#past-events-list").html("");
+			_(past)
+			.filter(function(item) {
+				return (server_timestamp > item.get('start')) && (item.get("dummy") = true);
+			})
+			.forEach(function(item) {
+				var itemView = new SideBarEvent({model:item});
+				this.$("#past-events-list").append(itemView.render());
+			});
 		},
 		render_honchoes: function() {
 			var profs = class_doc.get('instructors');
@@ -201,8 +229,6 @@ function() {
 			);
 		},
 		render_files: function() {
-			console.log("Rendering files.");
-			console.log(files);
 			files.forEach(
 				function(file) {
 					var file_format = '<li><a href="<%= generate_filepath(file.get("name")) %>"><%= file.get("name") %></a></li>';
@@ -227,23 +253,90 @@ function() {
 			);
 			this.dtStart.options.that_floor = _(this.dtFinish.floor).bind(this.dtFinish);
 			this.dtFinish.options.that_ceil = _(this.dtStart.ceil).bind(this.dtStart);
+			this.render();
 		},
-		log: function() {console.log("EventEdit!!!");},
 		bind_event_model: function(event_model) {
-			console.log("Binding event model");
 			this.model = event_model;
 			this.render();
 		},
+		prepare_new_event: function(date) {
+			console.log("Preparing event");
+			this.$(".message").html("");
+			this.model = undefined; //Reset model
+			this.$(".event-id").html("");
+			this.$(".title").val("");
+			this.dtStart.set_date(date, true);
+			this.dtFinish.set_date(date, true);
+			this.$(".details").val("");
+			var self = this;
+			this.$(".save").html("new").unbind("click").bind("click", function() {
+				//Create a new event
+				var title = self.$(".title").val()
+				var start = self.dtStart.get_ISO_string();
+				var finish = self.dtFinish.get_ISO_string();
+				var details = self.$(".details").val();
+				var type = self.$(".type").val();
+				event = {title:title, start:start, finish:finish, details:details, type:type}
+				events.create(event, {
+					success: function() {
+						self.$('.message').html("Success!");
+					},
+					error: function() {
+						self.$('.message').html("Success!");
+						self.model = undefined;
+					},
+				});
+			});
+			this.$(".delete").hide();
+		},
 		render: function() {
+			console.log("Render called");
+			this.$(".message").html("");
 			if (!_.isUndefined(this.model)) {
 				//Populate the field with model attrs
-				console.log("Populating model");
 				this.$(".event-id").html(this.model.get("id"));
 				this.$(".title").val(this.model.get("title"));
-				this.dtStart.set_date(new Date(this.model.get("start")));
-				this.dtFinish.set_date(new Date(this.model.get("finish")));
+				this.dtStart.set_date(this.model.get_date("start"));
+				this.dtFinish.set_date(this.model.get_date("finish"));
+				this.$(".details").val(this.model.get("details"));
+				this.$(".type").val(this.model.get("type"));
+				var self = this;
+				this.$(".save").html("save").unbind("click").bind("click", function() {
+					var id = self.$(".event-id").html();
+					var title = self.$(".title").val();
+					var start = self.dtStart.get_ISO_string()//.slice(0,17);
+					var finish = self.dtFinish.get_ISO_string()//.slice(0, 17);
+					var details = self.$(".details").val();
+					var type = self.$(".type").val();
+					changes = {title:title, start:start, finish:finish, details:details, type:type}
+					self.model.save(changes, {
+						success: function(data) {
+							console.log("Success: ", data);
+							self.$('.message').html("Success!");
+						},
+						error: function(data) {
+							console.log("Error: ", data);
+							self.$('.message').html("Error :(");
+						}
+					});
+				});
+				this.$(".delete").html("delete").show();
+				this.$(".delete").bind("click", function() {
+					self.model.destroy({
+						success: function(data) {
+							console.log("Success: ", data);
+							self.$('.message').html("Success!");
+							self.model = undefined;
+							self.render();
+						},
+						error: function(data) {
+							console.log("Error: ", data);
+							self.$('.message').html("Error :(");
+						}
+					});
+				});
 			} else {
-				console.log("Reset model with other stuff");
+				this.prepare_new_event(new Date(server_timestamp+"-05:00"));
 			}	
 		}
 	});
@@ -264,10 +357,7 @@ function() {
 			this.minute = 60*1000;
 			this.hour = this.minute*60;
 			this.day = this.hour*24;
-			
-			console.log("Compiling template");
 			this.template = _.template($("#datetime-input-template").html());
-			console.log("Done compiling");
 			$(this.el).append(this.template());
 			this.set_date(new Date(server_timestamp), true); //Renders
 		},
@@ -335,16 +425,15 @@ function() {
 			this.date.setMinutes(minute);
 			this.render();
 		},
+		get_ISO_string: function() {
+			return this.date.format("yyyy-mm-dd") + "T" + this.date.format("HH:MM");
+		},
 		floor: function(date) {
-			console.log("Inside floor");
 			if (date.valueOf() > this.date.valueOf()) {
 				this.set_date(new Date(date.valueOf()));
 			}
 		},
 		ceil: function(date) {
-			console.log("Inside ceil");
-			console.log(date.valueOf());
-			console.log(this.date);
 			if (date.valueOf() < this.date.valueOf()) {
 				this.set_date(new Date(date.valueOf()));
 			}
@@ -368,16 +457,6 @@ function() {
 	if (class_doc.is_priveleged(user_id)) {
 		window.event_edit = new EventEdit();
 		$("#event-edit").show();
-		/*
-		var dtStart = new DatetimeInputWidget(
-			{el:$(".start-widget")}
-		);
-		var dtFinish = new DatetimeInputWidget(
-			{el:$(".finish-widget")}
-		);
-		dtStart.options.that_floor = _(dtFinish.floor).bind(dtFinish);
-		dtFinish.options.that_ceil = _(dtStart.ceil).bind(dtStart);
-		*/
 	}
 	
 		
@@ -394,7 +473,6 @@ function() {
 		var y = date.getFullYear();*/
 		var transparent = "rgba(255,255,255,0)";
 		var blue = $(".link-blue").css("color");
-		console.log("[[reverse_url('CalendarFeed', class_id)]]");
 		$('#calendar').fullCalendar({
 			header: {
 				left: 'prev,next today',
@@ -405,17 +483,29 @@ function() {
 			events: "[[ reverse_url('CalendarFeed', class_id) ]]",
 			dayClick: function(date) {
 				if(class_doc.is_priveleged(user_id)) {
-					console.log("Is previleged!");
+					event_edit.prepare_new_event(date);
+				}
+			},
+			eventClick: function(calEvent, jsEvent, view) {
+				if(class_doc.is_priveleged(user_id)) {
+					var event_model = events.get(calEvent.id);
+					event_edit.bind_event_model(event_model);
 				}
 			}
 			//eventBackgroundColor: transparent,
 			//eventBorderColor: transparent,
 		});
+		var refetch = function(){
+			$("#calendar").fullCalendar('refetchEvents');
+			};
+		events.bind('change', refetch);
+		events.bind('add', refetch);
+		events.bind('destroy', refetch);
 	});
 </script>
 This is the backbone application.
 
-<div id="sidebar">
+<div id="sidebar" style="float:left;">
 	<div id="navigation">
 		<div id="conversations">
 			<h1>Conversations</h1>
@@ -450,20 +540,22 @@ This is the backbone application.
 	</div>
 </div>
 
-<div id="calendar">
+<div id="calendar" style="width:500px; float:left;">
 </div>
 
-<div id="event-edit" style="display:none;">
+<div id="event-edit" style="display:none; float:left;">
+	<div class="message"></div>
 	<div class="event-id"></div>
 	<input class="title" type="text" name="title" placeholder="title"/>
 	<div class="help">Try mouseover and scroll wheel</div>
 	<div class="start-widget" class="datetime-input-widget">start:</div>
 	<div class="finish-widget" class="datetime-input-widget">finish:</div>
 	<textarea class="details" placeholder="details"/></textarea>
-	<select class="type" readonly="readonly">
+	<select class="type">
 		<option value="Lecture">Lecture</option>
 		<option value="Assignment">Assignment</option>
 		<option value="Other">Other</option>
 	</select>
-	<input class="save" type="button" value="save">
+	<button class="save"></button>
+	<button class="delete"></button>
 </div>

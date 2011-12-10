@@ -48,7 +48,42 @@ class Bootstrap(BaseHandler):
         
         self.render_out(server_timestamp=datetime.datetime.now().isoformat()[:16], user_id=user_id, class_id=class_id, class_doc=class_doc, files=files, events=events)
         
-#Backbone Collection Handler
+#Backbone Collection Handlers
+class Events(BaseHandler):
+    def get(self, class_id, event_id=None):
+        if not event_id:
+            events = db.calendar.get_all(class_id)
+            collection_to_Backbone(events)
+            self.write(json.dumps(events, default=str))
+            return
+        else:
+            event = db.calendar.get_item(event_id)
+            if str(event['class']['_id']) != class_id:
+                raise KeyError("Wrong class")
+            doc_to_Backbone(event)
+            self.write(json.dumps(event, default=str))
+            return
+
+    def post(self, class_id, event_id=None):
+        body = self.request.body
+        doc = json.loads(body)
+        event_id = db.classes.create_event_for_class(class_id, **doc)
+        doc['id'] = str(event_id)
+        self.write(json.dumps(doc, default=str))
+        
+    def put(self, class_id, event_id):
+        print("Received put")
+        body = self.request.body
+        doc = json.loads(self.request.body)
+        del doc['class'] #Avoid dealing with deserializing the class doc; this shouldn't change anyway
+        doc_id = doc.pop("id")
+        db.calendar.edit_item(doc_id, doc)
+        print(self.get_params())
+    
+    def delete(self, class_id, event_id):
+        print("Received delete")
+        db.calendar.delete_item(event_id)
+        
 class Files(BaseHandler):
     def get(self, class_id):
         print("GET called for " + str(class_id))

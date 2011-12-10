@@ -100,7 +100,7 @@ class CalendarFeed(BaseHandler):
                         'title':result_title,  
                         'start':result['start'],
                         'end':result['finish'],
-                        'url':self.reverse_url("CalendarDetails", class_id, str(result['_id'])),
+                        #'url':self.reverse_url("CalendarDetails", class_id, str(result['_id'])),
                         'className':result['type'],
                         'editable':False}
                 translated.append(item)

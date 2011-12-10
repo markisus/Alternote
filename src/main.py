@@ -54,6 +54,9 @@ application = tornado.web.Application([
     
     #Backbone Bootstrap
     URLSpec(r"/class/(?P<class_id>[\w|\-|%]+)", handlers.backbone.Bootstrap, name="Bootstrap"),
+    #Backbone Collection URLs
+    URLSpec(r"/events/(?P<class_id>[\w|\-|%]+)", handlers.backbone.Events, name="Events"),
+    URLSpec(r"/events/(?P<class_id>[\w|\-|%]+)/(?P<event_id>\w+)", handlers.backbone.Events, name="Event"),
     
     #Backbone.js Model URLs
 #    URLSpec(r"/class/(?P<class_id>[\w|\-|%]+)", X, name="Class"),
