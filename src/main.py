@@ -111,6 +111,7 @@ application = tornado.web.Application([
     cookie_secret="CHANGE THIS EVENTUALLY",
     login_url= login_url,
     static_path= static_path,
+    debug=True
 )
 
 #Add methods to the template environment

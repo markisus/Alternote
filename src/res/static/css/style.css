@@ -474,9 +474,27 @@ ul#footer-links li a:hover {
 .sidebar #info-content {
   display: none;
 }
+.sidebar p.header {
+  float: left;
+  font-size: 12px;
+  margin-top: 10px;
+}
+.sidebar p.header a {
+  color: #858;
+  font-size: 12px;
+}
+.sidebar p.header a:hover {
+  color: #000;
+}
+.sidebar .purple-line {
+  float: right;
+  margin-top: 20px;
+  height: 1px;
+  width: 50%;
+  background: #CAC;
+}
 .sidebar ul.sidebar-content {
   float: left;
-  margin-top: 10px;
   width: 100%;
 }
 .sidebar ul.sidebar-content img {
@@ -486,31 +504,13 @@ ul#footer-links li a:hover {
 .sidebar ul.sidebar-content img.big {
   width: 40px;
 }
-.sidebar ul.sidebar-content p {
-  font-size: 12px;
-}
-.sidebar ul.sidebar-content p a {
-  color: #858;
-  font-size: 12px;
-  text-transform: uppercase;
-}
-.sidebar ul.sidebar-content p a:hover {
-  color: #000;
-}
-.sidebar ul.sidebar-content .purple-line {
-  float: right;
-  margin-top: -10px;
-  height: 1px;
-  width: 50%;
-  background: #CAC;
-}
-.sidebar ul.sidebar-content#meeting p a:hover, .sidebar ul.sidebar-content#honchoes p a:hover, .sidebar ul.sidebar-content#classmates p a:hover {
+.sidebar ul.sidebar-content#meeting-list p a:hover, .sidebar ul.sidebar-content#honchoes-list p a:hover, .sidebar ul.sidebar-content#classmates-list p a:hover {
   color: #858;
 }
-.sidebar ul.sidebar-content#meeting li, .sidebar ul.sidebar-content#honchoes li, .sidebar ul.sidebar-content#classmates li {
+.sidebar ul.sidebar-content#meeting-list li, .sidebar ul.sidebar-content#honchoes-list li, .sidebar ul.sidebar-content#classmates-list li {
   border: none;
 }
-.sidebar ul.sidebar-content#meeting li:hover, .sidebar ul.sidebar-content#honchoes li:hover, .sidebar ul.sidebar-content#classmates li:hover {
+.sidebar ul.sidebar-content#meeting-list li:hover, .sidebar ul.sidebar-content#honchoes-list li:hover, .sidebar ul.sidebar-content#classmates-list li:hover {
   background-color: transparent;
 }
 .sidebar ul.sidebar-content#user {
@@ -523,18 +523,58 @@ ul#footer-links li a:hover {
   color: #AAA;
   font-size: 12px;
 }
-.sidebar ul.sidebar-content#conversations {
-  max-height: 189px;
+.sidebar ul.sidebar-content#conversation-list {
+  max-height: 214px;
   overflow: hidden;
 }
-.sidebar ul.sidebar-content#conversations:hover {
+.sidebar ul.sidebar-content#conversation-list:hover {
   overflow-y: scroll;
+}
+.sidebar ul.sidebar-content#conversation-list li {
+  cursor: pointer;
+}
+.sidebar ul.sidebar-content#conversation-list li:hover {
+  background: #F3F3F3;
+}
+.sidebar ul.sidebar-content#upcoming-list li {
+  border: none;
+}
+.sidebar ul.sidebar-content#upcoming-list li:hover {
+  background: transparent;
+}
+.sidebar ul.sidebar-content#upcoming-list li p.date {
+  float: right;
+  margin-right: 5px;
+  font-size: 14px;
+  color: #161616;
+}
+.sidebar ul.sidebar-content#file-list li {
+  border: none;
+}
+.sidebar ul.sidebar-content#file-list button {
+  border: none;
+  background: transparent;
+  float: right;
+  cursor: pointer;
+  padding: 0px 2px;
+  font-weight: normal;
+  text-shadow: none;
+  margin: 0 4px 0 0;
+  /* color: #619ecf; */
+
+  color: #009ed9;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.sidebar ul.sidebar-content#file-list button:hover {
+  color: #444;
 }
 .sidebar ul.sidebar-content li {
   float: left;
   margin: 0;
-  width: 97%;
-  padding: 3px 6px 0 0;
+  width: 100%;
+  padding: 3px 0 0 0;
   font-size: 14px;
   border-bottom: solid 1px #DDD;
   background-color: transparent;
@@ -543,26 +583,21 @@ ul#footer-links li a:hover {
   transition: background-color 0.15s linear;
   /* &:hover { background-color: #F3F3F3; } */
 
-}
-.sidebar ul.sidebar-content li:last-child {
-  border: none;
-}
-.sidebar ul.sidebar-content li:last-child a {
-  font-size: 12px;
-  float: right;
-  margin-right: 5px;
-  /* color: #619ecf; */
+  /*
+			&:last-child {
+				border: none;
+				
+				a {
+					font-size: 12px;
+					float: right;
+					margin-right: 5px;
+					.link-blue;
+				}
+				
+				&:hover { background-color: transparent; }
+			}
+			*/
 
-  color: #009ed9;
-  -webkit-transition: color 0.1s linear;
-  -moz-transition: color 0.1s linear;
-  transition: color 0.1s linear;
-}
-.sidebar ul.sidebar-content li:last-child a:hover {
-  color: #444;
-}
-.sidebar ul.sidebar-content li:last-child:hover {
-  background-color: transparent;
 }
 .sidebar ul.sidebar-content li p.date {
   font-size: 12px;
@@ -570,21 +605,6 @@ ul#footer-links li a:hover {
 }
 .sidebar ul.sidebar-content li.attach {
   background: url('../images/paperclip-icon') no-repeat 195px 5px;
-}
-.sidebar ul.sidebar-content li.attach:hover {
-  background: #f6f6f6 url('../images/paperclip-icon.png') no-repeat 200px 5px;
-}
-.sidebar ul#upcoming li {
-  border: none;
-}
-.sidebar ul#upcoming li:hover {
-  background: transparent;
-}
-.sidebar ul#upcoming li p.date {
-  float: right;
-  margin-right: 5px;
-  font-size: 14px;
-  color: #161616;
 }
 .maincol-head {
   padding-top: 10px;
@@ -725,6 +745,7 @@ input.new-comment {
   transition: color 0.1s linear;
 }
 .calendar .fc-content .fc-event-skin:hover {
+  cursor: pointer;
   color: #005473;
 }
 .calendar .new-event {
@@ -733,13 +754,18 @@ input.new-comment {
   border-bottom: solid 1px #CCC;
   margin: 0 0 5px -1px;
 }
-.calendar .new-event form {
+.calendar .new-event #event-edit, .calendar .new-event #file-edit, .calendar .new-event #file-upload {
+  float: left;
   padding: 10px;
 }
-.calendar .new-event #submit, .calendar .new-event button {
+.calendar .new-event #event-edit {
+  padding-bottom: 0;
+}
+.calendar .new-event button {
   color: #FFF;
   text-shadow: none;
   font-size: 14px;
+  font-weight: normal;
   width: 80px;
   height: 40px;
   margin: 2px 5px 10px 5px;
@@ -747,11 +773,11 @@ input.new-comment {
   -moz-transition: background-color 0.15s linear;
   transition: background-color 0.15s linear;
 }
-.calendar .new-event #submit {
+.calendar .new-event .save {
   background: #009ed9;
   border-color: #a6e7ff;
 }
-.calendar .new-event #submit:hover {
+.calendar .new-event .save:hover {
   background-color: #0dbdff;
 }
 .calendar .new-event button {
@@ -765,14 +791,32 @@ input.new-comment {
   float: left;
   margin: 5px 5px 11px 5px;
 }
-.calendar .new-event .form_field, .calendar .new-event input {
+.calendar .new-event .start-widget, .calendar .new-event .finish-widget {
+  font-weight: bold;
   float: left;
 }
 .calendar .new-event input[type="text"] {
   width: 70px;
   margin: 0 5px 5px 5px;
+  display: inline;
+  font-weight: normal;
 }
-.calendar .new-event #name {
+.calendar .new-event input[type="text"].ap {
+  margin: 0 16px 5px 0;
+  width: 20px;
+}
+.calendar .new-event input[type="text"].minute {
+  margin-left: 1px;
+}
+.calendar .new-event input[type="text"].hour, .calendar .new-event input[type="text"].minute {
+  width: 30px;
+}
+.calendar .new-event textarea {
+  width: 475px;
+  float: left;
+  margin-top: 8px;
+}
+.calendar .new-event input.title {
   height: 40px;
   padding: 5px;
   margin: 2px 10px 5px 0;
@@ -784,48 +828,55 @@ input.new-comment {
   margin: 8px;
 }
 .calendar .new-event select {
-  width: 160px;
+  width: 180px;
   float: left;
-  margin: 3px 0 0 10px;
 }
-.calendar .new-event .chzn-container {
-  float: left;
-  margin-left: 10px;
+.calendar .new-event .auto-convo-inputs {
+  float: right;
+  margin-right: 10px;
 }
-.calendar .new-event .chzn-container span {
-  margin-top: 0;
+.calendar .new-event input.hours-before, .calendar .new-event input.days-before {
+  width: 80px;
 }
-.calendar .new-event ul.chzn-results {
-  float: left;
-  width: 87%;
-}
-.calendar .new-event input[name="day_offset"], .calendar .new-event input[name="hour_offset"] {
-  width: 20px;
+.calendar .new-event select.type {
+  float: right;
+  margin: 5px 10px 10px 5px;
 }
 .calendar .new-event label {
   float: left;
   margin: 5px 0;
 }
-.calendar .new-event input#convo {
-  margin-right: 200px;
+.calendar .new-event #file-edit {
+  width: 280px;
 }
-.calendar .new-event #details {
-  margin: 0 20px 0 0 !important;
+.calendar .new-event #file-edit button {
+  float: left;
+  height: 30px;
+  margin-bottom: 0;
 }
-.calendar .new-event #details #begin_date {
-  margin-left: 0;
+.calendar .new-event #file-upload {
+  float: right;
+  width: 190px;
 }
-.calendar .new-event #files a {
-  /* color: #619ecf; */
-
-  color: #009ed9;
-  -webkit-transition: color 0.1s linear;
-  -moz-transition: color 0.1s linear;
-  transition: color 0.1s linear;
-  text-decoration: underline;
+.calendar .new-event #file-upload .qq-upload-button {
+  cursor: pointer;
+  color: #FFF;
+  text-shadow: none;
+  font-size: 14px;
+  font-weight: normal;
+  width: 80px;
+  margin: 2px 5px 10px 5px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-transition: background-color 0.15s linear;
+  -moz-transition: background-color 0.15s linear;
+  transition: background-color 0.15s linear;
+  background: #c6272b;
+  border-color: #f4c5c7;
 }
-.calendar .new-event #files a:hover {
-  color: #444;
+.calendar .new-event #file-upload .qq-upload-button:hover {
+  background-color: #da4649;
 }
 .calendar .upcoming {
   float: left;

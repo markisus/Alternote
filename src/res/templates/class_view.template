@@ -1,22 +1,19 @@
 {% extends 'main.template' %}
 
 {% block nav %}
-<ul>
-{% if user_type in ['professor'] %}
+  {% if user_type in ['professor'] %}
 
-{% endif %}
+  {% endif %}
 
-{% if user_type in ['professor', 'ta'] %}
+  {% if user_type in ['professor', 'ta'] %}
 
-{% endif %}
+  {% endif %}
 
-{% if user_type in ['professor', 'ta', 'student'] %}
-<li><a href="#">Account</a></li>
-<li><a href="[[reverse_url('ViewClasses')]]">Change Classes</a></li>
-<li><a href="[[reverse_url('LogoutHandler')]]">Log Out</a></li>
-{% endif %}
-
-</ul>
+  {% if user_type in ['professor', 'ta', 'student'] %}
+  <li><a href="#">Account</a></li>
+  <li><a href="[[reverse_url('ViewClasses')]]">Change Classes</a></li>
+  <li><a href="[[reverse_url('LogoutHandler')]]">Log Out</a></li>
+  {% endif %}
 {% endblock %}
 
 {% block sidebar %}

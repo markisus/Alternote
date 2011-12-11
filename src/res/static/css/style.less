@@ -261,9 +261,27 @@ ul#footer-links {
 	
 	#info-content { display: none; }
 	
+	p.header {
+	    float: left;
+		font-size: 12px;
+		margin-top: 10px;
+		a { 
+			color: #858; 
+			font-size: 12px;
+			&:hover { color: #000; } 
+		}
+	}
+	
+	.purple-line {
+		float: right;
+		margin-top: 20px;
+		height: 1px;
+		width: 50%;
+		background: #CAC;
+	}
+	
 	ul.sidebar-content {
 		float: left;
-		margin-top: 10px;
 		width: 100%;
 		
 		img {
@@ -275,26 +293,7 @@ ul#footer-links {
 		    }
 		}
 		
-		p {
-			font-size: 12px;
-			
-			a { 
-				color: #858; 
-				font-size: 12px;
-				text-transform: uppercase;
-				&:hover { color: #000; } 
-			}
-		}
-		
-		.purple-line {
-			float: right;
-			margin-top: -10px;
-			height: 1px;
-			width: 50%;
-			background: #CAC;
-		}
-		
-		&#meeting, &#honchoes, &#classmates {
+		&#meeting-list, &#honchoes-list, &#classmates-list {
 			p a:hover { color: #858; }
 			
 			li {
@@ -305,33 +304,63 @@ ul#footer-links {
 		
 		&#user {
 		    margin-top: 36px;
-		    
 		    li {
 		        border: none;
-		        
 		        p { color: #AAA; font-size: 12px; }
 	        }
 		}
 		
-		&#conversations {
-		    max-height: 189px;
+		&#conversation-list {
+		    max-height: 214px;
 		    overflow: hidden;
 		    
 		    &:hover { overflow-y: scroll; }
+		    li { 
+		        cursor: pointer; 
+		        &:hover { background: #F3F3F3; }
+		    }
 		}
+		
+		&#upcoming-list {
+    		li {
+    			border: none;
+    			&:hover { background: transparent; }
+    			p.date { 
+    				float: right;
+    				margin-right: 5px;
+    				font-size: 14px;
+    				color: #161616;
+    			} 
+    		}
+    	}
+    	
+    	&#file-list {
+    	    li { border: none; }
+    	    button {
+    	        border: none;
+    	        background: transparent;
+    	        float: right;
+    	        cursor: pointer;
+    	        padding: 0px 2px;
+    	        font-weight: normal;
+    	        text-shadow: none;
+    	        margin: 0 4px 0 0;
+    	        .link-blue;
+	        }
+    	}
 		
 		li {
 			float: left;
 			margin: 0;
-			width: 97%;
-			padding: 3px 6px 0 0;
+			width: 100%;
+			padding: 3px 0 0 0;
 			font-size: 14px;
 			border-bottom: solid 1px #DDD;
 			background-color: transparent;
 			.transition(background-color 0.15s linear);
 			
 			/* &:hover { background-color: #F3F3F3; } */
-			
+			/*
 			&:last-child {
 				border: none;
 				
@@ -344,33 +373,13 @@ ul#footer-links {
 				
 				&:hover { background-color: transparent; }
 			}
-			
+			*/
 			p.date {
 				font-size: 12px;
 				color: #999;
 			}
 			
-			&.attach {
-				background: url('../images/paperclip-icon') no-repeat 195px 5px;
-				&:hover {
-					background: #F6F6F6 url('../images/paperclip-icon.png') no-repeat 200px 5px;
-				}
-			}
-		}
-	}
-	
-	ul#upcoming {
-		li {
-			border: none;
-			
-			&:hover { background: transparent; }
-			
-			p.date { 
-				float: right;
-				margin-right: 5px;
-				font-size: 14px;
-				color: #161616;
-			} 
+			&.attach { background: url('../images/paperclip-icon') no-repeat 195px 5px; }
 		}
 	}
 }
@@ -470,7 +479,7 @@ input.new-comment {
 	    span.fc-header-title h2 {
 	        font-size: 20px;
 	        font-weight: normal;
-        }
+      }
     }
     
     .fc-content {
@@ -490,7 +499,10 @@ input.new-comment {
         .fc-event-skin {
             color: @lightBlue;
             .transition(color 0.1s linear);
-            &:hover { color: darken(@lightBlue, 20); }
+            &:hover { 
+              cursor: pointer;
+              color: darken(@lightBlue, 20); 
+            }
         }
         
     }
@@ -501,19 +513,24 @@ input.new-comment {
 		border-bottom: solid 1px #CCC;
 		margin: 0 0 5px -1px;
 		
-		form { padding: 10px; }
+		#event-edit, #file-edit, #file-upload { 
+		    float: left;
+		    padding: 10px; 
+		}
+		#event-edit { padding-bottom: 0; }
 		
-		#submit, button {
+		button {
 		    color: #FFF;
 		    text-shadow: none;
 		    font-size: 14px;
+		    font-weight: normal;
 		    width: 80px;
 		    height: 40px;
 		    margin: 2px 5px 10px 5px;
 		    .transition(background-color 0.15s linear);
 		}
 		
-		#submit {
+		.save {
 		    background: @lightBlue;
 		    border-color: lighten(@lightBlue, 40);
 		    &:hover { background-color: lighten(@lightBlue, 10); }
@@ -530,14 +547,29 @@ input.new-comment {
 			margin: 5px 5px 11px 5px;
 		}
 		
-		.form_field, input { float: left; }
+		.start-widget, .finish-widget {
+		    font-weight: bold;
+		    float: left;
+		}
 		
 		input[type="text"] { 
 			width: 70px; 
 			margin: 0 5px 5px 5px;
+			display: inline;
+			font-weight: normal;
+			
+			&.ap { margin: 0 16px 5px 0; width: 20px; }
+			&.minute { margin-left: 1px; }
+			&.hour, &.minute { width: 30px; }
 		}
 		
-		#name {
+		textarea {
+		    width: 475px;
+		    float: left;
+		    margin-top: 8px;
+		}
+		
+		input.title {
 			height: 40px;
 			padding: 5px;
 			margin: 2px 10px 5px 0;
@@ -551,26 +583,15 @@ input.new-comment {
 		}
 		
 		select {
-			width: 160px;
+			width: 180px;
 			float: left;
-			margin: 3px 0 0 10px;
 		}
 		
-		.chzn-container {
-			float: left;
-			margin-left: 10px;
-			
-			span { margin-top: 0; }
-		}
-		
-		ul.chzn-results {
-			float: left;
-			width: 87%;
-		}
-		
-		input[name="day_offset"],
-		input[name="hour_offset"] {
-			width: 20px;
+		.auto-convo-inputs { float: right; margin-right: 10px; }
+		input.hours-before, input.days-before { width: 80px; }
+		select.type {
+		    float: right;
+		    margin: 5px 10px 10px 5px;
 		}
 		
 		label { 
@@ -578,18 +599,34 @@ input.new-comment {
 			margin: 5px 0;
 		}
 		
-		input#convo {
-			margin-right: 200px;
+		#file-edit {
+		    width: 280px;
+		    
+			button {
+			    float: left;
+			    height: 30px;
+			    margin-bottom: 0;
+		    }
 		}
 		
-		#details {
-			margin: 0 20px 0 0 !important;
-			
-			#begin_date { margin-left: 0; }
-		}
-		
-		#files {
-			a { .link-blue; text-decoration: underline; }
+		#file-upload {
+		    float: right;
+		    width: 190px;
+		    
+		    .qq-upload-button { 
+		        cursor: pointer;
+		        color: #FFF;
+    		    text-shadow: none;
+    		    font-size: 14px;
+    		    font-weight: normal;
+    		    width: 80px;
+    		    margin: 2px 5px 10px 5px;
+    		    .border-radius(3px);
+    		    .transition(background-color 0.15s linear);
+    		    background: @lightRed;
+    		    border-color: lighten(@lightRed, 40);
+    		    &:hover { background-color: lighten(@lightRed, 10); }
+	        }
 		}
 	}
 	
