@@ -64,7 +64,7 @@ def create_event_for_class(class_id, type, title, start="0", finish="9", hours_b
     if broadcast and dummy:
         print("Warning: Marking Broadcast as dummy")
     
-    convo_start = start 
+    convo_start = start
     try:
         listed_start = dt.strptime(start[:16], "%Y-%m-%dT%H:%M")
         delta = timedelta(hours=hours_before, days=days_before)
@@ -77,6 +77,8 @@ def create_event_for_class(class_id, type, title, start="0", finish="9", hours_b
                      'title':title,
                      'class':__class_query(class_id), #Should this be changed to just class_id?
                      'convo_start':convo_start,
+                     'hours_before':hours_before,
+                     'days_before':days_before,
                      'start':start,
                      'finish':finish,
                      'details':details,

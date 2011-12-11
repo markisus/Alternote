@@ -26,8 +26,22 @@ def get_all(class_id):
 #edit 
 def edit_item(event_id, changes):
     print(changes)
+    #Reset convo_start:
+    convo_start = changes['start']
+    if changes['dummy']:
+        changes['hours_before'] = 0
+        changes['days_before'] = 0
+    else:
+        try:
+            listed_start = dt.strptime(changes['start'][:16], "%Y-%m-%dT%H:%M")
+            delta = timedelta(hours=changes['hours_before'], days=changes['days_before'])
+            convo_start = (listed_start - delta).isoformat()[:16] #Lop off the seconds data
+            changes['convo_start'] = convo_start
+        except ValueError:
+            pass #Ignore parse error
+    
     m_changes = {"$set":{i:changes[i] for i in changes.keys()}}
-    #m_changes = {"$set":{"title":"Lecture DICKS", "details":"balls"}}
+    
     print(m_changes)
     events.update({"_id":ObjectId(event_id)}, m_changes)
     

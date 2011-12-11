@@ -156,17 +156,27 @@ function() {
 		initialize: function(){
 			_.bindAll(this, 
 				"render", "render_upcoming", 
+				"render_events", "render_past",
+				"render_conversations",
 				"render_honchoes", "render_classmates", 
 				"render_meeting_times", "render_classmates");
 			var self = this;
-			events.bind('change', function(){ events.sort(); self.render_upcoming() });
-			events.bind('destroy', self.render_upcoming);
-			events.bind('add', self.render_upcoming);
+			events.bind('change', self.render_events);
+			events.bind('destroy', self.render_events);
+			events.bind('add', self.render_events);
 			this.max_upcoming = Infinity;
 			this.render();
 		},
+		render_events: function() {
+			events.sort();
+			this.render_upcoming();
+			this.render_past();
+			this.render_conversations();
+		},
 		render: function(){
 			this.render_upcoming();
+			this.render_past();
+			this.render_conversations();
 			this.render_honchoes();
 			this.render_classmates();
 			this.render_meeting_times();
@@ -187,13 +197,25 @@ function() {
 		render_past: function() {
 			var past = events;
 			this.$("#past-events-list").html("");
-			_(past)
+			past
 			.filter(function(item) {
-				return (server_timestamp > item.get('start')) && (item.get("dummy") = true);
+				return (server_timestamp > item.get('start')) && (item.get("dummy") == true);
 			})
 			.forEach(function(item) {
-				var itemView = new SideBarEvent({model:item});
+				var itemView = new SidebarEvent({model:item});
 				this.$("#past-events-list").append(itemView.render());
+			});
+		},
+		render_conversations: function() {
+			var convos = events;
+			this.$("#conversation-list").html("");
+			convos
+			.filter(function(item) {
+				return (server_timestamp > item.get('convo_start')) && (item.get("dummy") == false);
+			})
+			.forEach(function(item) {
+				var itemView = new SidebarEvent({model:item});
+				this.$("#conversation-list").append(itemView.render());
 			});
 		},
 		render_honchoes: function() {
@@ -253,6 +275,23 @@ function() {
 			);
 			this.dtStart.options.that_floor = _(this.dtFinish.floor).bind(this.dtFinish);
 			this.dtFinish.options.that_ceil = _(this.dtStart.ceil).bind(this.dtStart);
+			
+			_.bindAll(this, "commit_edit", "commit_new");
+			
+			var self = this;
+			var toggleConvoInputs = function() {
+				console.log("Input toggled");
+				if(self.$(".auto-convo").is(":checked")) {
+					console.log("checked");
+					self.$(".auto-convo-inputs").show();
+				}
+				else {
+					console.log("unchecked");
+					self.$(".auto-convo-inputs").hide();
+				}
+			}
+			this.$(".auto-convo").change(toggleConvoInputs).trigger("change");
+			
 			this.render();
 		},
 		bind_event_model: function(event_model) {
@@ -268,26 +307,64 @@ function() {
 			this.dtStart.set_date(date, true);
 			this.dtFinish.set_date(date, true);
 			this.$(".details").val("");
+			this.$(".auto-convo").trigger("change"); //Trigger re-render of checkbox
 			var self = this;
-			this.$(".save").html("new").unbind("click").bind("click", function() {
-				//Create a new event
-				var title = self.$(".title").val()
-				var start = self.dtStart.get_ISO_string();
-				var finish = self.dtFinish.get_ISO_string();
-				var details = self.$(".details").val();
-				var type = self.$(".type").val();
-				event = {title:title, start:start, finish:finish, details:details, type:type}
-				events.create(event, {
-					success: function() {
-						self.$('.message').html("Success!");
-					},
-					error: function() {
-						self.$('.message').html("Success!");
-						self.model = undefined;
-					},
-				});
-			});
+			this.$(".save").html("new").unbind("click").bind("click", this.commit_new);
 			this.$(".delete").hide();
+		},
+		commit_new: function() {
+			console.log("called commit_new");
+			//Create a new event
+			var title = this.$(".title").val()
+			var start = this.dtStart.get_ISO_string();
+			var finish = this.dtFinish.get_ISO_string();
+			var details = this.$(".details").val();
+			var type = this.$(".type").val();
+			var auto_convo = this.$(".auto-convo").attr("checked") == "checked";
+			var hours_before = parseInt(this.$(".hours-before")) || 0; //Default 0
+			var days_before = parseInt(this.$(".days-before")) || 0;
+			console.log(auto_convo, hours_before, days_before);
+			event = {title:title, start:start, finish:finish, details:details, type:type, dummy:!auto_convo}
+			events.create(event, {
+				success: function() {
+					this.$('.message').html("Success!");
+				},
+				error: function() {
+					this.$('.message').html("Success!");
+					this.model = undefined;
+				},
+			});
+		},
+		commit_edit: function() {
+			var id = this.$(".event-id").html();
+			var title = this.$(".title").val();
+			var start = this.dtStart.get_ISO_string()//.slice(0,17);
+			var finish = this.dtFinish.get_ISO_string()//.slice(0, 17);
+			var details = this.$(".details").val();
+			var type = this.$(".type").val();
+			var auto_convo = this.$(".auto-convo").is(":checked");
+			var hours_before = parseInt(this.$(".hours-before").val()) || 0;
+			var days_before = parseInt(this.$(".days-before").val()) || 0;
+			changes = {
+				title:title, 
+				start:start, 
+				finish:finish, 
+				details:details, 
+				type:type,
+				dummy:!auto_convo,
+				hours_before:hours_before,
+				days_before:days_before,
+				}
+			this.model.save(changes, {
+				success: function(data) {
+					console.log("Success: ", data);
+					this.$('.message').html("Success!");
+				},
+				error: function(data) {
+					console.log("Error: ", data);
+					this.$('.message').html("Error :(");
+				}
+			});
 		},
 		render: function() {
 			console.log("Render called");
@@ -301,25 +378,11 @@ function() {
 				this.$(".details").val(this.model.get("details"));
 				this.$(".type").val(this.model.get("type"));
 				var self = this;
-				this.$(".save").html("save").unbind("click").bind("click", function() {
-					var id = self.$(".event-id").html();
-					var title = self.$(".title").val();
-					var start = self.dtStart.get_ISO_string()//.slice(0,17);
-					var finish = self.dtFinish.get_ISO_string()//.slice(0, 17);
-					var details = self.$(".details").val();
-					var type = self.$(".type").val();
-					changes = {title:title, start:start, finish:finish, details:details, type:type}
-					self.model.save(changes, {
-						success: function(data) {
-							console.log("Success: ", data);
-							self.$('.message').html("Success!");
-						},
-						error: function(data) {
-							console.log("Error: ", data);
-							self.$('.message').html("Error :(");
-						}
-					});
-				});
+				this.$(".auto-convo").attr("checked", !(this.model.get("dummy")));
+				this.$(".auto-convo").trigger("change"); //Trigger re-render of checkbox
+				this.$(".hours-before").val(this.model.get("hours_before"));
+				this.$(".days-before").val(this.model.get("days_before"));
+				this.$(".save").html("save").unbind("click").bind("click", self.commit_edit);
 				this.$(".delete").html("delete").show();
 				this.$(".delete").bind("click", function() {
 					self.model.destroy({
@@ -511,13 +574,13 @@ This is the backbone application.
 			<h1>Conversations</h1>
 			<ul id="conversation-list"></ul>
 		</div>
-		<div id="past-events">
-			<h1>Past Events</h1>
-			<ul id="past-events-list"></ul>
-		</div>
 		<div id="upcoming">
 			<h1>Upcoming</h1>
 			<ul id="upcoming-list"></ul>
+		</div>
+		<div id="past-events">
+			<h1>Past Events</h1>
+			<ul id="past-events-list"></ul>
 		</div>
 	</div>
 	<div id="information">
@@ -556,6 +619,13 @@ This is the backbone application.
 		<option value="Assignment">Assignment</option>
 		<option value="Other">Other</option>
 	</select>
+	<br/>
+	Auto convo:
+	<input class="auto-convo" type="checkbox" />
+	<div class="auto-convo-inputs">
+		<input type="text" placeholder="hours before" class="hours-before" />
+		<input type="text" placeholder="days before" class="days-before" />
+	</div>
 	<button class="save"></button>
 	<button class="delete"></button>
 </div>
