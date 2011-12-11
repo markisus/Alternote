@@ -53,6 +53,63 @@ class Files(ClassViewHandler):
         else:
             self.write("Did you forget to choose a file?")
             
+class FileUpload(BaseHandler):  
+    def save_file_normal(self, class_id):
+        name = self.request.files['qqfile']
+        print(name)
+        self.write("{error:'error'}")
+        return
+        #Check if file exists in database
+#        if db.files.check_record(class_id, name):
+#            self.write("A file with this name already exists!")
+#            return
+#        else:
+#            upload_path = os.path.join(static_path, "files", class_id)
+#            if not os.path.exists(upload_path):
+#                os.makedirs(upload_path)
+#            print(upload_path)
+#            file_path = os.path.join(upload_path, name)
+#            file = open(file_path, 'wb')
+#            file.write(body)
+#            #Add meta data to the database
+#            db.files.create_record(class_id, name, type)
+#            #Everything Okay?
+#            print(self.reverse_url("Files", class_id))
+#            self.redirect(self.reverse_url("Files", urllib.quote(class_id))) 
+
+    def write_file_to_disk(self, class_id, file_name, contents):
+        if db.files.check_record(class_id, file_name):
+            self.write("{error:'file name collision'}")
+            self.finish()
+            return
+        upload_path = os.path.join(static_path, "files", class_id)
+        if not os.path.exists(upload_path):
+            os.makedirs(upload_path)
+        print(upload_path)
+        file_path = os.path.join(upload_path, file_name)
+        file = open(file_path, 'wb')
+        file.write(contents)
+        #Add meta data to the database
+        db.files.create_record(class_id, file_name, file_name.split(".")[-1])
+        
+    def save_file_xhr(self, class_id):
+        body = self.request.body
+        name = self.get_argument('qqfile')
+        self.write_file_to_disk(class_id, name, body)
+        self.write("{success:'ok'}")
+        self.finish()
+        
+    def post(self, class_id):
+        print("File Upload...")
+        print(self.request)
+        if (self.get_argument("qqfile", False)):
+            #XHR uploading
+            print("XHRUploading")
+            self.save_file_xhr(class_id)
+        else:
+            print("Regular uploading")
+            self.save_file_normal(class_id)
+            
 class FileDelete(BaseHandler):           
     @authenticated
     @check_prof            

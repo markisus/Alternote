@@ -41,6 +41,7 @@ application = tornado.web.Application([
 
     #Files
     URLSpec(r"/files/edit/(?P<class_id>[\w|\-|%]+)", files.Files, name="Files"),
+    URLSpec(r"/files/upload/(?P<class_id>[\w|\-|%]+)", files.FileUpload, name="FileUpload"),
     URLSpec(r"/files/delete/(?P<class_id>[\w|\-|%]+)", files.FileDelete, name="FileDelete"),
     URLSpec(r"/files/tags/(?P<class_id>[\w|\-|%]+)/(?P<record_id>\w+)", files.FileTags, name="FileTags"),
     

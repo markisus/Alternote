@@ -1,5 +1,6 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
+	<link rel="stylesheet" type="text/css" href="[[ css('fileuploader.css') ]]" />
 </head>
 <script type="text/javascript" src="[[ script('date.format.js') ]]"></script>
 <script type="text/javascript" src="[[ script('json2.js') ]]"></script>
@@ -253,15 +254,41 @@ function() {
 		render_files: function() {
 			files.forEach(
 				function(file) {
-					var file_format = '<li><a href="<%= generate_filepath(file.get("name")) %>"><%= file.get("name") %></a></li>';
-					this.$("#file-list").append(_.template(file_format, {file:file}));
+					var file_format = '<li><a href="<%= generate_filepath(file.get("name")) %>"><%= file.get("name") %></a> <button class="edit">edit</button></li>';
+					var file_info = $(_.template(file_format, {file:file}));
+					$(file_info).children("button.edit").click(function(){file_edit.bind_file_model(file)});
+					this.$("#file-list").append(file_info);
 				}
 			);
 		}
 		
 	});
 	window.sidebar = new SideBar();
-	
+	//File Edit Widget (Change the tags of a file)
+	var FileEdit = Backbone.View.extend({
+		el: $("#file-edit"),
+		initialize: function() {
+			this.template = _.template("<option value='<%= event_id %>'><%= event_name %></option>")
+		},
+		bind_file_model: function(file_model) {
+			this.model = file_model;
+			//this.$(".save").click();
+			this.render()
+		},
+		render: function() {
+			if(!_.isUndefined(this.model)) {
+				//Clear the current tags:
+				this.$(".tags").html("");
+				tags = this.model.get("tags");
+				var self = this;
+				events.forEach(function(item) {
+					self.$(".tags").append(self.template({event_id:item.get('id'), event_name:item.get('title')}));
+				});
+			}
+			console.log("Rendering");
+		}
+	});
+	window.file_edit = new FileEdit();
 	//Event Edit Widget (also for creating new events)
 	var EventEdit = Backbone.View.extend({
 		el: $("#event-edit"),
@@ -628,4 +655,35 @@ This is the backbone application.
 	</div>
 	<button class="save"></button>
 	<button class="delete"></button>
+</div>
+<div id="file-edit" float:right;">
+	<select class="tags" multiple="multiple">
+	</select>
+	<button class="save">save</button>
+	<button class="delete">delete file</button>
+</div>
+<div id="file-upload" style="float:right;">
+	<div id="file-uploader-demo1">		
+		<noscript>			
+			<p>Please enable JavaScript to use file uploader.</p>
+			<!-- or put a simple form for upload here -->
+		</noscript>         
+	</div>
+    
+    <script src="[[ script('fileuploader.js') ]]" type="text/javascript"></script>
+    <script>        
+        function createUploader(){ 
+        	console.log("creating uploader");  
+        	console.log($("#file-uploader-demo1"));         
+            var uploader = new qq.FileUploader({
+                element: document.getElementById('file-uploader-demo1'),
+                action: '[[ reverse_url("FileUpload", class_id) ]]',
+                debug: true
+            });           
+        }
+        
+        // in your app create uploader as soon as the DOM is ready
+        // don't wait for the window to load  
+        $(function() {createUploader()});
+    </script>
 </div>
