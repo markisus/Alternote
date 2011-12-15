@@ -119,10 +119,7 @@ function() {
 	//File Model - depends on Event Collection
 	var File = Backbone.Model.extend({
 		has_tag: function(id) {
-			return _(this.get('tags')).chain()
-			.map(function(doc){return doc['_id'];})
-			.contains(id)
-			.value();
+			return _(this.get('tags')).contains(id);
 		},
 		get_classes: function() {
 			//events global Collection is defined later
@@ -135,7 +132,10 @@ function() {
 	 
 	//**************** COLLECTIONS *********************
 	//Files Collection
-	var Files = Backbone.Collection.extend({model:File});
+	var Files = Backbone.Collection.extend({
+		model: File,
+		url: "[[ reverse_url("Files", class_id) ]]",
+	});
 	window.files = new Files([[files]]);
 	
 	//Calendar Events Collection
@@ -175,13 +175,19 @@ function() {
 			_.bindAll(this, 
 				"render", "render_upcoming", 
 				"render_events", "render_past",
-				"render_conversations",
+				"render_conversations", "render_files",
 				"render_honchoes", "render_classmates", 
 				"render_meeting_times", "render_classmates");
 			var self = this;
 			events.bind('change', self.render_events);
 			events.bind('destroy', self.render_events);
 			events.bind('add', self.render_events);
+			console.log("Binding file change handlers!");
+			files.bind('change', self.render_files);
+			files.bind('change', self.render_events); //File tag changes should affect events
+			files.bind('destroy', self.render_files);
+			files.bind('destroy', self.render_events); //File destruction should affect events
+			files.bind('add', self.render_files);
 			this.max_upcoming = Infinity;
 			this.render();
 		},
@@ -217,7 +223,7 @@ function() {
 			this.$("#past-events-list").html("");
 			past
 			.filter(function(item) {
-				return (server_timestamp > item.get('start')) && (item.get("dummy") == true);
+				return (server_timestamp > item.get('start'));
 			})
 			.forEach(function(item) {
 				var itemView = new SidebarEvent({model:item});
@@ -269,6 +275,8 @@ function() {
 			);
 		},
 		render_files: function() {
+			console.log("rendering files");
+			this.$("#file-list").html("");
 			files.forEach(
 				function(file) {
 					var file_format = '<li><a href="<%= generate_filepath(file.get("name")) %>"><%= file.get("name") %></a> <button class="edit">edit</button></li>';
@@ -286,21 +294,70 @@ function() {
 		el: $("#file-edit"),
 		initialize: function() {
 			this.template = _.template("<option value='<%= event_id %>'><%= event_name %></option>")
+			this.render();
 		},
 		bind_file_model: function(file_model) {
 			this.model = file_model;
-			//this.$(".save").click();
+			var self = this;
+			this.$(".save").unbind().click(function() {
+				self.save();
+			});
+			this.$(".delete").unbind().click(function(){
+				self.delete_file();
+			});
 			this.render()
 		},
-		render: function() {
+		//Save the tag changes
+		save: function() {
+			console.log("Saving");
+			var tagged = _(this.$("select option:selected")).map(function(item){
+				return $(item).attr("value");
+			});
+			this.model.set("tags", tagged);
+			this.model.save();
+			
+		},
+		//Delete the file
+		delete_file: function() {
+			var self = this;
 			if(!_.isUndefined(this.model)) {
-				//Clear the current tags:
-				this.$(".tags").html("");
+				this.model.destroy({
+					success: function() {
+						//Unbind model and rerender
+						self.model = undefined;
+						self.render();
+						},
+					error: function() {
+						self.$(".message").html("Error!");
+						}
+				});
+			}
+		},
+		render: function() {
+			//Clear the current tags:
+			this.$(".tags").html("");
+			//Clear the message
+			this.$(".message").html("");
+			if(!_.isUndefined(this.model)) {
 				tags = this.model.get("tags");
 				var self = this;
+				
+				//Populate Events
 				events.forEach(function(item) {
 					self.$(".tags").append(self.template({event_id:item.get('id'), event_name:item.get('title')}));
 				});
+				
+				//Select the correct events
+				_(this.model.get_classes()).map(
+					function(item){
+						console.log(this.$('option[value="' + item.get('id') + '"]').attr('selected', 'selected'));
+						return item.get('id');
+					}
+				);
+			}
+			else {
+				console.log("No bound model");
+				this.$(".message").html("Please bind a file.");
 			}
 			console.log("Rendering");
 		}
@@ -374,7 +431,7 @@ function() {
 					this.$('.message').html("Success!");
 				},
 				error: function() {
-					this.$('.message').html("Success!");
+					this.$('.message').html("Error!");
 					this.model = undefined;
 				},
 			});
@@ -565,8 +622,6 @@ function() {
 		window.event_edit = new EventEdit();
 		$("#event-edit").show();
 	}
-	
-		
 }
 );
 </script>
@@ -770,9 +825,10 @@ function() {
         </div>
 
         <div id="file-edit">
+        	<div class="message"></div>
         	<select class="tags" multiple="multiple">
         	</select>
-        	<button class="save">Save file</button>
+        	<button class="save">Save Changes</button>
         	<button class="delete">Delete file</button>
         </div>
 
@@ -792,6 +848,15 @@ function() {
                   var uploader = new qq.FileUploader({
                       element: document.getElementById('file-uploader-demo1'),
                       action: '[[ reverse_url("FileUpload", class_id) ]]',
+                      onComplete: function() {
+                      	console.log("Completed!");
+                      	files.fetch({
+                      		success: function() {
+		                      	console.log("just fetched...", files.models);  //Sync the backbone collection w the new files
+		                      	files.trigger("change");
+                      		}
+                      	});
+                      },
                       debug: true
                   });           
               }

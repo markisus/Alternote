@@ -87,3 +87,18 @@ class Events(BaseHandler):
 class Files(BaseHandler):
     def get(self, class_id):
         print("GET called for " + str(class_id))
+        files = db.files.get_records(class_id)
+        collection_to_Backbone(files)
+        files = json.dumps(files, default=str)
+        self.write(files)
+    
+    def put(self, class_id, record_id):
+        print("Received put")
+        body = self.request.body
+        doc = json.loads(body)
+        event_ids = doc['tags']
+        db.files.set_tags(record_id, event_ids)
+        
+    def delete(self, class_id, record_id):
+        print("Received Delete")
+        db.files.remove_record(record_id)

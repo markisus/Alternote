@@ -56,7 +56,6 @@ class Files(ClassViewHandler):
 class FileUpload(BaseHandler):  
     def save_file_normal(self, class_id):
         name = self.request.files['qqfile']
-        print(name)
         self.write("{error:'error'}")
         return
         #Check if file exists in database
@@ -85,7 +84,6 @@ class FileUpload(BaseHandler):
         upload_path = os.path.join(static_path, "files", class_id)
         if not os.path.exists(upload_path):
             os.makedirs(upload_path)
-        print(upload_path)
         file_path = os.path.join(upload_path, file_name)
         file = open(file_path, 'wb')
         file.write(contents)
@@ -101,7 +99,6 @@ class FileUpload(BaseHandler):
         
     def post(self, class_id):
         print("File Upload...")
-        print(self.request)
         if (self.get_argument("qqfile", False)):
             #XHR uploading
             print("XHRUploading")

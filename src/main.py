@@ -58,7 +58,8 @@ application = tornado.web.Application([
     #Backbone Collection URLs
     URLSpec(r"/events/(?P<class_id>[\w|\-|%]+)", handlers.backbone.Events, name="Events"),
     URLSpec(r"/events/(?P<class_id>[\w|\-|%]+)/(?P<event_id>\w+)", handlers.backbone.Events, name="Event"),
-    
+    URLSpec(r"/files/(?P<class_id>[\w|\-|%]+)", handlers.backbone.Files, name="Files"),
+    URLSpec(r"/files/(?P<class_id>[\w|\-|%]+)/(?P<record_id>\w+)", handlers.backbone.Files, name="File"),
     #Backbone.js Model URLs
 #    URLSpec(r"/class/(?P<class_id>[\w|\-|%]+)", X, name="Class"),
 #    URLSpec(r"/file/(?P<class_id>[\w|\-|%]+)/(?<file_id>\w+)", X, name="File"),
@@ -111,7 +112,7 @@ application = tornado.web.Application([
     cookie_secret="CHANGE THIS EVENTUALLY",
     login_url= login_url,
     static_path= static_path,
-    debug=True
+#    debug=True
 )
 
 #Add methods to the template environment
