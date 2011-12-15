@@ -123,10 +123,26 @@ function() {
 		},
 		get_classes: function() {
 			//events global Collection is defined later
-			var self=this;
+			var self = this;
 			return events.filter(function(event) {
 				return self.has_tag(event.get('id'));
 			});
+		},
+		//Todo - add the collection method to save all changed files, remove save call from these
+		remove_tag: function(id) {
+			if (this.has_tag(id)) {
+				this.set("tags", _(this.get("tags")).without(id));
+				this.save();
+			}
+		},
+		add_tag: function(id) {
+			console.log("Inside add_tag of " + this.get("name") + " with " + id);
+			if (!this.has_tag(id)) {
+				var new_tags = this.get("tags");
+				new_tags.push(id);
+				this.set("tags", new_tags);
+				this.save();
+			}
 		}
 	});
 	 
@@ -153,7 +169,7 @@ function() {
 	};*/
 	
 	//**************** VIEWS *********************
-	//Sidebar Upcoming Item
+	//Sidebar Item
 	var SidebarEvent = Backbone.View.extend({
 		tagName: "div",
 		template: _.template($('#upcoming-template').html()),
@@ -163,6 +179,7 @@ function() {
 			//When someone clicks this, it will fill the edit widget
 			$(this.el).bind('click', function() {
 				event_edit.bind_event_model(model);
+				file_bank.bind_event_model(model);
 			});
 			return result;
 		}
@@ -618,9 +635,62 @@ function() {
 		},
 	});
 	
+	//Widget to add files to a class
+	var FileBank = Backbone.View.extend({
+		el: $("#file-bank"),
+		initialize: function() {
+			this.template = _.template("<option value='<%= file_id %>'><%= file_name %></option>")
+			this.render();
+		},
+		bind_event_model: function(model) {
+			this.model = model;
+			this.render();
+		},
+		//Add/remove files to/from class
+		save: function() {
+			console.log("Saving", this.model);
+			var self = this;
+			var all_files = files.pluck("id");
+			var selected_files = _(this.$("select option:selected")).map(function(item){
+				return $(item).attr("value");
+			});
+			var unselected_files = _(all_files).difference(selected_files);
+			_(selected_files).forEach(function(id) {
+				files.get(id).add_tag(self.model.get("id"));
+			});
+			_(unselected_files).forEach(function(id) {
+				files.get(id).remove_tag(self.model.get("id"));
+			});
+			console.log(all_files, selected_files, unselected_files);
+		},
+		render: function() {
+			//Clear current list
+			this.$(".files").html("");
+			if (!_.isUndefined(this.model)) {
+				var self = this;
+				this.$(".save").unbind().click(function(){
+					self.save();
+				});
+				files.forEach(function(item) {
+					//Supply file bank
+					self.$(".files").append(
+						self.template({file_id: item.get("id"), file_name: item.get("name")})
+					);
+				});
+				_(this.model.get_files()).forEach(function(item) {
+					this.$('option[value="' + item.get('id') + '"]').attr('selected', 'selected')
+				});
+			}
+			console.log("File bank render");
+		}
+	});
+	window.file_bank = new FileBank();
+	
 	if (class_doc.is_priveleged(user_id)) {
 		window.event_edit = new EventEdit();
 		$("#event-edit").show();
+	} else {
+		alert("Not privelged!");
 	}
 }
 );
@@ -823,7 +893,14 @@ function() {
         		<option value="Other">Other</option>
         	</select>
         </div>
-
+		<div id="file-bank">
+			File bank
+			<div class="message"></div>
+			<div class="event-id"></div>
+			<select class="files" multiple="multiple">
+			</select>
+			<button class="save">Save Changes</button>
+		</div>
         <div id="file-edit">
         	<div class="message"></div>
         	<select class="tags" multiple="multiple">
