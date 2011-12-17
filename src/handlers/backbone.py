@@ -29,9 +29,10 @@ class Bootstrap(BaseHandler):
     template = env.get_template("backbone_app.template")
     
     def get(self, class_id):
+        print("Bootstrapping...")
         #Get user_id
         user_id = self.get_current_user()
-        
+        print("user_id: " + str(user_id))
         #Get class_doc for this class
         class_doc = db.classes.get_class(class_id)
         class_doc = json.dumps(class_doc, default=str)
@@ -47,6 +48,7 @@ class Bootstrap(BaseHandler):
         events = json.dumps(events, default=str)
         
         self.render_out(server_timestamp=datetime.datetime.now().isoformat()[:16], user_id=user_id, class_id=class_id, class_doc=class_doc, files=files, events=events)
+        print("Get completed")
         
 #Backbone Collection Handlers
 class Events(BaseHandler):

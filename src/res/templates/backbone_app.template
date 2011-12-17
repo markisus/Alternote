@@ -22,16 +22,24 @@
 <script type="text/javascript" src="[[ script('jquery.mousewheel.js') ]]"></script>
 <script type="text/javascript" src="[[ script('underscore-1.2.2.js') ]]"></script>
 <script type="text/javascript" src="[[ script('backbone.js') ]]"></script>
-<script type="text/javascript" src="[[ script('mustache.js') ]]"></script>
+<script type="text/javascript" src="[[ script('client.js') ]]"></script>
 <script type="text/javascript" src="[[ script('chosen.jquery.min.js') ]]"></script>
 
 <!-- Backbone Templates -->
-<script type="text/template" id="upcoming-template">
+<script type="text/template" id="sidebar-item-template">
 	<% var startDate = new Date(model.get('start')) %>
 	<% var files = model.get_files() %>
 	<li id="<%= model.get('id') %>" class="<%= model.get('type') %>">
 		<%= model.get('title') %><br/>
 		<p class="date"><%= startDate.format('UTC:m/d h:MMt') %></p>
+		
+		<% if(class_doc.is_priveleged(user_id)) { %>
+		<button class="edit">edit</button>
+		<% } %>
+		<% if(model.has_active_convo()) { %>
+		<button class="convo">convo</button>
+		<% } %>
+		
 		<% if(!_.isEmpty(files)) { %>
 		<div class="files">
 		Files:
@@ -112,8 +120,19 @@ function() {
 			var date_string = this.get(field_name);
 			date_string += "-05:00" //Add time zone, Pretend everyone is in eastern time for now
 			return new Date(date_string);
+		},
+		has_active_convo: function() {
+			return (server_timestamp > this.get('convo_start')) && (this.get("dummy") == false);
+		},
+		get_client: function() {
+			if (!_.isUndefined(this.client)) {
+				return this.client;
+			} else {
+				var client = new Client(this.get("id"), user_id);
+				this.client = client;
+				return client;
+			}
 		}
-		
 	});
 	
 	//File Model - depends on Event Collection
@@ -146,6 +165,13 @@ function() {
 		}
 	});
 	 
+	 //Post and comment models
+	 var Post = Backbone.Model.extend({
+	 	
+	 })
+	 var Comment = Backbone.Model.extend({
+	 
+	 });
 	//**************** COLLECTIONS *********************
 	//Files Collection
 	var Files = Backbone.Collection.extend({
@@ -163,23 +189,34 @@ function() {
 		}
 	});
 	window.events = new Events([[events]]);
-	//Maintain Calendar Order
-	/*window.events.comparator = function(event) {
-		return event.get("start");
-	};*/
+
+	//Posts and Comments
+	var Posts = Backbone.Collection.extend({
+		model: Post,
+	});
+	var Comments = Backbone.Collection.extend({
+		model: Comment,
+	});
 	
 	//**************** VIEWS *********************
 	//Sidebar Item
 	var SidebarEvent = Backbone.View.extend({
 		tagName: "div",
-		template: _.template($('#upcoming-template').html()),
+		template: _.template($('#sidebar-item-template').html()),
 		render: function() {
 			var model = this.model;
 			var result = $(this.el).html(this.template({model:model}));
 			//When someone clicks this, it will fill the edit widget
-			$(this.el).bind('click', function() {
+			
+			this.$('.edit').click(function() {
+				//Show event+file bank page
 				event_edit.bind_event_model(model);
 				file_bank.bind_event_model(model);
+			});
+			
+			this.$('.convo').click(function() {
+				//Show convo page
+				conversation_view.bind_event_model(model);
 			});
 			return result;
 		}
@@ -252,7 +289,7 @@ function() {
 			this.$("#conversation-list").html("");
 			convos
 			.filter(function(item) {
-				return (server_timestamp > item.get('convo_start')) && (item.get("dummy") == false);
+				return item.has_active_convo();
 			})
 			.forEach(function(item) {
 				var itemView = new SidebarEvent({model:item});
@@ -306,6 +343,7 @@ function() {
 		
 	});
 	window.sidebar = new SideBar();
+	
 	//File Edit Widget (Change the tags of a file)
 	var FileEdit = Backbone.View.extend({
 		el: $("#file-edit"),
@@ -379,6 +417,7 @@ function() {
 			console.log("Rendering");
 		}
 	});
+	
 	window.file_edit = new FileEdit();
 	//Event Edit Widget (also for creating new events)
 	var EventEdit = Backbone.View.extend({
@@ -692,6 +731,34 @@ function() {
 	} else {
 		alert("Not privelged!");
 	}
+	
+	//Conversation View
+	var ConversationView = Backbone.View.extend({
+		el: $("#conversation"),
+		initialize: function() {
+			this.render();
+		},
+		bind_event_model: function(event_model) {
+			this.model = event_model;
+			this.render();
+		},
+		render: function() {
+			this.$(".message").html("");
+			console.log("RENDER CALLED OF CONVO VIEW");
+			if(!_.isUndefined(this.model)) {
+				
+			}
+			else {
+				this.$(".message").html("Please bind a convo")
+			}
+		}
+	});
+	window.conversation_view = new ConversationView();
+	
+	//Post Display
+	var PostView = Backbone.View.extend({
+		
+	});
 }
 );
 </script>
@@ -945,22 +1012,45 @@ function() {
         </div>
       </div>
 
-      <div class="upcoming">
-      	<h4>Upcoming Events</h4>
-      	<table border="0" cellpadding="0" cellspacing="0">
-      		<tbody id="upcoming_items">
-      		  <tr>
-      				<td class="date">Dec 12</td>
-      				<td class="time">10:30a &ndash; 12:00p</td>
-      				<td><a href="#">Lecture</a></td>
-      			</tr>
-      		</tbody>
-      	</table>
-      </div>
+		<div class="upcoming">
+		  	<h4>Upcoming Events</h4>
+		  	<table border="0" cellpadding="0" cellspacing="0">
+		  		<tbody id="upcoming_items">
+		  		  <tr>
+		  				<td class="date">Dec 12</td>
+		  				<td class="time">10:30a &ndash; 12:00p</td>
+		  				<td><a href="#">Lecture</a></td>
+		  			</tr>
+		  		</tbody>
+		  	</table>
+		</div>
       
-    </div> <!-- twelve columns calendar end -->
-    
+		</div> <!-- twelve columns calendar end -->
+	    
 	</div>
+</div>
+
+<script type="text/template" id="post-template">
+	<div class=".post">
+		<div class=".author-img"></div>
+		<div class=".author"><%= author %></div>
+		<div class=".message"><%= message %></div>
+		<div class=".actions">
+			<a href="#">like</a>
+			<a href="#">flag</a>
+		</div>
+		<div class=".stats">
+			like flags time
+		</div>
+	</div>
+</script>
+
+<div id="conversation" style="border: 1px solid black">
+	<div class="message"></div>
+  	This is the conversation
+  	<textarea class=".post-input" placeholder="Drop your insight"></textarea>
+  	<button class=".anonymous">Anonymous</button>
+  	<button class=".share">Share</button>
 </div>
 
 <ul id="footer-links">
@@ -971,4 +1061,5 @@ function() {
 	<li><a href="[[ reverse_url('Contact') ]]">Contact</a></li>
 </ul>
 
+<div id="scriptInject"></script>
 {% endblock body %}

@@ -46,7 +46,7 @@ def get_eventid_of_comment(commentid):
 
 def create_post_for_event(userid, eventid, post, anonymous=False):
     timestamp=datetime.now().isoformat()
-    author = get_user_display_info(userid, anonymous=anonymous)
+    author = get_user_display_info(userid, anon=anonymous)
     result = posts.insert(
                  {'message':post,
                   'votes':0,

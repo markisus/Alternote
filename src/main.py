@@ -13,6 +13,7 @@ from constants import static_path
 import datetime
 from handlers.calendar import time_format, twelve_hour_time
 import handlers.backbone
+import handlers.rts_api
 
 login_url = r"/auth/login"
 
@@ -51,8 +52,6 @@ application = tornado.web.Application([
 	URLSpec(r"/pages/terms", misc.Terms, name="Terms"),
 	URLSpec(r"/pages/contact", misc.Contact, name="Contact"),
     
-    #Test
-    
     #Backbone Bootstrap
     URLSpec(r"/class/(?P<class_id>[\w|\-|%]+)", handlers.backbone.Bootstrap, name="Bootstrap"),
     #Backbone Collection URLs
@@ -60,15 +59,6 @@ application = tornado.web.Application([
     URLSpec(r"/events/(?P<class_id>[\w|\-|%]+)/(?P<event_id>\w+)", handlers.backbone.Events, name="Event"),
     URLSpec(r"/files/(?P<class_id>[\w|\-|%]+)", handlers.backbone.Files, name="Files"),
     URLSpec(r"/files/(?P<class_id>[\w|\-|%]+)/(?P<record_id>\w+)", handlers.backbone.Files, name="File"),
-    #Backbone.js Model URLs
-#    URLSpec(r"/class/(?P<class_id>[\w|\-|%]+)", X, name="Class"),
-#    URLSpec(r"/file/(?P<class_id>[\w|\-|%]+)/(?<file_id>\w+)", X, name="File"),
-#    URLSpec(r"/event/(?P<class_id>[\w|\-|%]+)", X, name="Event"),
-#    URLSpec(r"/post/(")
-    #Backbone.js Collections
-#    URLSpec(r"/files/(?P<class_id>[\w|\-|%]+)"),
-#    URLSpec(r"/events/(?P<class_id>[\w|\-|%]+)"),
-#    URLSpec(r"/posts/(?P<class_id>[\w|\-|%]+)"),
     
     #Calendar
 #    (r"/", LoginHandler),
@@ -96,17 +86,17 @@ application = tornado.web.Application([
         #/unvote/comment/(commentid)
         #/flag/comment/(commentid)
         #/unflag/comment/(commentid)
-#    (r'/poll/(\w+)/(-1|\d+)/(\w+)/?', PollHandler),
-#    (r'/poll/(\w+)/(-1|\d+)/?', Randomizer), #
-#    (r'/get/(\w+)/?', PostGetter),
-#    (r'/comment/(\w+)/(.+)/?', Comment),
-#    (r'/post/(\w+)/(.+)/?', Post),
-#    (r'/anon_comment/(\w+)/(.+)/?', Comment, {'anon':True}),
-#    (r'/anon_post/(\w+)/(.+)/?', Post, {'anon':True}),
-#    (r'/vote/(\w+)/?', VoteObject),
-#    (r'/unvote/(\w+)/?', UnvoteObject),
-#    (r'/flag/(\w+)/', FlagObject),
-#    (r'/unflag/(\w+)/?', UnflagObject),
+    (r'/poll/(\w+)/(-1|\d+)/(\w+)/?', handlers.rts_api.PollHandler),
+    (r'/poll/(\w+)/(-1|\d+)/?', handlers.rts_api.Randomizer), #
+    (r'/get/(\w+)/?', handlers.rts_api.PostGetter),
+    (r'/comment/(\w+)/(.+)/?', handlers.rts_api.Comment),
+    (r'/post/(\w+)/(.+)/?', handlers.rts_api.Post),
+    (r'/anon_comment/(\w+)/(.+)/?', handlers.rts_api.Comment, {'anon':True}),
+    (r'/anon_post/(\w+)/(.+)/?', handlers.rts_api.Post, {'anon':True}),
+    (r'/vote/(\w+)/?', handlers.rts_api.VoteObject),
+    (r'/unvote/(\w+)/?', handlers.rts_api.UnvoteObject),
+    (r'/flag/(\w+)/', handlers.rts_api.FlagObject),
+    (r'/unflag/(\w+)/?', handlers.rts_api.UnflagObject),
 ], 
                                       
     cookie_secret="CHANGE THIS EVENTUALLY",
