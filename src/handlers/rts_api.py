@@ -3,6 +3,7 @@ from db.logins import *
 from db.conversations import *
 from collections import defaultdict
 import json
+from backbone import collection_to_Backbone
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -145,11 +146,15 @@ class PostGetter(JSONPHandler):
     @tornado.web.authenticated
     def get(self, eventid):
         posts = get_top_posts_for_event(eventid)
+        #to backbone...
+        print(posts)
+        collection_to_Backbone(posts)
         userid = self.get_current_user()
         votes_and_flags = get_user_votes_and_flags(userid)
         last_element = EVENT_REGISTRY.get_newest_index_in_cache_for_eventid(eventid)
         #the js client expects a dictionary of actions, so we wrap the dictionary in another dictionary
         result = {-1: {'action':'get', 'last_element':last_element, 'posts':list(posts), 'votes_and_flags':votes_and_flags}}
+        print("Sending result: " + str(result))
         self.write(eventid, json.dumps(result,  default=str, cls=None))
        
 #/comment/(postid)/(message)
@@ -164,9 +169,16 @@ class Comment(BaseHandler):
         user = get_user_display_info(userid, self.anon)
         
             
-        commentid = create_comment_for_post(userid, postid, message, self.anon)
+        comment = create_comment_for_post(userid, postid, message, self.anon)
         
-        datum = {'action':'comment', 'user':user, 'postid':postid, 'message':message, 'objectid':commentid}
+        datum = {
+                 'action':'comment', 
+                 'user':user, 
+                 'postid':postid, 
+                 'message':message, 
+                 'objectid':str(comment['_id']),
+                 'timestamp':comment['timestamp']
+                 }
         
         EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
@@ -181,9 +193,15 @@ class Post(BaseHandler):
         userid = self.get_current_user()
         user = get_user_display_info(userid, self.anon)
         
-        postid = create_post_for_event(userid, eventid, message, self.anon)
+        post = create_post_for_event(userid, eventid, message, self.anon)
         
-        datum = {'action':'post', 'user':user, 'message':message, 'objectid':postid}
+        datum = {
+                 'action':'post', 
+                 'user':user, 
+                 'message':message, 
+                 'objectid':str(post['_id']), 
+                 'timestamp':post['timestamp']
+                 }
         
         EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)

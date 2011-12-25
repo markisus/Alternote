@@ -26,6 +26,16 @@
 <script type="text/javascript" src="[[ script('chosen.jquery.min.js') ]]"></script>
 
 <!-- Backbone Templates -->
+<script type="text/template" id="message-template">
+	<div id="<%= model.get('id') %>">
+		<%= model.get('author')['first_name'] %> 
+		<%= model.get('author')['last_name'] %><br/>
+		<%= model.get('message') %><br/>
+		<%= model.get('timestamp') %>
+		<%= model.get('votes') %>
+		<%= model.get('flags') %>
+	</div>
+</script>
 <script type="text/template" id="sidebar-item-template">
 	<% var startDate = new Date(model.get('start')) %>
 	<% var files = model.get_files() %>
@@ -109,6 +119,9 @@ function() {
 	
 	//Calendar Event Model - depends on File Collection
 	var Event = Backbone.Model.extend({
+		initialize: function() {
+			console.log("Initializing an event!");
+		},
 		get_files: function() {
 			var self = this;
 			//the files global Collection is defined later
@@ -122,14 +135,22 @@ function() {
 			return new Date(date_string);
 		},
 		has_active_convo: function() {
-			return (server_timestamp > this.get('convo_start')) && (this.get("dummy") == false);
+			has_active = (server_timestamp > this.get('convo_start')) && (this.get("dummy") == false);
+			if (has_active) {
+				//Checking if the thing has a convo? well we might as well start up the listener
+				this.get_client();
+			}
+			return has_active;
 		},
 		get_client: function() {
 			if (!_.isUndefined(this.client)) {
 				return this.client;
 			} else {
-				var client = new Client(this.get("id"), user_id);
+				//Initialize the Messages collection correlated with the client
+				this.messages = new Messages();
+				var client = new Client(this.get("id"), user_id, this.messages);
 				this.client = client;
+				
 				return client;
 			}
 		}
@@ -166,13 +187,33 @@ function() {
 	});
 	 
 	 //Post and comment models
-	 var Post = Backbone.Model.extend({
-	 	
-	 })
-	 var Comment = Backbone.Model.extend({
-	 
+	 var Message = Backbone.Model.extend({
 	 });
+	 
+	 
 	//**************** COLLECTIONS *********************
+	//Messages
+	var Messages = Backbone.Collection.extend({
+		model: Message,
+		for_event: function(event_id) {
+			return this.filter(
+				function(message){
+					return message.get('event_id')==event_id;
+				}
+			);
+		},
+		get_children_of_id: function(message_id) {
+			return this.filter(
+				function(message) {
+					return message.get('parent_id')==message_id;
+				}
+			);
+		},
+		get_children_of_model: function(message_model) {
+			return this.get_children_of_id(message_model.get('id'));
+		},
+	});
+	
 	//Files Collection
 	var Files = Backbone.Collection.extend({
 		model: File,
@@ -189,14 +230,6 @@ function() {
 		}
 	});
 	window.events = new Events([[events]]);
-
-	//Posts and Comments
-	var Posts = Backbone.Collection.extend({
-		model: Post,
-	});
-	var Comments = Backbone.Collection.extend({
-		model: Comment,
-	});
 	
 	//**************** VIEWS *********************
 	//Sidebar Item
@@ -289,6 +322,7 @@ function() {
 			this.$("#conversation-list").html("");
 			convos
 			.filter(function(item) {
+				console.log("Looking at " + item.get('title') + " has convo: " + item.has_active_convo());
 				return item.has_active_convo();
 			})
 			.forEach(function(item) {
@@ -417,8 +451,8 @@ function() {
 			console.log("Rendering");
 		}
 	});
-	
 	window.file_edit = new FileEdit();
+	
 	//Event Edit Widget (also for creating new events)
 	var EventEdit = Backbone.View.extend({
 		el: $("#event-edit"),
@@ -480,11 +514,17 @@ function() {
 			var auto_convo = this.$(".auto-convo").attr("checked") == "checked";
 			var hours_before = parseInt(this.$(".hours-before")) || 0; //Default 0
 			var days_before = parseInt(this.$(".days-before")) || 0;
-			console.log(auto_convo, hours_before, days_before);
 			event = {title:title, start:start, finish:finish, details:details, type:type, dummy:!auto_convo}
 			events.create(event, {
 				success: function() {
 					this.$('.message').html("Success!");
+					//The server will have calculated a convo_start time for this object, re-sync:
+					events.fetch(
+						{'success':function(){
+								events.trigger("change");
+							}
+						}
+					);
 				},
 				error: function() {
 					this.$('.message').html("Error!");
@@ -732,21 +772,50 @@ function() {
 		alert("Not privelged!");
 	}
 	
+	//Message View
+	var MessageView = Backbone.View.extend({
+		tagName: "div",
+		initialize: function() {
+			this.template = _.template($("#message-template").html());
+			this.render();
+		},
+		render: function() {
+			if(!_.isUndefined(this.model)) {
+				console.log(this.model);
+				$(this.el).html(this.template({model:this.model}));
+			}
+		}
+	});
+	
 	//Conversation View
 	var ConversationView = Backbone.View.extend({
 		el: $("#conversation"),
 		initialize: function() {
 			this.render();
+			this.message_template = _.template($("#message-template").html());
 		},
 		bind_event_model: function(event_model) {
 			this.model = event_model;
+			var self = this;
+			this.$(".share").unbind().click(function() {
+				var insight = self.$(".post-input").val();
+				console.log("Insight:", insight);
+				event_model.get_client().post(insight);
+				self.$(".post-input").val("");
+			});
 			this.render();
 		},
 		render: function() {
 			this.$(".message").html("");
+			this.$(".posts").html("");
 			console.log("RENDER CALLED OF CONVO VIEW");
 			if(!_.isUndefined(this.model)) {
-				
+				console.log(this.model);
+				var self = this;
+				this.model.messages.forEach(function(item) {
+					var message_view = new MessageView({model:item});
+					self.$(".posts").append(message_view.el);
+				});
 			}
 			else {
 				this.$(".message").html("Please bind a convo")
@@ -755,10 +824,6 @@ function() {
 	});
 	window.conversation_view = new ConversationView();
 	
-	//Post Display
-	var PostView = Backbone.View.extend({
-		
-	});
 }
 );
 </script>
@@ -1030,27 +1095,14 @@ function() {
 	</div>
 </div>
 
-<script type="text/template" id="post-template">
-	<div class=".post">
-		<div class=".author-img"></div>
-		<div class=".author"><%= author %></div>
-		<div class=".message"><%= message %></div>
-		<div class=".actions">
-			<a href="#">like</a>
-			<a href="#">flag</a>
-		</div>
-		<div class=".stats">
-			like flags time
-		</div>
-	</div>
-</script>
 
 <div id="conversation" style="border: 1px solid black">
 	<div class="message"></div>
   	This is the conversation
-  	<textarea class=".post-input" placeholder="Drop your insight"></textarea>
-  	<button class=".anonymous">Anonymous</button>
-  	<button class=".share">Share</button>
+  	<textarea class="post-input" placeholder="Drop your insight"></textarea>
+  	<button class="anonymous">Anonymous</button>
+  	<button class="share">Share</button>
+  	<div class="posts"></div>
 </div>
 
 <ul id="footer-links">

@@ -44,50 +44,81 @@ def get_eventid_of_comment(commentid):
         return result['event']
 
 
-def create_post_for_event(userid, eventid, post, anonymous=False):
+#def create_post_for_event(userid, eventid, post, anonymous=False):
+#    timestamp=datetime.now().isoformat()
+#    author = get_user_display_info(userid, anon=anonymous)
+#    result = posts.insert(
+#                 {'message':post,
+#                  'votes':0,
+#                  'flags':0,
+#                  'event':ObjectId(eventid),
+#                  'author':author,
+#                  'comments':[],
+#                  'timestamp':timestamp,
+#                  }
+#                 )
+#    if anonymous: 
+#        record_anon_item(userid, result)
+#    return str(result)
+    
+#Everything is a "message"
+def create_message_for_event(userid, message, parent_id=None, eventid=None, anonymous=False):
     timestamp=datetime.now().isoformat()
     author = get_user_display_info(userid, anon=anonymous)
-    result = posts.insert(
-                 {'message':post,
+    #Make sure the parent belongs to the same event
+    if parent_id:
+        parent_id = ObjectId(parent_id)
+        parent = posts.find_one({'_id':parent_id})
+        if not parent:
+            raise ValueError("Parent not found")
+        else:
+            eventid = parent['event_id']
+    data = {'message':message,
                   'votes':0,
                   'flags':0,
-                  'event':ObjectId(eventid),
+                  'event_id':ObjectId(eventid),
                   'author':author,
-                  'comments':[],
+                  'parent_id':None,
                   'timestamp':timestamp,
                   }
-                 )
+    id = posts.insert(data)
+    data.update({'_id': id})
     if anonymous: 
-        record_anon_item(userid, result)
-    return str(result)
+        record_anon_item(userid, id)
+    return data
 
 def get_top_posts_for_event(eventid):
+    print("GETTING POSTS FOR " + str(eventid))
     eventid = ObjectId(eventid)
-    return posts.find({'event':ObjectId(eventid)}).sort('timestamp', direction=ASCENDING).hint([('event',1),('timestamp',1)])
+    return list(posts.find({'event_id':ObjectId(eventid), 'parent_id':None}).sort('timestamp', direction=ASCENDING).hint([('event',1),('timestamp',1)]))
 
 
+#def create_comment_for_post(userid, postid, comment, anonymous=False):
+#    timestamp=datetime.now().isoformat()
+#    postid = ObjectId(postid)
+#    comment_id = ObjectId()
+#    author = get_user_display_info(userid, anonymous)
+#    if anonymous: #Wipe identifying info
+#        record_anon_item(userid, comment_id)
+#        #Save this commentid into the user
+#    comment = {
+#                'message':comment,
+#                'votes':0,
+#                'flags':0,
+#                'timestamp':timestamp,
+#                'author':author,
+#                '_id':comment_id
+#               }
+#        
+#    posts.update({'_id':postid, 'comments._id':{'$ne':comment_id}},
+#                  {'$push': {'comments':comment}},
+#              )
+#        
+#    return str(comment_id) #Comment id unique within a post
+def create_post_for_event(userid, eventid, post, anonymous=False):
+    return create_message_for_event(userid, message=post, eventid=eventid)
 def create_comment_for_post(userid, postid, comment, anonymous=False):
-    timestamp=datetime.now().isoformat()
-    postid = ObjectId(postid)
-    comment_id = ObjectId()
-    author = get_user_display_info(userid, anonymous)
-    if anonymous: #Wipe identifying info
-        record_anon_item(userid, comment_id)
-        #Save this commentid into the user
-    comment = {
-                'message':comment,
-                'votes':0,
-                'flags':0,
-                'timestamp':timestamp,
-                'author':author,
-                '_id':comment_id
-               }
-        
-    posts.update({'_id':postid, 'comments._id':{'$ne':comment_id}},
-                  {'$push': {'comments':comment}},
-              )
-        
-    return str(comment_id) #Comment id unique within a post
+    return create_message_for_event(userid=userid, message=comment, parent_id=postid, anonymous=False)
 
 def __create_vote_info(userid, type, timestamp):
     return {'userid':userid, 'timestamp':timestamp, 'type':type}
@@ -130,7 +161,7 @@ def vote_object(userid, objectid):
         print(str(objectid) + "is in voted")
         raise ValueError("Double-vote detected on object " + str(objectid))
     vote_post(userid, objectid)
-    vote_comment(userid, objectid)
+#    vote_comment(userid, objectid)
     users.update({"_id":userid}, {"$addToSet":{"voted":objectid}})
 
 def unvote_object(userid, objectid):
@@ -139,7 +170,7 @@ def unvote_object(userid, objectid):
     if objectid not in voted:
         raise ValueError("Cannot unupvote before upvote on object " + str(objectid))
     unvote_post(userid, objectid)
-    unvote_comment(userid, objectid)
+#    unvote_comment(userid, objectid)
     users.update({"_id":userid}, {"$pull":{"voted":objectid}})
 
 def flag_object(userid, objectid):
@@ -148,7 +179,7 @@ def flag_object(userid, objectid):
     if objectid in flagged:
         raise ValueError("Double-flag detected on object " + str(objectid))    
     flag_post(userid, objectid)
-    flag_comment(userid, objectid)
+#    flag_comment(userid, objectid)
     users.update({"_id":userid}, {"$addToSet":{"flagged":objectid}})
 
 def unflag_object(userid, objectid):
@@ -157,7 +188,7 @@ def unflag_object(userid, objectid):
     if objectid not in flagged:
         raise ValueError("Cannot unflag before flag on object " + str(objectid))
     unflag_post(userid, objectid)
-    unflag_comment(userid, objectid)
+#    unflag_comment(userid, objectid)
     users.update({"_id":userid}, {"$pull":{"flagged":objectid}})
 
 

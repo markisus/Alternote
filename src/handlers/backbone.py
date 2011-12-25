@@ -77,7 +77,11 @@ class Events(BaseHandler):
         print("Received put")
         body = self.request.body
         doc = json.loads(self.request.body)
-        del doc['class'] #Avoid dealing with deserializing the class doc; this shouldn't change anyway
+        print(doc)
+        try:
+            del doc['class'] #Avoid dealing with deserializing the class doc; this shouldn't change anyway
+        except KeyError:
+            pass
         doc_id = doc.pop("id")
         db.calendar.edit_item(doc_id, doc)
         print(self.get_params())

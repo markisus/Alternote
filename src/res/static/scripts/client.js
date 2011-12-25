@@ -1,13 +1,14 @@
 //var client = {};
-function Client(eventid, userid) {
+function Client(eventid, userid, messages) {
 	var self = this;
 	console.log("Inside client");
 	
 	var rts_address = "http://localhost:8888";
-	self.initialize = function(eventid, userid) {
+	self.initialize = function(eventid, userid, messages) {
 		console.log(eventid, userid);
 		self.eventid = eventid;
 		self.userid = userid;
+		self.messages = messages;
 		self.get();
 		console.log("Initialized.");
 	};
@@ -116,6 +117,7 @@ function Client(eventid, userid) {
 		self.votes_and_flags = data['votes_and_flags'];
 		var posts = data['posts'];
 		console.log(posts);
+		/*
 		for (key in posts) {
 			var post = posts[key];
 			_render_post(post['_id'], post['author'], post['message'], post['votes'], post['flags']);
@@ -123,8 +125,11 @@ function Client(eventid, userid) {
 				var comment = post['comments'][ckey];
 				_render_comment(comment['_id'], comment['author'], comment['message'], comment['votes'], comment['flags']);
 			}
-		}
-		console.log(data);
+		}*/
+		_(posts).forEach(function(item){
+			self.messages.add(item);
+		});
+		
 	};
 	
 	self.xvote = function(data) {
@@ -144,7 +149,17 @@ function Client(eventid, userid) {
 	};
 	
 	self.xpost = function(data) {
-		_render_post(data['objectid'], data['user'], data['message'], 0, 0);
+		self.messages.add(
+				{'id':data['objectid'], 
+				'event_id':self.eventid,
+				'author':data['user'], 
+				'message':data['message'], 
+				'votes':0, 
+				'flags':0,
+				'parent_id':null,
+				'timestamp':data['timestamp']
+				}
+		);
 	};
 	
 	self.xcomment = function(data) {
@@ -153,5 +168,5 @@ function Client(eventid, userid) {
 	};
 	
 	console.log("initializing");
-	self.initialize(eventid, userid);
+	self.initialize(eventid, userid, messages);
 };

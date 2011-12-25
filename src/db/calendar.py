@@ -16,6 +16,7 @@ def delete_item(event_id):
     event_id = ObjectId(event_id)
     files.update({"tags._id":event_id}, {"$pull":{"tags":{"_id":event_id}}})
     events.remove({"_id":event_id})
+    posts.remove({'event_id':event_id})
     
 #Get all
 def get_all(class_id):
