@@ -327,7 +327,7 @@ header ul#nav li a {
   text-shadow: 0px 1px 1px #FFF;
   padding: 9px;
   background-color: transparent;
-  border: solid 1px transparent;
+  border: solid 1px #EEE;
   border-bottom: none;
   -webkit-border-radius: 3px 3px 0px 0px;
   -moz-border-radius: 3px 3px 0px 0px;
@@ -369,7 +369,7 @@ header ul#nav li div.dropdown input#submit {
   float: right;
 }
 ul#footer-links {
-  width: 455px;
+  width: 430px;
   height: 20px;
   margin: 20px auto 10px auto;
 }
@@ -489,6 +489,7 @@ ul#footer-links li a:hover {
 .sidebar .purple-line {
   float: right;
   margin-top: 20px;
+  margin-bottom: 7px;
   height: 1px;
   width: 50%;
   background: #CAC;
@@ -496,6 +497,25 @@ ul#footer-links li a:hover {
 .sidebar ul.sidebar-content {
   float: left;
   width: 100%;
+  /*
+		&#upcoming-list {
+		    max-height: 214px;
+		    overflow: hidden;
+		    
+		    &:hover { overflow-y: scroll; }
+    		li {
+    			border: none;
+    			&:hover { background: transparent; }
+    			p.date { 
+    				float: right;
+    				margin-right: 5px;
+    				font-size: 14px;
+    				color: #161616;
+    			} 
+    		}
+    	}
+    	*/
+
 }
 .sidebar ul.sidebar-content img {
   width: 20px;
@@ -516,6 +536,9 @@ ul#footer-links li a:hover {
 .sidebar ul.sidebar-content#user {
   margin-top: 36px;
 }
+.sidebar ul.sidebar-content#user .purple-line {
+  margin-top: -10px;
+}
 .sidebar ul.sidebar-content#user li {
   border: none;
 }
@@ -523,30 +546,17 @@ ul#footer-links li a:hover {
   color: #AAA;
   font-size: 12px;
 }
-.sidebar ul.sidebar-content#conversation-list {
+.sidebar ul.sidebar-content#user li:last-child a {
+  float: right;
+  margin-right: 10px;
+  font-size: 12px;
+}
+.sidebar ul.sidebar-content#conversation-list, .sidebar ul.sidebar-content#past-events-list, .sidebar ul.sidebar-content#upcoming-list {
   max-height: 214px;
   overflow: hidden;
 }
-.sidebar ul.sidebar-content#conversation-list:hover {
+.sidebar ul.sidebar-content#conversation-list:hover, .sidebar ul.sidebar-content#past-events-list:hover, .sidebar ul.sidebar-content#upcoming-list:hover {
   overflow-y: scroll;
-}
-.sidebar ul.sidebar-content#conversation-list li {
-  cursor: pointer;
-}
-.sidebar ul.sidebar-content#conversation-list li:hover {
-  background: #F3F3F3;
-}
-.sidebar ul.sidebar-content#upcoming-list li {
-  border: none;
-}
-.sidebar ul.sidebar-content#upcoming-list li:hover {
-  background: transparent;
-}
-.sidebar ul.sidebar-content#upcoming-list li p.date {
-  float: right;
-  margin-right: 5px;
-  font-size: 14px;
-  color: #161616;
 }
 .sidebar ul.sidebar-content#file-list li {
   border: none;
@@ -581,8 +591,6 @@ ul#footer-links li a:hover {
   -webkit-transition: background-color 0.15s linear;
   -moz-transition: background-color 0.15s linear;
   transition: background-color 0.15s linear;
-  /* &:hover { background-color: #F3F3F3; } */
-
   /*
 			&:last-child {
 				border: none;
@@ -598,6 +606,37 @@ ul#footer-links li a:hover {
 			}
 			*/
 
+}
+.sidebar ul.sidebar-content li button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  width: auto;
+  height: auto;
+  font-weight: normal;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  color: #333;
+}
+.sidebar ul.sidebar-content li button:hover {
+  color: #000;
+  text-decoration: underline;
+}
+.sidebar ul.sidebar-content li button.convo {
+  width: 80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+}
+.sidebar ul.sidebar-content li button.edit {
+  float: right;
+  width: 15px;
+  height: 15px;
+  margin-right: 10px;
+  background: url('../images/edit-icon.png');
 }
 .sidebar ul.sidebar-content li p.date {
   font-size: 12px;
@@ -709,6 +748,12 @@ input.new-comment {
   width: 88%;
   margin: -45px 0 0 60px;
 }
+#conversation {
+  display: none;
+  margin: 10px 0 0 0 !important;
+  padding-left: 8px;
+  border-left: solid 1px #CCC;
+}
 .calendar {
   margin: 10px 0 0 0 !important;
   border-left: solid 1px #CCC;
@@ -736,7 +781,7 @@ input.new-comment {
   transition: background-color 0.1s linear;
 }
 .calendar .fc-content .fc-widget-content:hover {
-  background-color: #F3F3F3;
+  background-color: #F6F6F6;
 }
 .calendar .fc-content .fc-event-skin {
   color: #009ed9;

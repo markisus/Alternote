@@ -127,7 +127,7 @@ header {
 				text-shadow: 0px 1px 1px #FFF;
 				padding: 9px;
 				background-color: transparent;
-				border: solid 1px transparent;
+				border: solid 1px #EEE;
 				border-bottom: none;
 				.border-radius(3px 3px 0px 0px);
 				.transition-double(background-color, border-color);
@@ -161,7 +161,7 @@ header {
 }
 
 ul#footer-links {
-	width: 455px;
+	width: 430px;
 	height: 20px;
 	margin: 20px auto 10px auto;
 	
@@ -275,6 +275,7 @@ ul#footer-links {
 	.purple-line {
 		float: right;
 		margin-top: 20px;
+		margin-bottom: 7px;
 		height: 1px;
 		width: 50%;
 		background: #CAC;
@@ -304,24 +305,33 @@ ul#footer-links {
 		
 		&#user {
 		    margin-top: 36px;
+		    .purple-line {
+		        margin-top: -10px;
+	        }
+	        
 		    li {
 		        border: none;
 		        p { color: #AAA; font-size: 12px; }
+		        &:last-child a {
+		            float: right;
+		            margin-right: 10px;
+		            font-size: 12px;
+		        }
 	        }
 		}
 		
-		&#conversation-list {
+		&#conversation-list, &#past-events-list, &#upcoming-list {
 		    max-height: 214px;
 		    overflow: hidden;
 		    
 		    &:hover { overflow-y: scroll; }
-		    li { 
-		        cursor: pointer; 
-		        &:hover { background: #F3F3F3; }
-		    }
 		}
-		
+		/*
 		&#upcoming-list {
+		    max-height: 214px;
+		    overflow: hidden;
+		    
+		    &:hover { overflow-y: scroll; }
     		li {
     			border: none;
     			&:hover { background: transparent; }
@@ -333,7 +343,7 @@ ul#footer-links {
     			} 
     		}
     	}
-    	
+    	*/
     	&#file-list {
     	    li { border: none; }
     	    button {
@@ -359,7 +369,41 @@ ul#footer-links {
 			background-color: transparent;
 			.transition(background-color 0.15s linear);
 			
-			/* &:hover { background-color: #F3F3F3; } */
+			button {
+			    border: none;
+			    background: transparent;
+			    padding: 0;
+			    margin: 0;
+			    width: auto;
+			    height: auto;
+			    font-weight: normal;
+			    text-align: left;
+			    font-size: 14px;
+			    cursor: pointer;
+			    color: #333;
+			    
+			    &:hover {
+			        color: #000;
+			        text-decoration: underline;
+			    }
+			    
+			    &.convo { 
+			        width: 80%;
+			        overflow: hidden;
+			        text-overflow: ellipsis;
+			        -moz-text-overflow: ellipsis;
+			        -webkit-text-overflow: ellipsis;
+			    }
+		        
+		        &.edit {
+		            float: right;
+		            width: 15px;
+		            height: 15px;
+		            margin-right: 10px;
+		            background: url('../images/edit-icon.png');
+		        }
+		    }
+			
 			/*
 			&:last-child {
 				border: none;
@@ -467,6 +511,13 @@ input.new-comment {
 	margin: -45px 0 0 60px;
 }
 
+#conversation {
+    display: none;
+    margin: 10px 0 0 0 !important;
+    padding-left: 8px;
+    border-left: solid 1px #CCC;
+}
+
 .calendar {
 	margin: 10px 0 0 0 !important;
 	border-left: solid 1px #CCC;
@@ -493,7 +544,7 @@ input.new-comment {
         
         .fc-widget-content {
             .transition(background-color 0.1s linear);
-            &:hover { background-color: #F3F3F3; }
+            &:hover { background-color: #F6F6F6; }
         }
         
         .fc-event-skin {

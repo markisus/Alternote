@@ -11,7 +11,7 @@ class CreateClass(BaseHandler):
     @authenticated
     @check_prof
     def get(self):
-        self.write(self.template.render(form=CreateClassForm(), navbar=self.render_navbar()))
+        self.write(self.template.render(form=CreateClassForm()))
     
     @authenticated
     @check_prof

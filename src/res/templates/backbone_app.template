@@ -40,24 +40,25 @@
 	<% var startDate = new Date(model.get('start')) %>
 	<% var files = model.get_files() %>
 	<li id="<%= model.get('id') %>" class="<%= model.get('type') %>">
-		<%= model.get('title') %><br/>
-		<p class="date"><%= startDate.format('UTC:m/d h:MMt') %></p>
+	  <% if(class_doc.is_priveleged(user_id)) { %>
+		<button class="edit"></button>
+		<% } %>
 		
-		<% if(class_doc.is_priveleged(user_id)) { %>
-		<button class="edit">edit</button>
+	  <% if(model.has_active_convo()) { %>
+		<button class="convo"><%= model.get('title') %></button>
+		<% } else { %>
+		<%= model.get('title') %><br/>
 		<% } %>
-		<% if(model.has_active_convo()) { %>
-		<button class="convo">convo</button>
-		<% } %>
+		<p class="date"><%= startDate.format('UTC:m/d h:MMt') %></p>
 		
 		<% if(!_.isEmpty(files)) { %>
 		<div class="files">
-		Files:
-		<ul>
-			<% _(files).forEach(function(file){ %> 
-				<li><a href="<%= generate_filepath(file.get('name')) %>"><%= file.get('name') %></a></li>
-			<% }) %>
-		</ul>
+		  Files:
+  		<ul>
+  			<% _(files).forEach(function(file){ %> 
+  				<li><a href="<%= generate_filepath(file.get('name')) %>"><%= file.get('name') %></a></li>
+  			<% }) %>
+  		</ul>
 		</div>
 		<% } %>
 	</li>
@@ -824,8 +825,7 @@ function() {
 	});
 	window.conversation_view = new ConversationView();
 	
-}
-);
+});
 </script>
 <script type='text/javascript' src='[[ script('fullcalendar.min.js') ]]'></script>
 <script type='text/javascript'>
@@ -870,13 +870,13 @@ function() {
 <!-- Sidebar -->
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("a.header").click(function(event) {
+		$("p.header a").click(function(event) {
 			event.preventDefault();
-			$(this).parent().parent().children("li").fadeToggle('fast');
+			$(this).parent().parent().children("ul").fadeToggle('fast');
 		});
-		
-		$("#conversations a.header").click(function(event) {
-			var ul = $(this).parent().parent();
+		/*
+		$("#conversations p.header a").click(function(event) {
+			var ul = $(this).parent().parent().children("ul");
 			var newHeight = 'auto';
 			
 			if (ul.css("max-height") == "auto")
@@ -888,10 +888,22 @@ function() {
 				// Animation complete
 			});
 		});
-
+    */
 		$("#conversations li a").click(function() {
 			var link = $(this).attr("href");
 			$(".twelve.columns").load(link);
+		});
+
+		$("#conversation-list").click(function() {
+			$(".content.calendar").hide();
+			$(".container .upcoming").hide();
+			$("#conversation").fadeIn();
+		});
+		
+		$("#show-calendar").click(function() {
+			$("#conversation").hide();
+			$(".content.calendar").fadeIn();
+			$(".container .upcoming").fadeIn();
 		});
 
 		$("#nav-link").click(function(event) {
@@ -913,12 +925,12 @@ function() {
 		});
 		
 		// New event form
-		$(".fc-widget-content").click(function() {
+		$(".fc-event").click(function() {
 		  $(".new-event").slideToggle();
 		});
 		
-		$("ul.sidebar-content#conversation-list li").click(function() {
-		  $(".new-event").slideDown();
+		$(".fc-widget-content").click(function() {
+		  $(".new-event").slideToggle();
 		});
 		
 		$(".new-event form .close").click(function(e) {
@@ -1089,21 +1101,22 @@ function() {
 		  		</tbody>
 		  	</table>
 		</div>
-      
+		
 		</div> <!-- twelve columns calendar end -->
+      
+		<div class="twelve columns content conversation" id="conversation">
+			<h3>Class Conversation</h3>
+			<a href="" id="show-calendar">Show calendar</a>
+			<div class="message"></div>
+	  	<textarea class="post-input" placeholder="Drop your insight"></textarea>
+	  	<button class="anonymous">Anonymous</button>
+	  	<button class="share">Share</button>
+	  	<div class="posts"></div>
+		</div>
 	    
 	</div>
 </div>
 
-
-<div id="conversation" style="border: 1px solid black">
-	<div class="message"></div>
-  	This is the conversation
-  	<textarea class="post-input" placeholder="Drop your insight"></textarea>
-  	<button class="anonymous">Anonymous</button>
-  	<button class="share">Share</button>
-  	<div class="posts"></div>
-</div>
 
 <ul id="footer-links">
 	<li>&copy; 2011 Alternote</li>
