@@ -174,7 +174,7 @@ class Comment(BaseHandler):
         datum = {
                  'action':'comment', 
                  'user':user, 
-                 'postid':postid, 
+                 'parent_id':postid, 
                  'message':message, 
                  'objectid':str(comment['_id']),
                  'timestamp':comment['timestamp']

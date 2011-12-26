@@ -76,6 +76,7 @@ function Client(eventid, userid, messages) {
 	};
 	
 	self.comment = function(parentid, message) {
+		console.log("Client.js COMMENT!")
 		_post_helper("comment", parentid, message);
 	};
 	
@@ -164,7 +165,17 @@ function Client(eventid, userid, messages) {
 	
 	self.xcomment = function(data) {
 		console.log(data);
-		_render_comment(data['postid'], data['objectid'], data['user'], data['message'], 0, 0);
+		self.messages.add(
+				{'id':data['objectid'], 
+				'event_id':self.eventid,
+				'author':data['user'], 
+				'message':data['message'], 
+				'votes':0, 
+				'flags':0,
+				'parent_id':data['parent_id'],
+				'timestamp':data['timestamp']
+				}
+		);
 	};
 	
 	console.log("initializing");

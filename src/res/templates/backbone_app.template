@@ -27,7 +27,7 @@
 
 <!-- Backbone Templates -->
 <script type="text/template" id="message-template">
-	<div id="<%= model.get('id') %>">
+	<div>
 		<%= model.get('author')['first_name'] %> 
 		<%= model.get('author')['last_name'] %><br/>
 		<%= model.get('message') %><br/>
@@ -212,6 +212,9 @@ function() {
 		},
 		get_children_of_model: function(message_model) {
 			return this.get_children_of_id(message_model.get('id'));
+		},
+		get_parentless: function() {
+			return this.filter(function(item){return item.get("parent_id") == null});
 		},
 	});
 	
@@ -780,10 +783,26 @@ function() {
 			this.template = _.template($("#message-template").html());
 			this.render();
 		},
+		events: {
+			"click .share": "comment",
+		},
+		comment: function() {
+			console.log("Comment, hurr durr!");
+			var self = this;
+			var comment = self.$(".comment-input").val();
+			console.log("Comment:", comment);
+			self.collection.get_client().comment(self.model.get("id"), comment);
+			self.$(".comment-input").val("");
+		},
 		render: function() {
 			if(!_.isUndefined(this.model)) {
 				console.log(this.model);
+				$(this.el).attr("id", this.model.get("id"));
 				$(this.el).html(this.template({model:this.model}));
+				if (this.model.get("parent_id") == null) {
+					$(this.el).append("<div class='comments'></div>");
+					$(this.el).append("<div class='submit-comment'><textarea class='comment-input' placeholder='your comment'></textarea><button class='anonymous'>Anonymous</button><button class='share'>Share</button></div>");
+				}
 			}
 		}
 	});
@@ -793,6 +812,8 @@ function() {
 		el: $("#conversation"),
 		initialize: function() {
 			this.render();
+			_.bindAll(this, 
+				"new_message_handler")
 			this.message_template = _.template($("#message-template").html());
 		},
 		bind_event_model: function(event_model) {
@@ -804,18 +825,56 @@ function() {
 				event_model.get_client().post(insight);
 				self.$(".post-input").val("");
 			});
+			
+			//Listen for changes to this event
+			var self = this;
+			this.model.messages.bind("add", function(message){
+				console.log("Listened to ", message);
+				self.new_message_handler(message);
+			});
 			this.render();
+		},
+		new_message_handler: function(message) {
+			//What happens depends on if the message is a post or comment
+			if (message.get("parent_id") == null) {
+				console.log("Handling post");
+				//The message is a post b.c. it has no parent
+				this.append_post(message);
+			} else {
+				this.append_comment(message);
+			}
+		},
+		make_view_for_message: function(message_model) {
+			return new MessageView({model:message_model, collection:this.model});
+		},
+		append_post: function(message_model) {
+			var message_view = this.make_view_for_message(message_model);
+			this.$(".posts").append(message_view.el);
+		},
+		append_comment: function(message_model) {
+			var parent_id = message_model.get("parent_id");
+			var message_view = this.make_view_for_message(message_model);
+			console.log("Appending comment");
+			console.log($("#" + parent_id + " .comments"));
+			console.log(message_view.el);
+			this.$("#" + parent_id + " .comments").prepend(message_view.el);
 		},
 		render: function() {
 			this.$(".message").html("");
 			this.$(".posts").html("");
-			console.log("RENDER CALLED OF CONVO VIEW");
 			if(!_.isUndefined(this.model)) {
-				console.log(this.model);
 				var self = this;
-				this.model.messages.forEach(function(item) {
-					var message_view = new MessageView({model:item});
-					self.$(".posts").append(message_view.el);
+				console.log("LOOKING AT POSTS!!!!");
+				_(this.model.messages.get_parentless()).forEach(function(item) {
+					self.append_post(item);
+					//Add the comments for the post
+					console.log("Checking comments for ", item);
+					var comments = self.model.messages.get_children_of_model(item);
+					console.log(comments);
+					comments.forEach(function(comment) {
+						console.log("Found comment");
+						self.append_comment(comment);
+					});
 				});
 			}
 			else {

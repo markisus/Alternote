@@ -32,16 +32,16 @@ def get_eventid_of_object(objectid):
 
 def get_eventid_of_post(postid):
     postid = ObjectId(postid)
-    result = events.posts.find_one({'_id':postid}, {'_id':0, 'event':1})
+    result = events.posts.find_one({'_id':postid}, {'_id':0, 'event_id':1})
     if result != None:
-        return result['event']
+        return result['event_id']
 
 
 def get_eventid_of_comment(commentid):
     commentid = ObjectId(commentid)
-    result = events.posts.find_one({'comments._id':commentid}, {'event':1})
+    result = events.posts.find_one({'comments._id':commentid}, {'event_id':1})
     if result != None:
-        return result['event']
+        return result['event_id']
 
 
 #def create_post_for_event(userid, eventid, post, anonymous=False):
@@ -78,7 +78,7 @@ def create_message_for_event(userid, message, parent_id=None, eventid=None, anon
                   'flags':0,
                   'event_id':ObjectId(eventid),
                   'author':author,
-                  'parent_id':None,
+                  'parent_id':parent_id,
                   'timestamp':timestamp,
                   }
     id = posts.insert(data)
@@ -87,10 +87,11 @@ def create_message_for_event(userid, message, parent_id=None, eventid=None, anon
         record_anon_item(userid, id)
     return data
 
+#Now the function also gets comments...
 def get_top_posts_for_event(eventid):
     print("GETTING POSTS FOR " + str(eventid))
     eventid = ObjectId(eventid)
-    return list(posts.find({'event_id':ObjectId(eventid), 'parent_id':None}).sort('timestamp', direction=ASCENDING).hint([('event',1),('timestamp',1)]))
+    return list(posts.find({'event_id':ObjectId(eventid)}).sort('timestamp', direction=ASCENDING).hint([('event',1),('timestamp',1)]))
 
 
 #def create_comment_for_post(userid, postid, comment, anonymous=False):
