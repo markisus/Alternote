@@ -501,7 +501,7 @@ function() {
 			this.$(".details").val("");
 			this.$(".auto-convo").trigger("change"); //Trigger re-render of checkbox
 			var self = this;
-			this.$(".save").html("new").unbind("click").bind("click", this.commit_new);
+			this.$(".save").html("New").unbind("click").bind("click", this.commit_new);
 			this.$(".delete").hide();
 		},
 		commit_new: function() {
@@ -580,8 +580,8 @@ function() {
 				this.$(".auto-convo").trigger("change"); //Trigger re-render of checkbox
 				this.$(".hours-before").val(this.model.get("hours_before"));
 				this.$(".days-before").val(this.model.get("days_before"));
-				this.$(".save").html("save").unbind("click").bind("click", self.commit_edit);
-				this.$(".delete").html("delete").show();
+				this.$(".save").html("Save").unbind("click").bind("click", self.commit_edit);
+				this.$(".delete").html("Delete").show();
 				this.$(".delete").bind("click", function() {
 					self.model.destroy({
 						success: function(data) {
@@ -861,7 +861,7 @@ function() {
 		});
 		var refetch = function(){
 			$("#calendar").fullCalendar('refetchEvents');
-			};
+		};
 		events.bind('change', refetch);
 		events.bind('add', refetch);
 		events.bind('destroy', refetch);
@@ -872,10 +872,16 @@ function() {
 	$(document).ready(function() {
 		$("p.header a").click(function(event) {
 			event.preventDefault();
-			$(this).parent().parent().children("ul").fadeToggle('fast');
+			$(this).parent().parent().children("ul").slideToggle('fast');
+			
+			var triangle = $(this).children(".triangle");
+			if (triangle.html() == '▲')
+				triangle.html('▼');
+			else
+				triangle.html('▲');
 		});
-		/*
-		$("#conversations p.header a").click(function(event) {
+		
+		/* $("#conversations p.header a").click(function(event) {
 			var ul = $(this).parent().parent().children("ul");
 			var newHeight = 'auto';
 			
@@ -887,25 +893,43 @@ function() {
 			}, 500, function() {
 				// Animation complete
 			});
-		});
-    */
+		}); */
+		
 		$("#conversations li a").click(function() {
 			var link = $(this).attr("href");
 			$(".twelve.columns").load(link);
 		});
 
-		$("#conversation-list").click(function() {
+		// If a conversation is clicked, show it
+		$("#conversation-list button.convo").click(function() {
 			$(".content.calendar").hide();
 			$(".container .upcoming").hide();
 			$("#conversation").fadeIn();
 		});
 		
+		// Show the edit icon if hovering over list of lectures
+		$("li.Lecture").hover(function() {
+			$(this).children(".edit").toggle();
+		});
+		
+		// If edit button clicked, show the calendar and edit event form
+		$("button.edit").click(function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			$("#conversation").hide();
+			$(".content.calendar").fadeIn();
+			$(".container .upcoming").fadeIn();
+			$(".new-event").slideDown();
+		});
+		
+		// Re-show the calendar from a conversation view
 		$("#show-calendar").click(function() {
 			$("#conversation").hide();
 			$(".content.calendar").fadeIn();
 			$(".container .upcoming").fadeIn();
 		});
 
+		// Sidebar navigation
 		$("#nav-link").click(function(event) {
 			event.preventDefault();
 			$(this).addClass("active");
@@ -925,17 +949,23 @@ function() {
 		});
 		
 		// New event form
-		$(".fc-event").click(function() {
-		  $(".new-event").slideToggle();
+		$(".fc-event").click(function(e) {
+			e.stopPropagation()
+		  $(".new-event").slideDown();
 		});
 		
-		$(".fc-widget-content").click(function() {
-		  $(".new-event").slideToggle();
+		$(".fc-widget-content").click(function(e) {
+			e.stopPropagation();
+		  $(".new-event").slideDown();
 		});
 		
 		$(".new-event form .close").click(function(e) {
 		  e.preventDefault();
 		  $(".new-event").slideUp();
+		});
+		
+		$("body").click(function(e) {
+			$(".new-event").slideUp();
 		});
 	});
 </script>
@@ -965,46 +995,46 @@ function() {
     	
     	<div id="nav-content">
     		<div id="conversations">
-    			<p class="header"><a href="">Conversations</a></p>
-    			  <div class="purple-line" style="width:60%;"></div>
+    			<p class="header"><a href="">Conversations <span class="triangle">&#9660;</span></a></p>
+    			  <div class="purple-line" style="width:59%;"></div>
     			<ul id="conversation-list" class="sidebar-content"></ul>
     		</div>
     		
     		<div id="upcoming">
-    			<p class="header"><a href="">Upcoming</a></p>
-    			  <div class="purple-line" style="width:70%;"></div>
+    			<p class="header"><a href="">Upcoming <span class="triangle">&#9660;</span></a></p>
+    			  <div class="purple-line" style="width:68%;"></div>
     			<ul id="upcoming-list" class="sidebar-content"></ul>
     		</div>
     		
     		<div id="past-events">
-    			<p class="header"><a href="">Past Events</a></p>
-    			  <div class="purple-line" style="width:65%;"></div>
+    			<p class="header"><a href="">Past Events <span class="triangle">&#9660;</span></a></p>
+    			  <div class="purple-line" style="width:66%;"></div>
     			<ul id="past-events-list" class="sidebar-content"></ul>
     		</div>
     	</div>
     	
     	<div id="info-content">
     		<div id="honchoes">
-    			<p class="header"><a href="">Honchoes</a></p>
-    			  <div class="purple-line" style="width:70%;"></div>
+    			<p class="header"><a href="">Honchoes <span class="triangle">&#9660;</span></a></p>
+    			  <div class="purple-line" style="width:68%;"></div>
     			<ul id="honchoes-list" class="sidebar-content"></ul>
     		</div>
     		
     		<div id="meeting">
-    			<p class="header"><a href="">Meeting</a></p>
-    			  <div class="purple-line" style="width:75%;"></div>
+    			<p class="header"><a href="">Meeting <span class="triangle">&#9660;</span></a></p>
+    			  <div class="purple-line" style="width:73%;"></div>
     			<ul id="meeting-list" class="sidebar-content"></ul>
     		</div>
     		
     		<div id="files">
-    			<p class="header"><a href="">Files</a></p>
-    			  <div class="purple-line" style="width:80%;"></div>
+    			<p class="header"><a href="">Files <span class="triangle">&#9660;</span></a></p>
+    			  <div class="purple-line" style="width:82%;"></div>
     			<ul id="file-list" class="sidebar-content"></ul>
     		</div>
     		
     		<div id="classmates">
-    			<p class="header"><a href="">Classmates</a></p>
-    			  <div class="purple-line" style="width:65%;"></div>
+    			<p class="header"><a href="">Classmates <span class="triangle">&#9660;</span></a></p>
+    			  <div class="purple-line" style="width:66%;"></div>
     			<ul id="classmates-list" class="sidebar-content"></ul>
     		</div>
     	</div>
