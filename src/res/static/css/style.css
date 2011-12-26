@@ -478,6 +478,9 @@ ul#footer-links li a:hover {
   float: left;
   font-size: 12px;
   margin-top: 10px;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
 }
 .sidebar p.header a {
   color: #858;
@@ -486,10 +489,17 @@ ul#footer-links li a:hover {
 .sidebar p.header a:hover {
   color: #000;
 }
+.sidebar p.header .triangle {
+  font-size: 8px;
+  filter: alpha(opacity=75);
+  -khtml-opacity: 0.75;
+  -moz-opacity: 0.75;
+  opacity: 0.75;
+}
 .sidebar .purple-line {
   float: right;
   margin-top: 20px;
-  margin-bottom: 7px;
+  margin-bottom: 8px;
   height: 1px;
   width: 50%;
   background: #CAC;
@@ -554,6 +564,7 @@ ul#footer-links li a:hover {
 .sidebar ul.sidebar-content#conversation-list, .sidebar ul.sidebar-content#past-events-list, .sidebar ul.sidebar-content#upcoming-list {
   max-height: 214px;
   overflow: hidden;
+  margin-bottom: 0px;
 }
 .sidebar ul.sidebar-content#conversation-list:hover, .sidebar ul.sidebar-content#past-events-list:hover, .sidebar ul.sidebar-content#upcoming-list:hover {
   overflow-y: scroll;
@@ -619,6 +630,9 @@ ul#footer-links li a:hover {
   font-size: 14px;
   cursor: pointer;
   color: #333;
+  -webkit-transition: text-decoration 0.1s linear;
+  -moz-transition: text-decoration 0.1s linear;
+  transition: text-decoration 0.1s linear;
 }
 .sidebar ul.sidebar-content li button:hover {
   color: #000;
@@ -632,11 +646,25 @@ ul#footer-links li a:hover {
   -webkit-text-overflow: ellipsis;
 }
 .sidebar ul.sidebar-content li button.edit {
+  display: none;
   float: right;
-  width: 15px;
-  height: 15px;
+  width: 20px;
+  height: 20px;
   margin-right: 10px;
   background: url('../images/edit-icon.png');
+  filter: alpha(opacity=50);
+  -khtml-opacity: 0.5;
+  -moz-opacity: 0.5;
+  opacity: 0.5;
+  -webkit-transition: opacity 0.1s linear;
+  -moz-transition: opacity 0.1s linear;
+  transition: opacity 0.1s linear;
+}
+.sidebar ul.sidebar-content li button.edit:hover {
+  filter: alpha(opacity=80);
+  -khtml-opacity: 0.8;
+  -moz-opacity: 0.8;
+  opacity: 0.8;
 }
 .sidebar ul.sidebar-content li p.date {
   font-size: 12px;
@@ -766,8 +794,44 @@ input.new-comment {
   margin: 0 7px;
 }
 .calendar table.fc-header span.fc-header-title h2 {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: normal;
+}
+.calendar table.fc-header .fc-button-effect {
+  display: none;
+}
+.calendar table.fc-header .fc-button, .calendar table.fc-header .fc-button-inner {
+  border: solid 1px transparent;
+  background: transparent;
+  color: #333;
+}
+.calendar table.fc-header .fc-button {
+  -webkit-transition-property: background-color 0.1s linear, border-color 0.1s linear;
+  -webkit-transition-duration: 0.15s, 0.15s;
+  -webkit-transition-timing-function: linear, linear;
+  -moz-transition-property: background-color 0.1s linear, border-color 0.1s linear;
+  -moz-transition-duration: 0.15s, 0.15s;
+  -moz-transition-timing-function: linear, linear;
+  transition-property: background-color 0.1s linear, border-color 0.1s linear;
+  transition-duration: 0.15s, 0.15s;
+  transition-timing-function: linear, linear;
+}
+.calendar table.fc-header .fc-state-active, .calendar table.fc-header .fc-button:hover {
+  background: #F3F3F3;
+  border: solid 1px #DDD;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.calendar table.fc-header .fc-state-active .fc-button-content, .calendar table.fc-header .fc-button:hover .fc-button-content {
+  color: #333;
+}
+.calendar table.fc-header .fc-header-right .fc-button {
+  margin-left: 5px;
+}
+.calendar .fc-content .fc-grid .fc-day-number {
+  float: left;
+  padding: 1px 5px;
 }
 .calendar .fc-content .fc-widget-header {
   border-top: none;
@@ -858,6 +922,7 @@ input.new-comment {
 }
 .calendar .new-event textarea {
   width: 475px;
+  max-width: 475px;
   float: left;
   margin-top: 8px;
 }
