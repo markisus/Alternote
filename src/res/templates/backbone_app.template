@@ -780,19 +780,35 @@ function() {
 	var MessageView = Backbone.View.extend({
 		tagName: "div",
 		initialize: function() {
+			_.bindAll(this, "toggle_anon");
 			this.template = _.template($("#message-template").html());
 			this.render();
 		},
 		events: {
 			"click .share": "comment",
+			"click .anonymous-comment": "toggle_anon",
 		},
 		comment: function() {
 			console.log("Comment, hurr durr!");
 			var self = this;
 			var comment = self.$(".comment-input").val();
 			console.log("Comment:", comment);
-			self.collection.get_client().comment(self.model.get("id"), comment);
+			if (!self.anon) {
+				self.collection.get_client().comment(self.model.get("id"), comment);
+			} else {
+				self.collection.get_client().anon_comment(self.model.get("id"), comment);
+			}
 			self.$(".comment-input").val("");
+		},
+		toggle_anon: function() {
+			console.log("toggled anon comment!!!");
+			this.anon = !this.anon;
+			if (this.anon) {
+				this.$(".anonymous-comment").html("Click here to unAnonymize")
+			}
+			else {
+				this.$(".anonymous-comment").html("Anonymous");
+			}
 		},
 		render: function() {
 			if(!_.isUndefined(this.model)) {
@@ -801,7 +817,7 @@ function() {
 				$(this.el).html(this.template({model:this.model}));
 				if (this.model.get("parent_id") == null) {
 					$(this.el).append("<div class='comments'></div>");
-					$(this.el).append("<div class='submit-comment'><textarea class='comment-input' placeholder='your comment'></textarea><button class='anonymous'>Anonymous</button><button class='share'>Share</button></div>");
+					$(this.el).append("<div class='submit-comment'><textarea class='comment-input' placeholder='your comment'></textarea><button class='anonymous-comment'>Anonymous</button><button class='share'>Share</button></div>");
 				}
 			}
 		}
@@ -810,11 +826,16 @@ function() {
 	//Conversation View
 	var ConversationView = Backbone.View.extend({
 		el: $("#conversation"),
+		events: {
+			'click .anonymous-post': 'toggle_anon'
+		},
 		initialize: function() {
-			this.render();
 			_.bindAll(this, 
-				"new_message_handler")
+				"new_message_handler",
+				"toggle_anon");
 			this.message_template = _.template($("#message-template").html());
+			this.anon = false;
+			this.render();
 		},
 		bind_event_model: function(event_model) {
 			this.model = event_model;
@@ -822,7 +843,14 @@ function() {
 			this.$(".share").unbind().click(function() {
 				var insight = self.$(".post-input").val();
 				console.log("Insight:", insight);
-				event_model.get_client().post(insight);
+				console.log(self.anon);
+				if (!self.anon) {
+					console.log("Doing non-anon post!");
+					event_model.get_client().post(insight);
+				} else {
+					console.log("doing anon post!");
+					event_model.get_client().anon_post(insight);
+				}
 				self.$(".post-input").val("");
 			});
 			
@@ -858,6 +886,15 @@ function() {
 			console.log($("#" + parent_id + " .comments"));
 			console.log(message_view.el);
 			this.$("#" + parent_id + " .comments").prepend(message_view.el);
+		},
+		toggle_anon: function() {
+			this.anon = !this.anon;
+			if (this.anon) {
+				this.$(".anonymous-post").html("Click here to unAnonymize")
+			}
+			else {
+				this.$(".anonymous-post").html("Anonymous");
+			}
 		},
 		render: function() {
 			this.$(".message").html("");
@@ -940,6 +977,9 @@ function() {
 				triangle.html('▲');
 		});
 		
+		
+		
+				
 		/* $("#conversations p.header a").click(function(event) {
 			var ul = $(this).parent().parent().children("ul");
 			var newHeight = 'auto';
@@ -1198,7 +1238,7 @@ function() {
 			<a href="" id="show-calendar">Show calendar</a>
 			<div class="message"></div>
 	  	<textarea class="post-input" placeholder="Drop your insight"></textarea>
-	  	<button class="anonymous">Anonymous</button>
+	  	<button class="anonymous-post">Anonymous</button>
 	  	<button class="share">Share</button>
 	  	<div class="posts"></div>
 		</div>
