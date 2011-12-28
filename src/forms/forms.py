@@ -6,11 +6,15 @@ import time
 class LoginForm(Form):
     email = TextField('Email', [validators.Email()])
     password = PasswordField('Password', [validators.Length(min=1)])
-    submit = SubmitField("Log In")
+    submit = SubmitField("Submit")
     
+class MailingListForm(Form):
+		email = TextField('Email address...', [validators.Email()])
+		submit = SubmitField("Go")
+
 class RegistrationCodeForm(Form):
-    code = TextField('Enter code...')
-    submit = SubmitField("Register")
+    code = TextField('Access code...')
+    submit = SubmitField("Go")
     
 class ProfRegistrationForm(Form):
     school = SelectField('Where do you teach?')
