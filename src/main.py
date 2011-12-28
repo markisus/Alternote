@@ -95,7 +95,7 @@ application = tornado.web.Application([
     (r'/anon_post/(\w+)/(.+)/?', handlers.rts_api.Post, {'anon':True}),
     (r'/vote/(\w+)/?', handlers.rts_api.VoteObject),
     (r'/unvote/(\w+)/?', handlers.rts_api.UnvoteObject),
-    (r'/flag/(\w+)/', handlers.rts_api.FlagObject),
+    (r'/flag/(\w+)/?', handlers.rts_api.FlagObject),
     (r'/unflag/(\w+)/?', handlers.rts_api.UnflagObject),
 ], 
                                       

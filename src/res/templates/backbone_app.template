@@ -32,8 +32,12 @@
 		<%= model.get('author')['last_name'] %><br/>
 		<%= model.get('message') %><br/>
 		<%= model.get('timestamp') %>
-		<%= model.get('votes') %>
-		<%= model.get('flags') %>
+		<span class="votes"><%= model.get('votes') %></span>
+		<span class="flags"><%= model.get('flags') %></span>
+		<div class="actions">
+			<a href="#" class="vote">vote</a>
+			<a href="#" class="flag">flag</a>
+		</div>
 	</div>
 </script>
 <script type="text/template" id="sidebar-item-template">
@@ -121,7 +125,6 @@ function() {
 	//Calendar Event Model - depends on File Collection
 	var Event = Backbone.Model.extend({
 		initialize: function() {
-			console.log("Initializing an event!");
 		},
 		get_files: function() {
 			var self = this;
@@ -177,7 +180,7 @@ function() {
 			}
 		},
 		add_tag: function(id) {
-			console.log("Inside add_tag of " + this.get("name") + " with " + id);
+			//console.log("Inside add_tag of " + this.get("name") + " with " + id);
 			if (!this.has_tag(id)) {
 				var new_tags = this.get("tags");
 				new_tags.push(id);
@@ -273,7 +276,7 @@ function() {
 			events.bind('change', self.render_events);
 			events.bind('destroy', self.render_events);
 			events.bind('add', self.render_events);
-			console.log("Binding file change handlers!");
+			//console.log("Binding file change handlers!");
 			files.bind('change', self.render_files);
 			files.bind('change', self.render_events); //File tag changes should affect events
 			files.bind('destroy', self.render_files);
@@ -326,7 +329,7 @@ function() {
 			this.$("#conversation-list").html("");
 			convos
 			.filter(function(item) {
-				console.log("Looking at " + item.get('title') + " has convo: " + item.has_active_convo());
+				//console.log("Looking at " + item.get('title') + " has convo: " + item.has_active_convo());
 				return item.has_active_convo();
 			})
 			.forEach(function(item) {
@@ -367,7 +370,7 @@ function() {
 			);
 		},
 		render_files: function() {
-			console.log("rendering files");
+			//console.log("rendering files");
 			this.$("#file-list").html("");
 			files.forEach(
 				function(file) {
@@ -402,7 +405,7 @@ function() {
 		},
 		//Save the tag changes
 		save: function() {
-			console.log("Saving");
+			//console.log("Saving");
 			var tagged = _(this.$("select option:selected")).map(function(item){
 				return $(item).attr("value");
 			});
@@ -443,16 +446,16 @@ function() {
 				//Select the correct events
 				_(this.model.get_classes()).map(
 					function(item){
-						console.log(this.$('option[value="' + item.get('id') + '"]').attr('selected', 'selected'));
+						//console.log(this.$('option[value="' + item.get('id') + '"]').attr('selected', 'selected'));
 						return item.get('id');
 					}
 				);
 			}
 			else {
-				console.log("No bound model");
+				//console.log("No bound model");
 				this.$(".message").html("Please bind a file.");
 			}
-			console.log("Rendering");
+			//console.log("Rendering");
 		}
 	});
 	window.file_edit = new FileEdit();
@@ -475,13 +478,13 @@ function() {
 			
 			var self = this;
 			var toggleConvoInputs = function() {
-				console.log("Input toggled");
+				//console.log("Input toggled");
 				if(self.$(".auto-convo").is(":checked")) {
-					console.log("checked");
+					//console.log("checked");
 					self.$(".auto-convo-inputs").show();
 				}
 				else {
-					console.log("unchecked");
+					//console.log("unchecked");
 					self.$(".auto-convo-inputs").hide();
 				}
 			}
@@ -494,7 +497,7 @@ function() {
 			this.render();
 		},
 		prepare_new_event: function(date) {
-			console.log("Preparing event");
+			//console.log("Preparing event");
 			this.$(".message").html("");
 			this.model = undefined; //Reset model
 			this.$(".event-id").html("");
@@ -508,7 +511,7 @@ function() {
 			this.$(".delete").hide();
 		},
 		commit_new: function() {
-			console.log("called commit_new");
+			//console.log("called commit_new");
 			//Create a new event
 			var title = this.$(".title").val()
 			var start = this.dtStart.get_ISO_string();
@@ -558,17 +561,17 @@ function() {
 				}
 			this.model.save(changes, {
 				success: function(data) {
-					console.log("Success: ", data);
+					//console.log("Success: ", data);
 					this.$('.message').html("Success!");
 				},
 				error: function(data) {
-					console.log("Error: ", data);
+					//console.log("Error: ", data);
 					this.$('.message').html("Error :(");
 				}
 			});
 		},
 		render: function() {
-			console.log("Render called");
+			//console.log("Render called");
 			this.$(".message").html("");
 			if (!_.isUndefined(this.model)) {
 				//Populate the field with model attrs
@@ -588,13 +591,13 @@ function() {
 				this.$(".delete").bind("click", function() {
 					self.model.destroy({
 						success: function(data) {
-							console.log("Success: ", data);
+							//console.log("Success: ", data);
 							self.$('.message').html("Success!");
 							self.model = undefined;
 							self.render();
 						},
 						error: function(data) {
-							console.log("Error: ", data);
+							//console.log("Error: ", data);
 							self.$('.message').html("Error :(");
 						}
 					});
@@ -731,7 +734,7 @@ function() {
 		},
 		//Add/remove files to/from class
 		save: function() {
-			console.log("Saving", this.model);
+			//console.log("Saving", this.model);
 			var self = this;
 			var all_files = files.pluck("id");
 			var selected_files = _(this.$("select option:selected")).map(function(item){
@@ -744,7 +747,7 @@ function() {
 			_(unselected_files).forEach(function(id) {
 				files.get(id).remove_tag(self.model.get("id"));
 			});
-			console.log(all_files, selected_files, unselected_files);
+			//console.log(all_files, selected_files, unselected_files);
 		},
 		render: function() {
 			//Clear current list
@@ -764,7 +767,7 @@ function() {
 					this.$('option[value="' + item.get('id') + '"]').attr('selected', 'selected')
 				});
 			}
-			console.log("File bank render");
+			//console.log("File bank render");
 		}
 	});
 	window.file_bank = new FileBank();
@@ -780,19 +783,46 @@ function() {
 	var MessageView = Backbone.View.extend({
 		tagName: "div",
 		initialize: function() {
-			_.bindAll(this, "toggle_anon");
+			console.log("INIT MESGVIEW");
+			_.bindAll(this, "toggle_anon", "toggle_vote", "toggle_flag", "handle_vote", "handle_flag", "render_stats");
+			this.can_vote = true;
+			this.can_flag = true;
 			this.template = _.template($("#message-template").html());
 			this.render();
+			var self = this;
+			this.$(".vote").first().click(function(){self.handle_vote()});
+			this.$(".flag").first().click(function(){self.handle_flag()});
+			
+			this.model.bind("toggle_flag", self.toggle_flag);
+			this.model.bind("toggle_vote", self.toggle_vote);
+			this.model.bind("change", self.render_stats);
+		},
+		handle_vote: function() {
+			console.log("Handling vote");
+			var self = this;
+			if (this.can_vote) {
+				this.collection.get_client().vote(self.model.get("id"));
+			} else {
+				this.collection.get_client().unvote(self.model.get("id"));
+			}
+		},
+		handle_flag: function() {
+			var self = this;
+			if (this.can_flag) {
+				this.collection.get_client().flag(self.model.get("id"));
+			} else {
+				this.collection.get_client().unflag(self.model.get("id"));
+			}
 		},
 		events: {
 			"click .share": "comment",
 			"click .anonymous-comment": "toggle_anon",
 		},
 		comment: function() {
-			console.log("Comment, hurr durr!");
+			//console.log("Comment, hurr durr!");
 			var self = this;
 			var comment = self.$(".comment-input").val();
-			console.log("Comment:", comment);
+			//console.log("Comment:", comment);
 			if (!self.anon) {
 				self.collection.get_client().comment(self.model.get("id"), comment);
 			} else {
@@ -801,7 +831,7 @@ function() {
 			self.$(".comment-input").val("");
 		},
 		toggle_anon: function() {
-			console.log("toggled anon comment!!!");
+			//console.log("toggled anon comment!!!");
 			this.anon = !this.anon;
 			if (this.anon) {
 				this.$(".anonymous-comment").html("Click here to unAnonymize")
@@ -810,17 +840,45 @@ function() {
 				this.$(".anonymous-comment").html("Anonymous");
 			}
 		},
+		
+		toggle_vote: function() {
+			this.can_vote = !this.can_vote;
+			if (this.can_vote) {
+				this.$(".vote").first().html("vote");
+			} else {
+				this.$(".vote").first().html("unvote");
+			}
+		},
+		toggle_flag: function() {
+			console.log("toggle_flag!");
+			this.can_flag = !this.can_flag;
+			if (this.can_flag) {
+				this.$(".flag").first().html("flag");
+			} else {
+				this.$(".flag").first().html("unflag");
+			}
+		},
+		render_stats: function() {
+			this.$(".votes").first().html(this.model.get("votes"));
+			this.$(".flags").first().html(this.model.get("flags"));
+		},
 		render: function() {
 			if(!_.isUndefined(this.model)) {
-				console.log(this.model);
 				$(this.el).attr("id", this.model.get("id"));
 				$(this.el).html(this.template({model:this.model}));
+				//Find out if we can vote and flag
+				if (_(this.collection.get_client().votes_and_flags['voted']).contains(this.model.get('id'))) {
+					this.toggle_vote();
+				}
+				if (_(this.collection.get_client().votes_and_flags['flagged']).contains(this.model.get('id'))) {
+					this.toggle_flag();
+				}
 				if (this.model.get("parent_id") == null) {
 					$(this.el).append("<div class='comments'></div>");
 					$(this.el).append("<div class='submit-comment'><textarea class='comment-input' placeholder='your comment'></textarea><button class='anonymous-comment'>Anonymous</button><button class='share'>Share</button></div>");
 				}
 			}
-		}
+		},
 	});
 	
 	//Conversation View
@@ -842,13 +900,13 @@ function() {
 			var self = this;
 			this.$(".share").unbind().click(function() {
 				var insight = self.$(".post-input").val();
-				console.log("Insight:", insight);
-				console.log(self.anon);
+				//console.log("Insight:", insight);
+				//console.log(self.anon);
 				if (!self.anon) {
-					console.log("Doing non-anon post!");
+					//console.log("Doing non-anon post!");
 					event_model.get_client().post(insight);
 				} else {
-					console.log("doing anon post!");
+					//console.log("doing anon post!");
 					event_model.get_client().anon_post(insight);
 				}
 				self.$(".post-input").val("");
@@ -857,7 +915,7 @@ function() {
 			//Listen for changes to this event
 			var self = this;
 			this.model.messages.bind("add", function(message){
-				console.log("Listened to ", message);
+				//console.log("Listened to ", message);
 				self.new_message_handler(message);
 			});
 			this.render();
@@ -865,7 +923,7 @@ function() {
 		new_message_handler: function(message) {
 			//What happens depends on if the message is a post or comment
 			if (message.get("parent_id") == null) {
-				console.log("Handling post");
+				//console.log("Handling post");
 				//The message is a post b.c. it has no parent
 				this.append_post(message);
 			} else {
@@ -882,9 +940,9 @@ function() {
 		append_comment: function(message_model) {
 			var parent_id = message_model.get("parent_id");
 			var message_view = this.make_view_for_message(message_model);
-			console.log("Appending comment");
-			console.log($("#" + parent_id + " .comments"));
-			console.log(message_view.el);
+			//console.log("Appending comment");
+			//console.log($("#" + parent_id + " .comments"));
+			//console.log(message_view.el);
 			this.$("#" + parent_id + " .comments").prepend(message_view.el);
 		},
 		toggle_anon: function() {
@@ -901,15 +959,15 @@ function() {
 			this.$(".posts").html("");
 			if(!_.isUndefined(this.model)) {
 				var self = this;
-				console.log("LOOKING AT POSTS!!!!");
+				//console.log("LOOKING AT POSTS!!!!");
 				_(this.model.messages.get_parentless()).forEach(function(item) {
 					self.append_post(item);
 					//Add the comments for the post
-					console.log("Checking comments for ", item);
+					//console.log("Checking comments for ", item);
 					var comments = self.model.messages.get_children_of_model(item);
-					console.log(comments);
+					//console.log(comments);
 					comments.forEach(function(comment) {
-						console.log("Found comment");
+						//console.log("Found comment");
 						self.append_comment(comment);
 					});
 				});
@@ -1193,16 +1251,16 @@ function() {
           <script src="[[ script('fileuploader.js') ]]" type="text/javascript"></script>
           <script>        
               function createUploader(){ 
-              	console.log("creating uploader");  
-              	console.log($("#file-uploader-demo1"));         
+              	//console.log("creating uploader");  
+              	//console.log($("#file-uploader-demo1"));         
                   var uploader = new qq.FileUploader({
                       element: document.getElementById('file-uploader-demo1'),
                       action: '[[ reverse_url("FileUpload", class_id) ]]',
                       onComplete: function() {
-                      	console.log("Completed!");
+                      	//console.log("Completed!");
                       	files.fetch({
                       		success: function() {
-		                      	console.log("just fetched...", files.models);  //Sync the backbone collection w the new files
+		                      	//console.log("just fetched...", files.models);  //Sync the backbone collection w the new files
 		                      	files.trigger("change");
                       		}
                       	});

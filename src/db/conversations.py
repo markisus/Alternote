@@ -176,7 +176,7 @@ def unvote_object(userid, objectid):
 
 def flag_object(userid, objectid):
     objectid = ObjectId(objectid)
-    flagged = get_user_flags(objectid)
+    flagged = get_user_flags(userid)
     if objectid in flagged:
         raise ValueError("Double-flag detected on object " + str(objectid))    
     flag_post(userid, objectid)

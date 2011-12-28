@@ -26,13 +26,13 @@ function Client(eventid, userid, messages) {
 			script.setAttribute('src', rts_address + src + '?' + nonce);
 			div.appendChild(script);
 		};
-		window.setTimeout(_inject, 0, src);
+		window.setTimeout(_inject, 100, src);
 	};
 	
 	self.callback = function(data) {
 		console.log("callback...");
 		for (key in data) {
-			if (key > self.last_element) self.last_element = key;
+			if (parseInt(key) > parseInt(self.last_element)) self.last_element = parseInt(key);
 			var data_piece = data[key];
 			var action = data_piece['action'];
 			eval("self.x" + action + "(data_piece)");
@@ -76,7 +76,6 @@ function Client(eventid, userid, messages) {
 	};
 	
 	self.comment = function(parentid, message) {
-		console.log("Client.js COMMENT!")
 		_post_helper("comment", parentid, message);
 	};
 	
@@ -135,17 +134,52 @@ function Client(eventid, userid, messages) {
 	
 	self.xvote = function(data) {
 		console.log(data);
+		var id = data['objectid'];
+		var action_id = data['userid'];
+		
+		var votes = self.messages.get(id).get("votes");
+		self.messages.get(id).set("votes", votes+1);
+		if (action_id == self.userid) {
+			self.messages.get(id).trigger("toggle_vote")
+		}
+		console.log(data);
 	};
 	
 	self.xunvote = function(data) {
 		console.log(data);
+		var id = data['objectid'];
+		var action_id = data['userid'];
+		
+		var votes = self.messages.get(id).get("votes");
+		self.messages.get(id).set("votes", votes-1);
+		if (action_id == self.userid) {
+			self.messages.get(id).trigger("toggle_vote");
+		}
+		console.log(data);
 	};
 	
 	self.xflag = function(data) {
+		var id = data['objectid'];
+		var action_id = data['userid'];
+		
+		var flags = self.messages.get(id).get("flags");
+		self.messages.get(id).set("flags", flags+1);
+		if (action_id == self.userid) {
+			self.messages.get(id).trigger("toggle_flag")
+		}
 		console.log(data);
 	};
 	
 	self.xunflag = function(data) {
+		console.log(data);
+		var id = data['objectid'];
+		var action_id = data['userid'];
+		
+		var flags = self.messages.get(id).get("flags");
+		self.messages.get(id).set("flags", flags-1);
+		if (action_id == self.userid) {
+			self.messages.get(id).trigger("toggle_flag")
+		}
 		console.log(data);
 	};
 	
