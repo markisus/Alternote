@@ -31,7 +31,7 @@
 		<%= model.get('author')['first_name'] %> 
 		<%= model.get('author')['last_name'] %><br/>
 		<%= model.get('message') %><br/>
-		<%= model.get('timestamp') %>
+		<span class="timestamp"></span>
 		<span class="votes"><%= model.get('votes') %></span>
 		<span class="flags"><%= model.get('flags') %></span>
 		<div class="actions">
@@ -779,6 +779,49 @@ function() {
 		alert("Not privelged!");
 	}
 	
+	//Timestamp Widget
+	var TimestampWidget = Backbone.View.extend({
+		tagName: "span",
+		initialize: function() {
+			$(this.el).addClass("timestamp");
+			_.bindAll(this, "neat_string", "render");
+		},
+		set_timestamp: function(timestamp) {
+			this.timestamp = (new Date(timestamp + "-05:00")).getTime();
+			var self = this;
+			self.render();
+			var intervalID = setInterval(self.render, 1000);
+		},
+		neat_string: function(delta_ms) {
+			var sec = 1000;
+			var min = sec*60;
+			var hour = min*60;
+			var day = hour*24;
+			var week = day*7;
+			
+			var delta_week = delta_ms/week;
+			if (delta_week > 1) return Math.floor(delta_week) + " weeks";
+			
+			var delta_day = delta_ms/day;
+			if (delta_day > 1) return Math.floor(delta_day) + " days";
+			
+			var delta_hour = delta_ms/hour;
+			if (delta_hour > 1) return Math.floor(delta_hour) + " hours";
+			
+			var delta_min = delta_ms/min;
+			if (delta_min > 1) return Math.floor(delta_min) + " minutes";
+			
+			var delta_sec = delta_ms/sec;
+			if (delta_sec > 1) return Math.floor(delta_sec) + " seconds";
+		},
+		render: function() {
+			var now = (new Date).getTime();
+			var then = this.timestamp;
+			var delta_ms = now-then;
+			var neat_string = this.neat_string(delta_ms);
+			$(this.el).html("posted " + neat_string + " ago");
+		}
+	})
 	//Message View
 	var MessageView = Backbone.View.extend({
 		tagName: "div",
@@ -866,6 +909,10 @@ function() {
 			if(!_.isUndefined(this.model)) {
 				$(this.el).attr("id", this.model.get("id"));
 				$(this.el).html(this.template({model:this.model}));
+				//Create timestamp
+				var timestamp = new TimestampWidget();
+				timestamp.set_timestamp(this.model.get("timestamp"));
+				this.$(".timestamp").first().append(timestamp.el);
 				//Find out if we can vote and flag
 				if (_(this.collection.get_client().votes_and_flags['voted']).contains(this.model.get('id'))) {
 					this.toggle_vote();
