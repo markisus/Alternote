@@ -68,7 +68,7 @@
 							Spring learners, enter your <br/> access code here.
 							[[ regForm.code( placeholder="Access code..." ) ]] [[ regForm.submit() ]]
 						</form>
-						<f>Confused about what we're dreaming about, what we're building, or who we are? Maybe <a href="#">this</a> will help.</f>
+						<f>Confused about what we're dreaming about, what we're building, or who we are? Maybe <a href="[[ reverse_url('About') ]]">this</a> will help.</f>
 					</div>
 				</div> <!-- 16 columns content end -->
 				{% endblock content %}
