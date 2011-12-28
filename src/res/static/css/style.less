@@ -160,15 +160,19 @@ ul#footer-links {
     height: 100%;
     
     #dropdown-link {
-        color: #333;
-        &:hover { color: #333; }
+        color: #666;
+		cursor: pointer;
+        padding: 5px 15px;
+		float: left;
+		text-align: center;
+		.transition(color 0.1s linear);
+        &:hover { color: #000; }
     }
     
     #login-button {
         float: right;
-        margin-right: 175px;
+        margin-right: 165px;
         margin-top: 30px;
-        padding: 5px 15px;
         text-align: center;
         border: solid 1px #CCC;
         .border-radius(3px);
@@ -235,8 +239,9 @@ ul#footer-links {
 		
 		input[type="text"] {
 			color: #666;
+			width: 220px;
 			margin-top: 10px;
-			margin-left: 22px;
+			margin-left: 28px;
 			padding: 8px 4px;
 			.box-shadow(inset 0px 0px 8px rgba(100,100,100,0.2));
 			.border-radius(3px);
@@ -254,7 +259,7 @@ ul#footer-links {
 		input[type="submit"] {
 		    float: left;
 		    margin-top: 10px;
-		    margin-left: -20px;
+		    margin-left: -40px;
 		    padding: 6px 12px;
 		    #gradient .vertical(#3ec9f8, #3caed5);
 		    border-color: #3980a1;
@@ -329,6 +334,7 @@ ul#footer-links {
 	    float: left;
 		font-size: 12px;
 		margin-top: 10px;
+		/* text-transform: uppercase; */
 		.transition(color 0.1s linear);
 		a { 
 			color: #858; 
@@ -435,7 +441,7 @@ ul#footer-links {
 			width: 100%;
 			padding: 3px 0 0 0;
 			font-size: 14px;
-			border-bottom: solid 1px #DDD;
+			border-bottom: solid 1px #EEE;
 			background-color: transparent;
 			.transition(background-color 0.15s linear);
 			
@@ -592,6 +598,43 @@ input.new-comment {
     margin: 10px 0 0 0 !important;
     padding-left: 8px;
     border-left: solid 1px #CCC;
+
+	h3 { 
+		float: left;
+		width: 80%; 
+		margin-bottom: 10px; 
+	}
+
+	#show-calendar {
+		padding: 3px 8px;
+		margin: 0;
+		float: right;
+		.opacity(75);
+	}
+	
+	.new-post {
+		.post-input {
+			width: 91%;
+			float: left;
+			resize: none;
+			padding-right: 40px;
+			overflow: hidden;
+		}
+		button {
+			float: left;
+			margin: 0;
+			&.anonymous-post {
+				width: 40px;
+				height: 30px;
+				margin-left: -45px;
+				margin-right: 10px;
+				border: none;
+				.box-shadow(none);
+				background: url('../images/glasses.png') no-repeat 50% 50%;
+				&.active { background: url('../images/glasses-inverted.png') no-repeat 50% 50%; }
+			}
+		}
+	}
 }
 
 .calendar {
@@ -618,11 +661,12 @@ input.new-comment {
             .transition-double(background-color 0.1s linear, border-color 0.1s linear);
         }
         .fc-state-active, .fc-button:hover {
-            background: #F3F3F3;
-            border: solid 1px #DDD;
+	        border: solid 1px #DDD;
+	        #gradient .vertical(#FFF, #EEE);
             .border-radius(3px);
             .fc-button-content { color: #333; }
         }
+		.fc-state-disabled { visibility: hidden; }
         .fc-header-right {
             .fc-button { margin-left: 5px; }
         }

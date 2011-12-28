@@ -876,11 +876,17 @@ function() {
 		toggle_anon: function() {
 			//console.log("toggled anon comment!!!");
 			this.anon = !this.anon;
+			this.$(".anonymous-post").toggleClass("active");
 			if (this.anon) {
-				this.$(".anonymous-comment").html("Click here to unAnonymize")
-			}
-			else {
-				this.$(".anonymous-comment").html("Anonymous");
+				this.$("textarea.post-input").css({
+					'background-color' : '#666',
+					'color' : '#FFF'
+				});
+			} else {
+				this.$("textarea.post-input").css({
+					'background-color' : '#FFF',
+					'color' : '#333'
+				});
 			}
 		},
 		
@@ -994,11 +1000,17 @@ function() {
 		},
 		toggle_anon: function() {
 			this.anon = !this.anon;
+			this.$(".anonymous-post").toggleClass("active");
 			if (this.anon) {
-				this.$(".anonymous-post").html("Click here to unAnonymize")
-			}
-			else {
-				this.$(".anonymous-post").html("Anonymous");
+				this.$("textarea.post-input").css({
+					'background-color' : '#666',
+					'color' : '#FFF'
+				});
+			} else {
+				this.$("textarea.post-input").css({
+					'background-color' : '#FFF',
+					'color' : '#333'
+				});
 			}
 		},
 		render: function() {
@@ -1081,10 +1093,7 @@ function() {
 			else
 				triangle.html('▲');
 		});
-		
-		
-		
-				
+
 		/* $("#conversations p.header a").click(function(event) {
 			var ul = $(this).parent().parent().children("ul");
 			var newHeight = 'auto';
@@ -1122,7 +1131,7 @@ function() {
 			e.stopPropagation();
 			$("#conversation").hide();
 			$(".content.calendar").fadeIn();
-			$(".container .upcoming").fadeIn();
+			$(".container .upcoming").fadeOut();
 			$(".new-event").slideDown();
 		});
 		
@@ -1138,7 +1147,6 @@ function() {
 			event.preventDefault();
 			$(this).addClass("active");
 			$("#info-link").removeClass("active");
-
 			$("#info-content").hide();
 			$("#nav-content").fadeIn();
 		});
@@ -1147,7 +1155,6 @@ function() {
 			event.preventDefault();
 			$(this).addClass("active");
 			$("#nav-link").removeClass("active");
-
 			$("#nav-content").hide();
 			$("#info-content").fadeIn();
 		});
@@ -1161,6 +1168,7 @@ function() {
 		$(".fc-widget-content").click(function(e) {
 			e.stopPropagation();
 		  $(".new-event").slideDown();
+			$(".container .upcoming").fadeOut();
 		});
 		
 		$(".new-event form .close").click(function(e) {
@@ -1168,8 +1176,12 @@ function() {
 		  $(".new-event").slideUp();
 		});
 		
+		$(".new-event").click(function(e) { e.stopPropagation(); });
+		$("#calendar div.fc-event.fc-event-skin").click(function(e) { e.stopPropagation(); });
+		
 		$("body").click(function(e) {
 			$(".new-event").slideUp();
+			$(".container .upcoming").fadeIn();
 		});
 	});
 </script>
@@ -1339,12 +1351,14 @@ function() {
 		</div> <!-- twelve columns calendar end -->
       
 		<div class="twelve columns content conversation" id="conversation">
-			<h3>Class Conversation</h3>
-			<a href="" id="show-calendar">Show calendar</a>
+			<h3>Lecture Conversation</h3>
+			<button id="show-calendar">Back to calendar</button>
 			<div class="message"></div>
-	  	<textarea class="post-input" placeholder="Drop your insight"></textarea>
-	  	<button class="anonymous-post">Anonymous</button>
-	  	<button class="share">Share</button>
+			<div class="new-post">
+		  	<textarea class="post-input" placeholder="Drop your insight" maxlength="310"></textarea>
+		  	<button class="anonymous-post"></button>
+		  	<button class="share">Share</button>
+			</div>
 	  	<div class="posts"></div>
 		</div>
 	    

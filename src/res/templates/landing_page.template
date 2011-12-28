@@ -11,18 +11,15 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#dropdown-link").click(function(e) {
-				e.preventDefault();
 				e.stopPropagation();
 				$(this).addClass("active");
-				$(".dropdown").fadeToggle();
+				$(".dropdown").slideToggle();
 			});
 			$(".dropdown").click(function(e) {
 				e.stopPropagation();
-				e.preventDefault();
 			});
 			$("body").click(function(e) {
-				$(".dropdown").fadeOut();
-				$("ul#nav li a").removeClass("active");
+				$(".dropdown").slideUp();
 			});
 		});
 	</script>
@@ -44,10 +41,8 @@
 	
 	<div id="main">
    	<div class="container">
-	
-			<a href="[[ reverse_url('LoginHandler') ]]" id="dropdown-link">
 			<div id="login-button">
-				Login
+				<span id="dropdown-link">Login</a>
 				<div class="dropdown">
 					<form method="post" action="[[ reverse_url('LoginHandler')]]">
 						[[ with_errors(loginForm.email) ]]
@@ -56,8 +51,6 @@
 					</form>
 				</div>
 			</div>
-			</a>
-			
 			<div id="ajax-inject">
 				{% block content %}
 				<div class="sixteen columns content" id="index">
