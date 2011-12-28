@@ -1,5 +1,5 @@
 #The 'index' page: handles registration code redirects and logins
-from forms.forms import RegistrationCodeForm, LoginForm
+from forms.forms import RegistrationCodeForm, LoginForm, MailingListForm
 from handlers.env import BaseHandler, prof_code, env
 from db.users import get_user
 from db.logins import db_login
@@ -8,7 +8,7 @@ class LandingPage(BaseHandler):
     template = env.get_template('landing_page.template')
     def get(self):
         #Display the landing page
-        self.write(self.template.render(regForm=RegistrationCodeForm(), loginForm=LoginForm()))
+        self.write(self.template.render(emailForm=MailingListForm(), regForm=RegistrationCodeForm(), loginForm=LoginForm()))
         
     def post(self):
         #Handle the registration code

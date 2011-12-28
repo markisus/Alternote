@@ -161,29 +161,37 @@
 	input[type="submit"],
 	input[type="reset"],
 	input[type="button"] {
-		background: #eee; /* Old browsers */
-		background: #eee -moz-linear-gradient(top, rgba(255,255,255,.2) 0%, rgba(0,0,0,.2) 100%); /* FF3.6+ */
-		background: #eee -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,.2)), color-stop(100%,rgba(0,0,0,.2))); /* Chrome,Safari4+ */
-		background: #eee -webkit-linear-gradient(top, rgba(255,255,255,.2) 0%,rgba(0,0,0,.2) 100%); /* Chrome10+,Safari5.1+ */
-		background: #eee -o-linear-gradient(top, rgba(255,255,255,.2) 0%,rgba(0,0,0,.2) 100%); /* Opera11.10+ */
-		background: #eee -ms-linear-gradient(top, rgba(255,255,255,.2) 0%,rgba(0,0,0,.2) 100%); /* IE10+ */
-		background: #eee linear-gradient(top, rgba(255,255,255,.2) 0%,rgba(0,0,0,.2) 100%); /* W3C */
-	  border: 1px solid #aaa;
-	  border-top: 1px solid #ccc;
-	  border-left: 1px solid #ccc;
+		text-align: center;
+		border: solid 1px #CCC;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+		border-radius: 3px;
+		background-color: #eeeeee;
+		background-repeat: repeat-x;
+		background-image: -khtml-gradient(linear, left top, left bottom, from(#ffffff), to(#eeeeee));
+	  background-image: -moz-linear-gradient(#ffffff, #eeeeee);
+	  background-image: -ms-linear-gradient(#ffffff, #eeeeee);
+	  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #eeeeee));
+	  background-image: -webkit-linear-gradient(#ffffff, #eeeeee);
+	  background-image: -o-linear-gradient(#ffffff, #eeeeee);
+	  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#eeeeee', GradientType=0);
+	  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#eeeeee', GradientType=0)";
+	  background-image: linear-gradient(#ffffff, #eeeeee);
+	  -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+	  -moz-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+	  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
 	  padding: 4px 12px;
-	  -moz-border-radius: 3px;
-	  -webkit-border-radius: 3px;
-	  border-radius: 3px;
-	  color: #444;
+	  color: #333;
 	  display: inline-block;
-	  font-size: 11px;
-	  font-weight: bold;
+	  font-size: 12px;
 	  text-decoration: none;
-	  text-shadow: 0 1px rgba(255, 255, 255, .75);
+	  text-shadow: 0 1px #FFF;
 	  cursor: pointer;
 	  margin-bottom: 10px;
 	  line-height: 21px;
+	  -webkit-transition: background-image 0.1s linear;
+	  -moz-transition: background-image 0.1s linear;
+	  transition: background-image 0.1s linear;
 	  font-family: "Myriad Pro", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 	a.button:hover,
@@ -191,31 +199,25 @@
 	input[type="submit"]:hover,
 	input[type="reset"]:hover,
 	input[type="button"]:hover {
-		color: #222;
-		background: #ddd; /* Old browsers */
-		background: #ddd -moz-linear-gradient(top, rgba(255,255,255,.3) 0%, rgba(0,0,0,.3) 100%); /* FF3.6+ */
-		background: #ddd -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,.3)), color-stop(100%,rgba(0,0,0,.3))); /* Chrome,Safari4+ */
-		background: #ddd -webkit-linear-gradient(top, rgba(255,255,255,.3) 0%,rgba(0,0,0,.3) 100%); /* Chrome10+,Safari5.1+ */
-		background: #ddd -o-linear-gradient(top, rgba(255,255,255,.3) 0%,rgba(0,0,0,.3) 100%); /* Opera11.10+ */
-		background: #ddd -ms-linear-gradient(top, rgba(255,255,255,.3) 0%,rgba(0,0,0,.3) 100%); /* IE10+ */
-		background: #ddd linear-gradient(top, rgba(255,255,255,.3) 0%,rgba(0,0,0,.3) 100%); /* W3C */
-	  border: 1px solid #888;
-	  border-top: 1px solid #aaa;
-	  border-left: 1px solid #aaa; }
+		color: #111;
+	  background-color: #dddddd;
+	  background-repeat: repeat-x;
+	  background-image: -khtml-gradient(linear, left top, left bottom, from(#eeeeee), to(#dddddd));
+	  background-image: -moz-linear-gradient(#eeeeee, #dddddd);
+	  background-image: -ms-linear-gradient(#eeeeee, #dddddd);
+	  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eeeeee), color-stop(100%, #dddddd));
+	  background-image: -webkit-linear-gradient(#eeeeee, #dddddd);
+	  background-image: -o-linear-gradient(#eeeeee, #dddddd);
+	  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#dddddd', GradientType=0);
+	  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#dddddd', GradientType=0)";
+	  background-image: linear-gradient(#eeeeee, #dddddd); }
 
 	a.button:active,
 	button:active,
 	input[type="submit"]:active,
 	input[type="reset"]:active,
 	input[type="button"]:active {
-		border: 1px solid #666;
-		background: #ccc; /* Old browsers */
-		background: #ccc -moz-linear-gradient(top, rgba(255,255,255,.35) 0%, rgba(10,10,10,.4) 100%); /* FF3.6+ */
-		background: #ccc -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,.35)), color-stop(100%,rgba(10,10,10,.4))); /* Chrome,Safari4+ */
-		background: #ccc -webkit-linear-gradient(top, rgba(255,255,255,.35) 0%,rgba(10,10,10,.4) 100%); /* Chrome10+,Safari5.1+ */
-		background: #ccc -o-linear-gradient(top, rgba(255,255,255,.35) 0%,rgba(10,10,10,.4) 100%); /* Opera11.10+ */
-		background: #ccc -ms-linear-gradient(top, rgba(255,255,255,.35) 0%,rgba(10,10,10,.4) 100%); /* IE10+ */
-		background: #ccc linear-gradient(top, rgba(255,255,255,.35) 0%,rgba(10,10,10,.4) 100%); /* W3C */ }
+		border: 1px solid #666; }
 
 	.button.full-width,
 	button.full-width,
