@@ -6,7 +6,7 @@
 	<ul id="classes">
 	{% for class in classes %}
 		<li>
-			<a href="[[ reverse_url('ViewCalendar', class._id) ]]">[[ class.name ]]</a>
+			<a href="[[ reverse_url('Bootstrap', class._id) ]]">[[ class.name ]]</a>
 			<p>[[ class.instructor ]]</p>
 		</li>
 	{% endfor %}
