@@ -190,23 +190,25 @@ class Post(BaseHandler):
         
     @tornado.web.authenticated
     def get(self, eventid, message):
-        print("**Post received: " + message)
-        userid = self.get_current_user()
-        user = get_user_display_info(userid, self.anon)
-        
-        post = create_post_for_event(userid, eventid, message, self.anon)
-        
-        datum = {
-                 'action':'post', 
-                 'user':user, 
-                 'message':message, 
-                 'objectid':str(post['_id']), 
-                 'timestamp':post['timestamp']
-                 }
-        print("Adding post to event cache")
-        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
-        print("notifying listeners")
-        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
+        print("WTF IS HAPPENING HERE!??")
+#    def get(self, eventid, message):
+#        print("**Post received: " + message)
+#        userid = self.get_current_user()
+#        user = get_user_display_info(userid, self.anon)
+#        
+#        post = create_post_for_event(userid, eventid, message, self.anon)
+#        
+#        datum = {
+#                 'action':'post', 
+#                 'user':user, 
+#                 'message':message, 
+#                 'objectid':str(post['_id']), 
+#                 'timestamp':post['timestamp']
+#                 }
+#        print("Adding post to event cache")
+#        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
+#        print("notifying listeners")
+#        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
 
 class VoteObject(BaseHandler):    
     @tornado.web.authenticated
