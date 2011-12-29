@@ -55,18 +55,23 @@
 				{% block content %}
 				<div class="sixteen columns content" id="index">
 					<img id="main-logo" src="[[ image('logo-large.png') ]]" />
-					<div class="ten columns content" id="join">
+					<img id="divider" src="[[ image('landing-divider.png') ]]" />
+					<div id="join">
 						<p>
-							Course software should be for more than just management. We believe real learning happens when students have conversations. Alternote is a course engagement system that makes that happen. 
+							Course software should be for more than <br/>
+							just management. We believe real learning <br/>
+							happens when students have conversations. <br/>
+							<b>Alternote</b> is a course engagement system <br/>
+							that makes that happen.
 							<a href="/admin/school/create" class="link-blue">Create a school</a>
 						</p>
 						<form method="post">
-							Professors and students, sign up here <br/> to join us for the Fall semester.
-							[[ emailForm.email( placeholder="Email address..." ) ]] [[ emailForm.submit() ]]
+							Spring learners, enter your access code
+							[[ regForm.code( placeholder="Access code..." ) ]] [[ regForm.submit() ]]
 						</form>
 						<form method="post">
-							Spring learners, enter your <br/> access code here.
-							[[ regForm.code( placeholder="Access code..." ) ]] [[ regForm.submit() ]]
+							Professors and students, sign up here
+							[[ emailForm.email( placeholder="Email address..." ) ]] [[ emailForm.submit() ]]
 						</form>
 						<f>Confused about what we're dreaming about, what we're building, or who we are? Maybe <a href="[[ reverse_url('About') ]]">this</a> will help.</f>
 					</div>
