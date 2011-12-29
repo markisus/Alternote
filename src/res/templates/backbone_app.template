@@ -817,7 +817,7 @@ function() {
 			if (delta_min > 1) return Math.floor(delta_min) + " minutes";
 			
 			var delta_sec = delta_ms/sec;
-			if (delta_sec > 1) return Math.floor(delta_sec) + " seconds";
+			if (delta_sec > 1) return " a few seconds";
 		},
 		render: function() {
 			var now = (new Date).getTime();

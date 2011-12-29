@@ -18,6 +18,10 @@
 	<p>We'd love to know a little more about you.</p> <br/>
 		
 		<form method="post">
+			{% if form.type is defined %}
+			[[ form.type.label ]]
+				[[ with_errors(form.type) ]]
+			{% endif %}
 			[[ form.first_name.label ]]
 				[[ with_errors(form.first_name) ]]
 			[[ form.last_name.label ]]

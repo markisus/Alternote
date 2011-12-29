@@ -43,7 +43,7 @@ class CreateClass(BaseHandler):
             class_id = db.classes.create_class(school, user['_id'], name, section, code, start, finish, alternate_codes, meet_times)
             #create the codes for this class
             db.codes.create_student_code(class_id)
-            db.codes.create_ta_code(class_id)
+            db.codes.create_admin_code(class_id)
             
             auto_convo = form.auto_convo.data
             day_offset = form.day_offset.data or 0
@@ -67,7 +67,6 @@ class ViewClasses(BaseHandler):
     
 class ViewCodes(BaseHandler):
     @authenticated
-    @check_prof
     def get(self, class_id):
         #Check class match
         try:
@@ -81,5 +80,4 @@ class ViewCodes(BaseHandler):
         except KeyError as e:
             self.write("I don't think this class exists. " + e.message)
 
-            
-                
+        

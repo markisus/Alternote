@@ -35,7 +35,17 @@ class RegistrationForm(Form):
     password1 = PasswordField("Repeat password", [validators.EqualTo('password', message="Passwords must match")])
     image = FileField("It'd be nice (for us and the students) to see your face around here. Mind uploading a photo?")
     submit = SubmitField("Register")
-        
+    
+class AdminRegistrationForm(Form):
+    type = SelectField(choices=[("instructor", "Professor"), ("ta", "TA")])
+    first_name = TextField('What is your first name?', [validators.Length(min=1)])
+    last_name = TextField('And last name?', [validators.Length(min=1)])
+    email = TextField("Email?", [validators.Email()])
+    password = PasswordField("Create a password", [validators.Length(min=4)])
+    password1 = PasswordField("Repeat password", [validators.EqualTo('password', message="Passwords must match")])
+    image = FileField("It'd be nice (for us and the students) to see your face around here. Mind uploading a photo?")
+    submit = SubmitField("Register")        
+    
 def validate_image(form, field):
     if field.data:
         field.data = re.sub(r'[^a-z0-9_.-]', '_', field.data)
