@@ -28,9 +28,11 @@
 <!-- Backbone Templates -->
 <script type="text/template" id="message-template">
 	<div>
-		<%= model.get('author')['first_name'] %> 
-		<%= model.get('author')['last_name'] %><br/>
-		<%= model.get('message') %><br/>
+		<span class="author">
+			<%= model.get('author')['first_name'] %>
+			<%= model.get('author')['last_name'] %>
+		</span> <br/>
+		<%= model.get('message') %> <br/>
 		<span class="timestamp"></span>
 		<span class="votes"><%= model.get('votes') %></span>
 		<span class="flags"><%= model.get('flags') %></span>
@@ -913,6 +915,11 @@ function() {
 		},
 		render: function() {
 			if(!_.isUndefined(this.model)) {
+				if ($(this.model.get("parent_id") == null)) {
+					$(this.el).addClass("post");
+				} else {
+					$(this.el).addClass("comment");
+				}
 				$(this.el).attr("id", this.model.get("id"));
 				$(this.el).html(this.template({model:this.model}));
 				//Create timestamp
@@ -928,7 +935,13 @@ function() {
 				}
 				if (this.model.get("parent_id") == null) {
 					$(this.el).append("<div class='comments'></div>");
-					$(this.el).append("<div class='submit-comment'><textarea class='comment-input' placeholder='your comment'></textarea><button class='anonymous-comment'>Anonymous</button><button class='share'>Share</button></div>");
+					$(this.el).append(
+						"<div class='submit-comment'>
+							<textarea class='comment-input' placeholder='your comment'></textarea>
+							<button class='anonymous-comment'>Anonymous</button>
+							<button class='share'>Share</button>
+						</div>"
+					);
 				}
 			}
 		},
@@ -1204,7 +1217,7 @@ function() {
 	  
 	  <div class="four columns content sidebar" id="sidebar">
       <h4><span id="course_title"></span></h4>
-      <p>
+      <p id="sidebar-nav">
     		<a href="#" id="nav-link" class="active">Navigation</a>
     		<a href="#" id="info-link">Information</a>
     	</p>
