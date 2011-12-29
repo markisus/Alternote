@@ -45,6 +45,17 @@ a {
 	&:hover { color: #333; }
 }
 
+button.anonymous-post, button.anonymous-comment {
+	width: 40px;
+	height: 30px;
+	margin-left: -45px !important;
+	margin-right: 10px !important;
+	border: none;
+	.box-shadow(none);
+	background: url('../images/glasses.png') no-repeat 50% 50%;
+	&.active { background: url('../images/glasses-inverted.png') no-repeat 50% 50%; }
+}
+
 .profpost {
     background-color: #fde4e5;
 }
@@ -53,10 +64,6 @@ a {
     /* background-color: #feedd5; */
 	background-color: #fff3e2;
 	border-top: none;
-}
-
-.datetime {
-	color: #999999;
 }
 
 .clear {
@@ -252,7 +259,6 @@ ul#footer-links {
 			background: #FFF;
 			float: left;
 			font-size: 14px;
-			.transition(box-shadow 0.1s linear);
 		}
 		
 		input[type="submit"] {
@@ -535,33 +541,59 @@ ul#footer-links {
 .post {
 	float: left;
 	margin-bottom: 10px;
-	padding: 5px 6px 40px 55px;
+	padding: 5px 6px 10px 55px;
 	width: 90%;
-	border-top: solid 1px #EEE;
+	border-bottom: solid 1px #EEE;
 	
 	&.professor { .adminpost; }
 	
 	p { line-height: 1.5em; }
 	
 	.author {
+		font-weight: bold;
 		a { .link-blue; }
 	}
 	
 	.authorimg {
 		float: left;
 		margin-left: -50px;
-		margin-top: -1.5em;
-		
-		img { height: 40px; }
+		height: 40px;
+	}
+	
+	.timestamp {
+		float: left;
+		font-size: 12px;
+		color: #999;
 	}
 	
 	.actions {
 		float: left;
+		margin-top: 3px;
 		font-size: 12px;
-		width: 80%;
+		display: inline;
+		width: 60%;
 		
-		p, a { float: left; }
-		a { .link-blue; }
+		p { float: left; }
+		a { 
+			.link-blue;
+			&.flag {
+				width: 20px;
+				height: 20px;
+				margin-left: 10px;
+				margin-top: 1px;
+				position: absolute;
+				.opacity(30);
+				.transition-double(opacity 0.1s linear, -moz-opacity 0.1s linear);
+				&:hover { 
+					opacity: 1.0;
+					-moz-opacity: 1.0;
+					-khtml-opacity: 1.0;
+					filter: alpha(opacity=100); 
+				}
+				
+				img { width: 16px; }
+			}
+		}
 	}
 	
 	.meta {
@@ -573,11 +605,26 @@ ul#footer-links {
 	.comment {
 		float: left;
 		margin: 10px 0 0 0;
-		padding: 5px 5px 5px 55px;
+		padding: 5px 5px 5px 45px;
 		width: 91%;
 		border-top: solid 1px #EEE;
 		
+		.author { display: inline; margin-right: 5px; }
+		img.authorimg { 
+			height: 30px;
+			margin-left: -40px;
+		}
 		&.professor { .adminpost; }
+		a.comment-link { display: none; }
+		a.flag { margin-left: 5px; }
+	}
+	
+	.submit-comment {
+		display: none;
+		float: left;
+		width: 88%;
+		margin: 0;
+		button.anonymous-comment { margin-top: 10px; }
 	}
 	
 	input[type="text"] { 
@@ -585,12 +632,6 @@ ul#footer-links {
 		width: 98%;
 		float: left;
 	}
-}
-
-input.submit-comment {
-	float: left;
-	width: 88%;
-	margin: -45px 0 0 60px;
 }
 
 #conversation {
@@ -603,6 +644,11 @@ input.submit-comment {
 		float: left;
 		width: 80%; 
 		margin-bottom: 10px; 
+	}
+	
+	#posts {
+		float: left;
+		width: 100%;
 	}
 
 	#show-calendar {
@@ -623,16 +669,6 @@ input.submit-comment {
 		button {
 			float: left;
 			margin: 0;
-			&.anonymous-post {
-				width: 40px;
-				height: 30px;
-				margin-left: -45px;
-				margin-right: 10px;
-				border: none;
-				.box-shadow(none);
-				background: url('../images/glasses.png') no-repeat 50% 50%;
-				&.active { background: url('../images/glasses-inverted.png') no-repeat 50% 50%; }
-			}
 		}
 	}
 }

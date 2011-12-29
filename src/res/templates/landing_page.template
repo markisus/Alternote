@@ -34,6 +34,13 @@
 	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" />
 	<link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="[[ css('style.css') ]]" />
+	<style type="text/css">
+		@-moz-document url-prefix() {
+		    #index #join input[type="submit"] {
+		        padding: 8px 9px;
+		    }
+		}
+	</style>
 {% endblock %}
 
 {% block body %}

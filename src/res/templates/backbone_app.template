@@ -27,18 +27,21 @@
 
 <!-- Backbone Templates -->
 <script type="text/template" id="message-template">
+	<img class="authorimg" src="[[ image('default-icon-small.png') ]]" />
 	<div>
-		<span class="author">
+		<div class="author">
 			<%= model.get('author')['first_name'] %>
 			<%= model.get('author')['last_name'] %>
-		</span> <br/>
+		</div>
 		<%= model.get('message') %> <br/>
-		<span class="timestamp"></span>
-		<span class="votes"><%= model.get('votes') %></span>
-		<span class="flags"><%= model.get('flags') %></span>
+		<div class="meta">
+			<span class="votes">+<%= model.get('votes') %></span>
+		</div>
+		<span class="timestamp" style="margin-top: 3px;">&nbsp; &#8226; &nbsp;</span> 
 		<div class="actions">
-			<a href="#" class="vote">vote</a>
-			<a href="#" class="flag">flag</a>
+			<a href="#" class="vote">like</a> &nbsp; &#8226; &nbsp;
+			<a href="#" class="comment-link">comment</a>
+			<a href="#" class="flag"><img src="[[ image('flag-icon.png') ]]" /></a>
 		</div>
 	</div>
 </script>
@@ -895,33 +898,45 @@ function() {
 		toggle_vote: function() {
 			this.can_vote = !this.can_vote;
 			if (this.can_vote) {
-				this.$(".vote").first().html("vote");
+				this.$(".vote").first().html("like");
 			} else {
-				this.$(".vote").first().html("unvote");
+				this.$(".vote").first().html("unlike");
 			}
 		},
 		toggle_flag: function() {
 			console.log("toggle_flag!");
 			this.can_flag = !this.can_flag;
+			var newOpacity = 0.3;
 			if (this.can_flag) {
-				this.$(".flag").first().html("flag");
-			} else {
-				this.$(".flag").first().html("unflag");
-			}
+				newOpacity = 0.7;
+				// this.$(".flag").first().html("flag");
+			} 
+			this.$(".flag").first().css("opacity", newOpacity);
+			this.$(".flag").first().css("-moz-opacity", newOpacity);
+			this.$(".flag").first().css("-khtml-opacity", newOpacity);
+			this.$(".flag").first().css("filter", "alpha(opacity=" + newOpacity * 100 + ")");
 		},
 		render_stats: function() {
-			this.$(".votes").first().html(this.model.get("votes"));
+			var numVotes = this.model.get("votes");
+			if (numVotes == 0) {
+				this.$(".votes").first().hide();
+			} else {
+				this.$(".votes").first().html("+ " + numVotes);
+				this.$(".votes").first().show();
+			}
+			
 			this.$(".flags").first().html(this.model.get("flags"));
 		},
 		render: function() {
 			if(!_.isUndefined(this.model)) {
-				if ($(this.model.get("parent_id") == null)) {
+				if (this.model.get("parent_id") == null) {
 					$(this.el).addClass("post");
 				} else {
 					$(this.el).addClass("comment");
 				}
 				$(this.el).attr("id", this.model.get("id"));
 				$(this.el).html(this.template({model:this.model}));
+				this.render_stats();
 				//Create timestamp
 				var timestamp = new TimestampWidget();
 				timestamp.set_timestamp(this.model.get("timestamp"));
@@ -934,14 +949,15 @@ function() {
 					this.toggle_flag();
 				}
 				if (this.model.get("parent_id") == null) {
+					var self = this;
 					$(this.el).append("<div class='comments'></div>");
-					$(this.el).append(
-						"<div class='submit-comment'>
-							<textarea class='comment-input' placeholder='your comment'></textarea>
-							<button class='anonymous-comment'>Anonymous</button>
-							<button class='share'>Share</button>
-						</div>"
-					);
+					$(this.el).append("<div class='submit-comment'><input type='text' class='comment-input' placeholder='your comment'></input><button class='anonymous-comment'></button><button class='share'>Share</button></div>");
+					console.log($(this.el).children("a.comment-link"));
+					$(this.el).children("div").children(".actions").children("a.comment-link").click(function(e) {
+						console.log("showing comment area");
+						e.preventDefault();
+						$(self.el).children(".submit-comment").slideToggle("fast");
+					});
 				}
 			}
 		},
@@ -951,7 +967,8 @@ function() {
 	var ConversationView = Backbone.View.extend({
 		el: $("#conversation"),
 		events: {
-			'click .anonymous-post': 'toggle_anon'
+			'click .anonymous-post': 'toggle_anon',
+			'click .anonymous-comment': 'toggle_anon'
 		},
 		initialize: function() {
 			_.bindAll(this, 
@@ -1010,15 +1027,19 @@ function() {
 		},
 		append_post: function(message_model) {
 			var message_view = this.make_view_for_message(message_model);
-			this.$(".posts").append(message_view.el);
+			$(message_view.el).css("display", "none");
+			this.$("#posts").prepend(message_view.el);
+			$(message_view.el).fadeIn();
 		},
 		append_comment: function(message_model) {
 			var parent_id = message_model.get("parent_id");
 			var message_view = this.make_view_for_message(message_model);
+			$(message_view.el).css("display", "none");
 			//console.log("Appending comment");
 			//console.log($("#" + parent_id + " .comments"));
 			//console.log(message_view.el);
-			this.$("#" + parent_id + " .comments").prepend(message_view.el);
+			this.$("#" + parent_id + " .comments").append(message_view.el);
+			$(message_view.el).fadeIn();
 		},
 		toggle_anon: function() {
 			this.anon = !this.anon;
@@ -1037,7 +1058,7 @@ function() {
 		},
 		render: function() {
 			this.$(".message").html("");
-			this.$(".posts").html("");
+			this.$("#posts").html("");
 			if(!_.isUndefined(this.model)) {
 				var self = this;
 				//console.log("LOOKING AT POSTS!!!!");
@@ -1205,6 +1226,14 @@ function() {
 			$(".new-event").slideUp();
 			$(".container .upcoming").fadeIn();
 		});
+		
+		// Conversation
+		$("#posts a.comment-link").click(function(e) {
+			console.log("showing comment area");
+			e.preventDefault();
+			$(this).parent().parent().parent().children(".submit-comment").slideToggle("fast");
+		});
+		
 	});
 </script>
 {% endblock scripts %}
@@ -1381,7 +1410,7 @@ function() {
 		  	<button class="anonymous-post"></button>
 		  	<button class="share">Share</button>
 			</div>
-	  	<div class="posts"></div>
+	  	<div id="posts"></div>
 		</div>
 	    
 	</div>
