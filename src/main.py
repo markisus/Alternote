@@ -1,6 +1,6 @@
 from forms import *
 from forms.forms import RegistrationCodeForm, ProfRegistrationForm
-from handlers import admin, registration, classes, misc, auth, calendar, files
+from handlers import admin, registration, classes, misc, auth, calendar, files, user
 from jinja2 import Environment, PackageLoader
 from tornado.web import URLSpec
 import cgi
@@ -25,6 +25,9 @@ application = tornado.web.Application([
     #Auth
     URLSpec(login_url, auth.LoginHandler, name="LoginHandler"),
     URLSpec(r"/auth/logout", auth.LogoutHandler, name="LogoutHandler"),
+    
+    #User Account
+    URLSpec(r"/account/?", user.AccountPage, name="AccountPage"),
     
     #Admin Methods
     URLSpec(r"/admin/school/create", admin.CreateSchool, name="CreateSchool"),
@@ -97,8 +100,7 @@ application = tornado.web.Application([
     (r'/unvote/(\w+)/?', handlers.rts_api.UnvoteObject),
     (r'/flag/(\w+)/?', handlers.rts_api.FlagObject),
     (r'/unflag/(\w+)/?', handlers.rts_api.UnflagObject),
-], 
-                                      
+],       
     cookie_secret="CHANGE THIS EVENTUALLY",
     login_url= login_url,
     static_path= static_path,

@@ -12,13 +12,24 @@ mastermind, prodigy, pundit, sage, scholar"""
 word_bank = [word.strip().replace(" ", "-") for word in word_bank.split(",")]
 
 def create_student_code(class_id):
-    
-    id = "student-" + __randword() + "-of-" + class_id
+    #Kind of bad... 
+    while True:
+        id = __randword() + ("%03d" % randint(0, 999))
+        if not codes.find_one({"_id":id}):
+            break
     codes.insert({"_id":id, "class_id":class_id, "type":"student"})
 
 def create_ta_code(class_id):
     id = "master-" + __randword() + "-of-" + class_id
     codes.insert({"_id":id, "class_id":class_id, "type":"ta"})
+
+def create_admin_code(class_id):
+    #Kind of bad... 
+    while True:
+        id = __randword() + ("%03d" % randint(0, 999))
+        if not codes.find_one({"_id":id}):
+            break
+    codes.insert({"_id":id, "class_id":class_id, "type":"admin"})
 
 def lookup_codes(class_id):
     result = codes.find({'class_id':class_id})

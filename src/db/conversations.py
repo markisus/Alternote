@@ -6,9 +6,8 @@ from db.users import get_user_display_info
 def record_anon_item(userid, objectid):
     objectid = ObjectId(objectid)
     users.insert({'_id':userid}, {"$addToSet":{"anonymous_items":objectid}})
-    
+        
 #Get the user object with only the info we need for display purposes
-
 
 def get_event(eventid):
     eventid = ObjectId(eventid)
