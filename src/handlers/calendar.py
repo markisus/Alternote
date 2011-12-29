@@ -46,7 +46,7 @@ class ViewCalendar(ClassViewHandler):
             return self.template.render(class_id=class_id, user_type=self.user_type, upcoming=upcoming, form=form, month=month, year=year)
 
     def render_post(self, class_id):
-        print("POST CALLED!!!")
+#        print("POST CALLED!!!")
         if not (self.user_type in ['professor', 'ta']):
             raise ValueError("Insufficient Priveleges")
             
@@ -78,7 +78,7 @@ class CalendarDetails(BaseHandler):
 class CalendarFeed(BaseHandler):
     @authenticated
     def get(self, class_id):
-        print("INSIDE CALENDARFEED")
+#        print("INSIDE CALENDARFEED")
         if db.classes.check_members(class_id, self.get_current_user()):
             start = self.get_argument("start")
             end = self.get_argument("end")
@@ -104,7 +104,7 @@ class CalendarFeed(BaseHandler):
                         'className':result['type'],
                         'editable':False}
                 translated.append(item)
-            print("DUMPING " + str(translated))
+#            print("DUMPING " + str(translated))
             self.write(json.dumps(translated))
         else:
             self.write("") #Is it better to return 404?
@@ -113,8 +113,8 @@ class CreateCalendarStandalone(BaseHandler):
     @authenticated
     @check_prof
     def post(self, class_id):
-        print("CREATE STANDALONE")
-        print(self.get_params())
+#        print("CREATE STANDALONE")
+#        print(self.get_params())
         data = self.get_params()
         title = data['title'][0]
         start = data['start'][0]

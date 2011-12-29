@@ -101,7 +101,6 @@ class Listener(JSONPHandler):
             self.set_status(410) #Gone
             self.finish()
             return
-        print("Data is " + str(data))
         self.write(eventid, json.dumps(data, default=str, cls=None))
         self.finish()
         
@@ -147,14 +146,14 @@ class PostGetter(JSONPHandler):
     def get(self, eventid):
         posts = get_top_posts_for_event(eventid)
         #to backbone...
-        print(posts)
+#        print(posts)
         collection_to_Backbone(posts)
         userid = self.get_current_user()
         votes_and_flags = get_user_votes_and_flags(userid)
         last_element = EVENT_REGISTRY.get_newest_index_in_cache_for_eventid(eventid)
         #the js client expects a dictionary of actions, so we wrap the dictionary in another dictionary
         result = {-1: {'action':'get', 'last_element':last_element, 'posts':list(posts), 'votes_and_flags':votes_and_flags}}
-        print("Sending result: " + str(result))
+#        print("Sending result: " + str(result))
         self.write(eventid, json.dumps(result,  default=str, cls=None))
        
 #/comment/(postid)/(message)
@@ -164,6 +163,7 @@ class Comment(BaseHandler):
         
     @tornado.web.authenticated
     def get(self, postid, message):
+        print("Comment received: " + message)
         eventid = get_eventid_of_post(postid)
         userid = self.get_current_user()
         user = get_user_display_info(userid, self.anon)
@@ -190,6 +190,7 @@ class Post(BaseHandler):
         
     @tornado.web.authenticated
     def get(self, eventid, message):
+        print("**Post received: " + message)
         userid = self.get_current_user()
         user = get_user_display_info(userid, self.anon)
         
@@ -202,8 +203,9 @@ class Post(BaseHandler):
                  'objectid':str(post['_id']), 
                  'timestamp':post['timestamp']
                  }
-        
+        print("Adding post to event cache")
         EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
+        print("notifying listeners")
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
 
 class VoteObject(BaseHandler):    

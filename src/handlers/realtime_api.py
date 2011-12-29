@@ -86,7 +86,7 @@ class Listener(JSONPHandler):
             self.set_status(410) #Gone
             self.finish()
             return
-        print("Data is " + str(data))
+#        print("Data is " + str(data))
         self.write(json.dumps(data, default=str, cls=None))
         self.finish()
         

@@ -29,10 +29,9 @@ class Bootstrap(BaseHandler):
     template = env.get_template("backbone_app.template")
     
     def get(self, class_id):
-        print("Bootstrapping...")
+        print("Bootstrapping with " + self.get_current_user() + " of " + class_id)
         #Get user_id
         user_id = self.get_current_user()
-        print("user_id: " + str(user_id))
         #Get class_doc for this class
         class_doc = db.classes.get_class(class_id)
         class_doc = json.dumps(class_doc, default=str)
@@ -48,7 +47,7 @@ class Bootstrap(BaseHandler):
         events = json.dumps(events, default=str)
         
         self.render_out(server_timestamp=datetime.datetime.now().isoformat()[:16], user_id=user_id, class_id=class_id, class_doc=class_doc, files=files, events=events)
-        print("Get completed")
+#        print("Get completed")
         
 #Backbone Collection Handlers
 class Events(BaseHandler):
@@ -74,37 +73,37 @@ class Events(BaseHandler):
         self.write(json.dumps(doc, default=str))
         
     def put(self, class_id, event_id):
-        print("Received put")
+#        print("Received put")
         body = self.request.body
         doc = json.loads(self.request.body)
-        print(doc)
+#        print(doc)
         try:
             del doc['class'] #Avoid dealing with deserializing the class doc; this shouldn't change anyway
         except KeyError:
             pass
         doc_id = doc.pop("id")
         db.calendar.edit_item(doc_id, doc)
-        print(self.get_params())
+#        print(self.get_params())
     
     def delete(self, class_id, event_id):
-        print("Received delete")
+#        print("Received delete")
         db.calendar.delete_item(event_id)
         
 class Files(BaseHandler):
     def get(self, class_id):
-        print("GET called for " + str(class_id))
+#        print("GET called for " + str(class_id))
         files = db.files.get_records(class_id)
         collection_to_Backbone(files)
         files = json.dumps(files, default=str)
         self.write(files)
     
     def put(self, class_id, record_id):
-        print("Received put")
+#        print("Received put")
         body = self.request.body
         doc = json.loads(body)
         event_ids = doc['tags']
         db.files.set_tags(record_id, event_ids)
         
     def delete(self, class_id, record_id):
-        print("Received Delete")
+#        print("Received Delete")
         db.files.remove_record(record_id)

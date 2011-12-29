@@ -89,7 +89,7 @@ def create_message_for_event(userid, message, parent_id=None, eventid=None, anon
 
 #Now the function also gets comments...
 def get_top_posts_for_event(eventid):
-    print("GETTING POSTS FOR " + str(eventid))
+#    print("GETTING POSTS FOR " + str(eventid))
     eventid = ObjectId(eventid)
     return list(posts.find({'event_id':ObjectId(eventid)}).sort('timestamp', direction=ASCENDING).hint([('event',1),('timestamp',1)]))
 

@@ -21,7 +21,7 @@ def delete_item(event_id):
 #Get all
 def get_all(class_id):
     result = list(events.find({'class._id':class_id, 'broadcast':False}))
-    print(result)
+#    print(result)
     return result
 
 #edit 
