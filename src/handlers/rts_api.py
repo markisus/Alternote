@@ -59,7 +59,9 @@ class Registry(object): #TODO: Implement singleton (?)
 
     def register_listener_on_event(self, eventid, listener):
         eventid = str(eventid)
+        print("\tAppending listener to event")
         self.listeners[eventid].append(listener)
+        print("Done")
     
     def add_datum_to_event_cache(self, eventid, datum):
         eventid = str(eventid)
@@ -137,6 +139,7 @@ class PollHandler(Listener):
         print("No new events, registering to listen...")
         #Register ourselves with the EVENT_REGISTRY
         EVENT_REGISTRY.register_listener_on_event(eventid, self)
+        print("Done registering listener")
         #Fall back to the ioloop and wait for self.notify to be called
         
 
