@@ -35,7 +35,6 @@ def get_eventid_of_post(postid):
     if result != None:
         return result['event_id']
 
-
 def get_eventid_of_comment(commentid):
     commentid = ObjectId(commentid)
     result = events.posts.find_one({'comments._id':commentid}, {'event_id':1})
@@ -59,7 +58,6 @@ def get_eventid_of_comment(commentid):
 #    if anonymous: 
 #        record_anon_item(userid, result)
 #    return str(result)
-    
 #Everything is a "message"
 def create_message_for_event(userid, message, parent_id=None, eventid=None, anonymous=False):
     timestamp=datetime.now().isoformat()
@@ -92,7 +90,9 @@ def get_top_posts_for_event(eventid):
     eventid = ObjectId(eventid)
     return list(posts.find({'event_id':ObjectId(eventid)}).sort('timestamp', direction=ASCENDING).hint([('event',1),('timestamp',1)]))
 
-
+def get_children_ids(objectid):
+    objectid = ObjectId(objectid)
+    return [p['_id'] for p in posts.find({'parent_id':objectid})]
 #def create_comment_for_post(userid, postid, comment, anonymous=False):
 #    timestamp=datetime.now().isoformat()
 #    postid = ObjectId(postid)
@@ -116,10 +116,17 @@ def get_top_posts_for_event(eventid):
 #        
 #    return str(comment_id) #Comment id unique within a post
 def create_post_for_event(userid, eventid, post, anonymous=False):
-    return create_message_for_event(userid, message=post, eventid=eventid)
-def create_comment_for_post(userid, postid, comment, anonymous=False):
-    return create_message_for_event(userid=userid, message=comment, parent_id=postid, anonymous=False)
+    return create_message_for_event(userid, message=post, eventid=eventid, anonymous=anonymous)
 
+def create_comment_for_post(userid, postid, comment, anonymous=False):
+    return create_message_for_event(userid=userid, message=comment, parent_id=postid, anonymous=anonymous)
+
+def delete_object(objectid):
+    objectid = ObjectId(objectid)
+    children = get_children_ids(objectid)
+    removals = children + [objectid]
+    posts.remove({"_id":{"$in":removals}});
+    
 def __create_vote_info(userid, type, timestamp):
     return {'userid':userid, 'timestamp':timestamp, 'type':type}
 
@@ -130,9 +137,7 @@ def get_user_votes_and_flags(userid):
                         )[0] #covered query
     except IndexError:
         raise KeyError("No user with key " + str(userid) + " exists")
-    
     return result
-
 
 def get_user_votes(userid):
     try:
@@ -141,7 +146,6 @@ def get_user_votes(userid):
                         )[0] #covered query
     except IndexError:
         raise KeyError("No user with key " + str(userid) + " exists")
-
     return result['voted']
 
 def get_user_flags(userid):

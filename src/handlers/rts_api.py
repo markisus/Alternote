@@ -190,7 +190,9 @@ class Comment(BaseHandler):
 #/post/(eventid)/(message)
 class Post(BaseHandler):
     def initialize(self, anon=False):
+        print("Initializing post!")
         self.anon = anon
+        print("Anon post!")
         
     @tornado.web.authenticated
     def get(self, eventid, message):

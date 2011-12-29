@@ -7,7 +7,6 @@ def get_user_display_info(userid, anon=False):
         raise KeyError("No user with key " + str(userid) + " exists")
     if anon:
         anonymize(result)
-#    print(result)
     return result
 
 def anonymize(author):
