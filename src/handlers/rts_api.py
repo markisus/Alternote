@@ -118,11 +118,12 @@ class PollHandler(Listener):
     @tornado.web.asynchronous
     @tornado.web.authenticated
     def get(self, eventid, last_received_message, connection):
-        print("Inside poll...")
+        print("\nInside poll of event: " + eventid)
         oldest_item_index = EVENT_REGISTRY.get_oldest_index_in_cache_for_eventid(eventid)
         print("Oldest item in cache is " + str(oldest_item_index))
-        print("Last received message is " + str(last_received_message))
+        print("Client's last received message is " + str(last_received_message))
         if last_received_message < oldest_item_index:
+            print("Client's message is too old... he should refresh the page")
             self.set_status(410) #Gone - Client's last received message is too old
             self.finish()
             return
@@ -139,7 +140,7 @@ class PollHandler(Listener):
         print("No new events, registering to listen...")
         #Register ourselves with the EVENT_REGISTRY
         EVENT_REGISTRY.register_listener_on_event(eventid, self)
-        print("Done registering listener")
+        print("Poll finished")
         #Fall back to the ioloop and wait for self.notify to be called
         
 
@@ -225,6 +226,7 @@ class VoteObject(BaseHandler):
         datum = {'action':'vote', 'objectid':objectid, 'userid':userid}
         EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
+        
 class UnvoteObject(BaseHandler):    
     @tornado.web.authenticated
     def get(self, objectid):
@@ -239,6 +241,7 @@ class UnvoteObject(BaseHandler):
         datum = {'action':'unvote', 'objectid':objectid, 'userid':userid}
         EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
+        
 class FlagObject(BaseHandler):    
     @tornado.web.authenticated
     def get(self, objectid):
@@ -253,6 +256,7 @@ class FlagObject(BaseHandler):
         datum = {'action':'flag', 'objectid':objectid, 'userid':userid}
         EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
+        
 class UnflagObject(BaseHandler):    
     @tornado.web.authenticated
     def get(self, objectid):

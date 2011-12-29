@@ -3,7 +3,7 @@ function Client(eventid, userid, messages) {
 	var self = this;
 	console.log("Inside client");
 	
-	var rts_address = "http://localhost:8888";
+	var rts_address = "";
 	self.initialize = function(eventid, userid, messages) {
 		console.log(eventid, userid);
 		self.eventid = eventid;
@@ -26,7 +26,17 @@ function Client(eventid, userid, messages) {
 			script.setAttribute('src', rts_address + src + '?' + nonce);
 			div.appendChild(script);
 		};
-		window.setTimeout(_inject, 100, src);
+		if (!self.halted) {
+			self.timerID = window.setTimeout(_inject, 100, src);
+		}
+	};
+	
+	self.halt = function() {
+		self.halted = true;
+		window.clearTimeout(self.timerID);
+		var div = document.getElementById('scriptInject');
+		div.innerHTML = "";
+		console.log("Halted");
 	};
 	
 	self.callback = function(data) {

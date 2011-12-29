@@ -140,10 +140,10 @@ function() {
 		},
 		has_active_convo: function() {
 			has_active = (server_timestamp > this.get('convo_start')) && (this.get("dummy") == false);
-			if (has_active) {
+			/*if (has_active) {
 				//Checking if the thing has a convo? well we might as well start up the listener
 				this.get_client();
-			}
+			}*/
 			return has_active;
 		},
 		get_client: function() {
@@ -948,8 +948,17 @@ function() {
 			this.anon = false;
 			this.render();
 		},
+		unbind_current_model: function() {
+			if (!_.isUndefined(this.model)) {
+				this.model.client.halt();
+			}
+			this.model = undefined;
+		},
 		bind_event_model: function(event_model) {
+			this.unbind_current_model();
 			this.model = event_model;
+			//Initialize the client
+			this.model.get_client();
 			var self = this;
 			this.$(".share").unbind().click(function() {
 				var insight = self.$(".post-input").val();
