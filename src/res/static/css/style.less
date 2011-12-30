@@ -560,7 +560,7 @@ ul#footer-links {
 
 .post {
 	float: left;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 	padding: 5px 5px 5px 55px;
 	width: 90%;
 	border-bottom: solid 1px #EEE;
@@ -568,6 +568,17 @@ ul#footer-links {
 	&.professor { .adminpost; }
 	
 	p { line-height: 1.5em; }
+	
+	a.delete {
+		float: right;
+		padding: 2px 6px;
+		margin-top: -22px;
+		color: transparent;
+		.border-radius(3px);
+		.transition(color 0.1s linear);
+		&.active { color: #666; }
+		&:hover { color: #000; }
+	}
 	
 	.author {
 		font-weight: bold;
@@ -620,7 +631,7 @@ ul#footer-links {
 		float: left;
 		margin: 10px 0 0 0;
 		padding: 5px 5px 0 45px;
-		width: 91%;
+		width: 93%;
 		border-top: solid 1px #EEE;
 		
 		.author { display: inline; margin-right: 5px; }
@@ -631,7 +642,8 @@ ul#footer-links {
 		&.professor { .adminpost; }
 		a.comment-link { display: none; }
 		a.flag { margin-left: 5px; }
-		.meta { margin-right: -12px; }
+		a.delete { margin-top: -2px; }
+		.meta { margin: 3px -16px 0 0; }
 	}
 	
 	.submit-comment {
@@ -648,7 +660,7 @@ ul#footer-links {
 	
 	input[type="text"] { 
 		margin-top: 10px; 
-		width: 89%;
+		width: 88%;
 		float: left;
 	}
 }
@@ -679,33 +691,52 @@ ul#footer-links {
 	
 	.new-post {
 		.post-input {
-			width: 91%;
+			width: 90%;
 			float: left;
 			resize: none;
 			padding-right: 40px;
 			overflow: hidden;
 		}
 		button {
-			float: left;
 			margin: 0;
+			&.share { float: right; }
+			&.anonymous-post { float: left; }
 		}
 	}
 }
 
 .calendar {
-	margin: 10px 0 0 0 !important;
+	margin: 5px 0 0 0 !important;
 	border-left: solid 1px #CCC;
 	
-	#calendar { margin-left: -1px; }
+	.new-event-button {
+		float: right;
+		color: #FFF;
+	    text-shadow: none;
+	    font-size: 12px;
+	    font-weight: normal;
+	    margin: 5px 0 0 0;
+		padding: 2px 5px;	
+	    .transition(background-color 0.15s linear);
+		background: @lightBlue;
+	    border-color: lighten(@lightBlue, 40);
+	    &:hover { background-color: lighten(@lightBlue, 10); }
+	}
+	
+	#calendar { margin: -1px 0 0 -1px; }
 	table.fc-header {
 	    width: 99% !important;
 	    margin: 0 7px;
 	    
 	    span.fc-header-title h2 {
-	        font-size: 16px;
+	        font-size: 12px;
 	        font-weight: normal;
         }
-        
+        .fc-button-content { 
+			font-size: 12px;
+			margin-top: 3px;
+			.link-blue();
+		}
         .fc-button-effect { display: none; }
         .fc-button, .fc-button-inner {
             border: solid 1px transparent;
@@ -715,12 +746,15 @@ ul#footer-links {
         .fc-button {
             .transition-double(background-color 0.1s linear, border-color 0.1s linear);
         }
-        .fc-state-active, .fc-button:hover {
+		.fc-button-today {
+			text-transform: capitalize;
+		}
+        /* .fc-state-active, .fc-button:hover {
 	        border: solid 1px #DDD;
 	        #gradient .vertical(#FFF, #EEE);
             .border-radius(3px);
             .fc-button-content { color: #333; }
-        }
+        } */
 		.fc-state-disabled { visibility: hidden; }
         .fc-header-right {
             .fc-button { margin-left: 5px; }

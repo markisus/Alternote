@@ -901,7 +901,7 @@ ul#footer-links li a:hover {
 }
 .post {
   float: left;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   padding: 5px 5px 5px 55px;
   width: 90%;
   border-bottom: solid 1px #EEE;
@@ -914,6 +914,24 @@ ul#footer-links li a:hover {
 }
 .post p {
   line-height: 1.5em;
+}
+.post a.delete {
+  float: right;
+  padding: 2px 6px;
+  margin-top: -22px;
+  color: transparent;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.post a.delete.active {
+  color: #666;
+}
+.post a.delete:hover {
+  color: #000;
 }
 .post .author {
   font-weight: bold;
@@ -986,7 +1004,7 @@ ul#footer-links li a:hover {
   float: left;
   margin: 10px 0 0 0;
   padding: 5px 5px 0 45px;
-  width: 91%;
+  width: 93%;
   border-top: solid 1px #EEE;
 }
 .post .comment .author {
@@ -1009,8 +1027,11 @@ ul#footer-links li a:hover {
 .post .comment a.flag {
   margin-left: 5px;
 }
+.post .comment a.delete {
+  margin-top: -2px;
+}
 .post .comment .meta {
-  margin-right: -12px;
+  margin: 3px -16px 0 0;
 }
 .post .submit-comment {
   display: none;
@@ -1027,7 +1048,7 @@ ul#footer-links li a:hover {
 }
 .post input[type="text"] {
   margin-top: 10px;
-  width: 89%;
+  width: 88%;
   float: left;
 }
 #conversation {
@@ -1055,30 +1076,72 @@ ul#footer-links li a:hover {
   opacity: 0.75;
 }
 #conversation .new-post .post-input {
-  width: 91%;
+  width: 90%;
   float: left;
   resize: none;
   padding-right: 40px;
   overflow: hidden;
 }
 #conversation .new-post button {
-  float: left;
   margin: 0;
 }
+#conversation .new-post button.share {
+  float: right;
+}
+#conversation .new-post button.anonymous-post {
+  float: left;
+}
 .calendar {
-  margin: 10px 0 0 0 !important;
+  margin: 5px 0 0 0 !important;
   border-left: solid 1px #CCC;
 }
+.calendar .new-event-button {
+  float: right;
+  color: #FFF;
+  text-shadow: none;
+  font-size: 12px;
+  font-weight: normal;
+  margin: 5px 0 0 0;
+  padding: 2px 5px;
+  -webkit-transition: background-color 0.15s linear;
+  -moz-transition: background-color 0.15s linear;
+  transition: background-color 0.15s linear;
+  background: #009ed9;
+  border-color: #a6e7ff;
+}
+.calendar .new-event-button:hover {
+  background-color: #0dbdff;
+}
 .calendar #calendar {
-  margin-left: -1px;
+  margin: -1px 0 0 -1px;
 }
 .calendar table.fc-header {
   width: 99% !important;
   margin: 0 7px;
+  /* .fc-state-active, .fc-button:hover {
+	        border: solid 1px #DDD;
+	        #gradient .vertical(#FFF, #EEE);
+            .border-radius(3px);
+            .fc-button-content { color: #333; }
+        } */
+
 }
 .calendar table.fc-header span.fc-header-title h2 {
-  font-size: 16px;
+  font-size: 12px;
   font-weight: normal;
+}
+.calendar table.fc-header .fc-button-content {
+  font-size: 12px;
+  margin-top: 3px;
+  /* color: #619ecf; */
+
+  color: #009ed9;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.calendar table.fc-header .fc-button-content:hover {
+  color: #333;
 }
 .calendar table.fc-header .fc-button-effect {
   display: none;
@@ -1099,43 +1162,8 @@ ul#footer-links li a:hover {
   transition-duration: 0.15s, 0.15s;
   transition-timing-function: linear, linear;
 }
-.calendar table.fc-header .fc-state-active, .calendar table.fc-header .fc-button:hover {
-  border: solid 1px #DDD;
-  background-color: #eeeeee;
-  background-repeat: repeat-x;
-  background-image: -khtml-gradient(linear, left top, left bottom, from(#ffffff), to(#eeeeee));
-  /* Konqueror */
-
-  background-image: -moz-linear-gradient(#ffffff, #eeeeee);
-  /* FF 3.6+ */
-
-  background-image: -ms-linear-gradient(#ffffff, #eeeeee);
-  /* IE10 */
-
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #eeeeee));
-  /* Safari 4+, Chrome 2+ */
-
-  background-image: -webkit-linear-gradient(#ffffff, #eeeeee);
-  /* Safari 5.1+, Chrome 10+ */
-
-  background-image: -o-linear-gradient(#ffffff, #eeeeee);
-  /* Opera 11.10 */
-
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#eeeeee', GradientType=0);
-  /* IE6 & IE7 */
-
-  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#eeeeee', GradientType=0)";
-  /* IE8+ */
-
-  background-image: linear-gradient(#ffffff, #eeeeee);
-  /* the standard */
-
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-.calendar table.fc-header .fc-state-active .fc-button-content, .calendar table.fc-header .fc-button:hover .fc-button-content {
-  color: #333;
+.calendar table.fc-header .fc-button-today {
+  text-transform: capitalize;
 }
 .calendar table.fc-header .fc-state-disabled {
   visibility: hidden;
