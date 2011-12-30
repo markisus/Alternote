@@ -1,9 +1,21 @@
-from env import BaseHandler, env, check_prof, ClassViewHandler
+from env import BaseHandler, env
 from tornado.web import authenticated
 from constants import static_path
 import db.users
 import os
+
 #Handlers related to user account stuff
+def get_avatar_url(user_id):
+    try:
+        file_name = db.users.get_avatar(user_id)
+    except KeyError:
+        file_name = "default-icon.png"
+    return "/static/avatars/" + file_name
+
+class GetAvatar(BaseHandler):
+    def get(self, user_id):
+        self.redirect(get_avatar_url(user_id))
+        
 
 class AccountPage(BaseHandler):
     template = env.get_template("user/account.template")

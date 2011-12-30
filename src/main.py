@@ -30,6 +30,7 @@ application = tornado.web.Application([
     #User Account
     URLSpec(r"/account/?", user.AccountPage, name="AccountPage"),
     URLSpec(r"/accounts/upload_avatar/?", user.AvatarUpload, name="AvatarUpload"),
+    URLSpec(r"/account/avatar/(?P<user_id>[\w|\-|@|\.]+)/?", user.GetAvatar, name="GetAvatar"),
     
     #Admin Methods
     URLSpec(r"/admin/school/create", admin.CreateSchool, name="CreateSchool"),
@@ -122,14 +123,9 @@ def date_format(date_string):
     my_date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
     return datetime.datetime.strftime(my_date, "%a, %m/%d")
 
-def get_avatar_url(user_id):
-    try:
-        file_name = db.users.get_avatar(user_id)
-    except KeyError:
-        file_name = "default-icon.png"
-    return "/static/avatars/" + file_name
 
-globals['get_avatar_url'] = get_avatar_url
+
+globals['get_avatar_url'] = user.get_avatar_url
 #Add formatters to globals dict
 globals['time_format'] = time_format
 globals['date_format'] = date_format
