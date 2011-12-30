@@ -42,3 +42,12 @@ def get_user(userid):
 def get_classes(userid):
     result = users.find_one({'_id':userid}, {'classes':1})
     return result['classes']
+
+def set_avatar(user_id, file_name):
+    avatars.update({"_id":user_id}, {"_id":user_id, "file_name":file_name}, upsert=True)
+
+def get_avatar(user_id):
+    avatar = avatars.find_one({"_id":user_id})
+    if not avatar:
+        raise KeyError("Avatar for " + user_id + " not found.")
+    return avatar['file_name']

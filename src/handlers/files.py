@@ -58,24 +58,7 @@ class FileUpload(BaseHandler):
         name = self.request.files['qqfile']
         self.write("{error:'error'}")
         return
-        #Check if file exists in database
-#        if db.files.check_record(class_id, name):
-#            self.write("A file with this name already exists!")
-#            return
-#        else:
-#            upload_path = os.path.join(static_path, "files", class_id)
-#            if not os.path.exists(upload_path):
-#                os.makedirs(upload_path)
-#            print(upload_path)
-#            file_path = os.path.join(upload_path, name)
-#            file = open(file_path, 'wb')
-#            file.write(body)
-#            #Add meta data to the database
-#            db.files.create_record(class_id, name, type)
-#            #Everything Okay?
-#            print(self.reverse_url("Files", class_id))
-#            self.redirect(self.reverse_url("Files", urllib.quote(class_id))) 
-
+    
     def write_file_to_disk(self, class_id, file_name, contents):
         if db.files.check_record(class_id, file_name):
             self.write("{error:'file name collision'}")

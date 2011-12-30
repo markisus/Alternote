@@ -14,6 +14,7 @@ import datetime
 from handlers.calendar import time_format, twelve_hour_time
 import handlers.backbone
 import handlers.rts_api
+import db.users
 
 login_url = r"/auth/login"
 
@@ -28,6 +29,7 @@ application = tornado.web.Application([
     
     #User Account
     URLSpec(r"/account/?", user.AccountPage, name="AccountPage"),
+    URLSpec(r"/accounts/upload_avatar/?", user.AvatarUpload, name="AvatarUpload"),
     
     #Admin Methods
     URLSpec(r"/admin/school/create", admin.CreateSchool, name="CreateSchool"),
@@ -119,6 +121,15 @@ def date_format(date_string):
     date_string = date_string[:10] #Lop off the hours and minutes
     my_date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
     return datetime.datetime.strftime(my_date, "%a, %m/%d")
+
+def get_avatar_url(user_id):
+    try:
+        file_name = db.users.get_avatar(user_id)
+    except KeyError:
+        file_name = "default-icon.png"
+    return "/static/avatars/" + file_name
+
+globals['get_avatar_url'] = get_avatar_url
 #Add formatters to globals dict
 globals['time_format'] = time_format
 globals['date_format'] = date_format

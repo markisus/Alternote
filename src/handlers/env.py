@@ -13,7 +13,6 @@ from db.classes import unpack_userids
 env = Environment(variable_start_string='[[', variable_end_string=']]', loader=PackageLoader('res', 'templates'))
 prof_code = "alternote_rocks"
 
-
 #Takes a Handler, checks if the user is prof
 def check_prof(f):
     def wrapper(self, *args, **kwargs):
