@@ -26,7 +26,7 @@
 {% block body %}
 	<div id="head-wrapper" class="container">
 		<header class="sixteen columns">
-			<a href="/"><img src="[[ image('logo-bubbles.png') ]]" /></a>
+			<a id="head-logo" href="/"><img src="[[ image('logo-bubbles.png') ]]" /></a>
 			<ul id="nav">
 				{% block nav %}
 				{% endblock %}

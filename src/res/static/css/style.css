@@ -250,12 +250,28 @@ a {
 .link-blue:hover {
   color: #333;
 }
+.tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 4px 0;
+  color: #EEE;
+  text-shadow: none;
+  line-height: 1.2em;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  z-index: 10;
+}
 button.anonymous-post, button.anonymous-comment {
   width: 40px;
   height: 30px;
   margin-left: -45px !important;
   margin-right: 10px !important;
   border: none;
+  filter: alpha(opacity=90);
+  -khtml-opacity: 0.9;
+  -moz-opacity: 0.9;
+  opacity: 0.9;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -263,6 +279,11 @@ button.anonymous-post, button.anonymous-comment {
 }
 button.anonymous-post.active, button.anonymous-comment.active {
   background: url('../images/glasses-inverted.png') no-repeat 50% 50%;
+}
+button.anonymous-post .tooltip, button.anonymous-comment .tooltip {
+  width: 90px;
+  margin-left: 100px;
+  margin-top: -18px;
 }
 .profpost {
   background-color: #fde4e5;
@@ -320,6 +341,9 @@ header {
   margin: 0 auto !important;
   float: none !important;
   display: block !important;
+}
+header a#head-logo {
+  float: left;
 }
 header img {
   height: 60px;
@@ -485,6 +509,7 @@ ul#footer-links li a:hover {
   margin-left: 150px;
   padding: 10px;
   width: 615px;
+  text-shadow: 0px 1px 1px #FFF;
 }
 #index #join p {
   font-size: 19px;
@@ -877,7 +902,7 @@ ul#footer-links li a:hover {
 .post {
   float: left;
   margin-bottom: 10px;
-  padding: 5px 6px 10px 55px;
+  padding: 5px 5px 5px 55px;
   width: 90%;
   border-bottom: solid 1px #EEE;
 }
@@ -936,30 +961,16 @@ ul#footer-links li a:hover {
   color: #333;
 }
 .post .actions a.flag {
+  display: none;
   width: 20px;
   height: 20px;
   margin-left: 10px;
   margin-top: 1px;
   position: absolute;
-  filter: alpha(opacity=30);
-  -khtml-opacity: 0.3;
-  -moz-opacity: 0.3;
-  opacity: 0.3;
-  -webkit-transition-property: opacity 0.1s linear, -moz-opacity 0.1s linear;
-  -webkit-transition-duration: 0.15s, 0.15s;
-  -webkit-transition-timing-function: linear, linear;
-  -moz-transition-property: opacity 0.1s linear, -moz-opacity 0.1s linear;
-  -moz-transition-duration: 0.15s, 0.15s;
-  -moz-transition-timing-function: linear, linear;
-  transition-property: opacity 0.1s linear, -moz-opacity 0.1s linear;
-  transition-duration: 0.15s, 0.15s;
-  transition-timing-function: linear, linear;
-}
-.post .actions a.flag:hover {
-  opacity: 1.0;
-  -moz-opacity: 1.0;
-  -khtml-opacity: 1.0;
-  filter: alpha(opacity=100);
+  filter: alpha(opacity=50);
+  -khtml-opacity: 0.5;
+  -moz-opacity: 0.5;
+  opacity: 0.5;
 }
 .post .actions a.flag img {
   width: 16px;
@@ -974,7 +985,7 @@ ul#footer-links li a:hover {
 .post .comment {
   float: left;
   margin: 10px 0 0 0;
-  padding: 5px 5px 5px 45px;
+  padding: 5px 5px 0 45px;
   width: 91%;
   border-top: solid 1px #EEE;
 }
@@ -998,18 +1009,25 @@ ul#footer-links li a:hover {
 .post .comment a.flag {
   margin-left: 5px;
 }
+.post .comment .meta {
+  margin-right: -12px;
+}
 .post .submit-comment {
   display: none;
   float: left;
-  width: 88%;
+  width: 93%;
   margin: 0;
 }
 .post .submit-comment button.anonymous-comment {
   margin-top: 10px;
 }
+.post .submit-comment button.share {
+  float: right;
+  margin: 10px 5px 0 0;
+}
 .post input[type="text"] {
   margin-top: 10px;
-  width: 98%;
+  width: 89%;
   float: left;
 }
 #conversation {
@@ -1285,6 +1303,7 @@ ul#footer-links li a:hover {
   background-color: #da4649;
 }
 .calendar .upcoming {
+  display: none;
   float: left;
   width: 80%;
   padding: 10px;
