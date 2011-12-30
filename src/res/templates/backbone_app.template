@@ -27,7 +27,6 @@
 
 <!-- Backbone Templates -->
 <script type="text/template" id="message-template">
-	<img class="authorimg" src="[[ image('default-icon-small.png') ]]" />
 	<div>
 		<div class="author">
 			<%= model.get('author')['first_name'] %>
@@ -938,6 +937,8 @@ function() {
 				}
 				$(this.el).attr("id", this.model.get("id"));
 				$(this.el).html(this.template({model:this.model}));
+				//Prepend avatar!
+				$(this.el).prepend("<img class='authorimg' src='/account/avatar/" + this.model.get("user_id") + "'/>")
 				this.render_stats();
 				//Create timestamp
 				var timestamp = new TimestampWidget();
