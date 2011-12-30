@@ -37,11 +37,11 @@
 		<div class="meta">
 			<span class="votes">+<%= model.get('votes') %></span>
 		</div>
-		<span class="timestamp" style="margin-top: 3px;">&nbsp; &#8226; &nbsp;</span> 
+		<span class="timestamp" style="margin-top: 3px;"><span style="color:#333;">&nbsp; &#8226; &nbsp;</span></span> 
 		<div class="actions">
-			<a href="#" class="vote">like</a> &nbsp; &#8226; &nbsp;
-			<a href="#" class="comment-link">comment</a>
-			<a href="#" class="flag"><img src="[[ image('flag-icon.png') ]]" /></a>
+			<a href="#!" class="vote">like</a> &nbsp; &#8226; &nbsp;
+			<a href="#!" class="comment-link">comment</a>
+			<a href="#!" class="flag"><img src="[[ image('flag-icon.png') ]]" /></a>
 		</div>
 	</div>
 </script>
@@ -795,7 +795,7 @@ function() {
 			this.timestamp = (new Date(timestamp + "-05:00")).getTime();
 			var self = this;
 			self.render();
-			var intervalID = setInterval(self.render, 1000);
+			var intervalID = setInterval(self.render, 30000);
 		},
 		neat_string: function(delta_ms) {
 			var sec = 1000;
@@ -805,19 +805,22 @@ function() {
 			var week = day*7;
 			
 			var delta_week = delta_ms/week;
-			if (delta_week > 1) return Math.floor(delta_week) + " weeks";
+			if (delta_week > 2) return Math.floor(delta_week) + " weeks";
+			if (delta_week > 1) return "1 week";
 			
 			var delta_day = delta_ms/day;
-			if (delta_day > 1) return Math.floor(delta_day) + " days";
+			if (delta_day > 2) return Math.floor(delta_day) + " days";
+			if (delta_day > 1) return "1 day";
 			
 			var delta_hour = delta_ms/hour;
-			if (delta_hour > 1) return Math.floor(delta_hour) + " hours";
+			if (delta_hour > 2) return Math.floor(delta_hour) + " hours";
+			if (delta_hour > 1) return "1 hour";
 			
 			var delta_min = delta_ms/min;
-			if (delta_min > 1) return Math.floor(delta_min) + " minutes";
+			if (delta_min > 2) return Math.floor(delta_min) + " minutes";
+			if (delta_min > 1) return "1 minute";
 			
-			var delta_sec = delta_ms/sec;
-			if (delta_sec > 1) return " a few seconds";
+			return " a few seconds";
 		},
 		render: function() {
 			var now = (new Date).getTime();
@@ -870,25 +873,28 @@ function() {
 			//console.log("Comment, hurr durr!");
 			var self = this;
 			var comment = self.$(".comment-input").val();
-			//console.log("Comment:", comment);
-			if (!self.anon) {
-				self.collection.get_client().comment(self.model.get("id"), comment);
-			} else {
-				self.collection.get_client().anon_comment(self.model.get("id"), comment);
+			if (comment.length > 2) {
+				//console.log("Comment:", comment);
+				if (!self.anon) {
+					self.collection.get_client().comment(self.model.get("id"), comment);
+				} else {
+					self.collection.get_client().anon_comment(self.model.get("id"), comment);
+				}
+				self.$(".comment-input").val("");
+				self.$(".submit-comment").fadeOut("fast");
 			}
-			self.$(".comment-input").val("");
 		},
 		toggle_anon: function() {
-			//console.log("toggled anon comment!!!");
+			// Toggles anonymous comments
 			this.anon = !this.anon;
-			this.$(".anonymous-post").toggleClass("active");
+			this.$(".anonymous-comment").toggleClass("active");
 			if (this.anon) {
-				this.$("textarea.post-input").css({
+				this.$("input.comment-input").css({
 					'background-color' : '#666',
 					'color' : '#FFF'
 				});
 			} else {
-				this.$("textarea.post-input").css({
+				this.$("input.comment-input").css({
 					'background-color' : '#FFF',
 					'color' : '#333'
 				});
@@ -904,17 +910,13 @@ function() {
 			}
 		},
 		toggle_flag: function() {
-			console.log("toggle_flag!");
+			// console.log("toggle_flag!");
 			this.can_flag = !this.can_flag;
-			var newOpacity = 0.3;
-			if (this.can_flag) {
-				newOpacity = 0.7;
-				// this.$(".flag").first().html("flag");
-			} 
-			this.$(".flag").first().css("opacity", newOpacity);
-			this.$(".flag").first().css("-moz-opacity", newOpacity);
-			this.$(".flag").first().css("-khtml-opacity", newOpacity);
-			this.$(".flag").first().css("filter", "alpha(opacity=" + newOpacity * 100 + ")");
+			if (!this.can_flag) {
+				this.$(".flag").first().css("display", "inline-block");
+			} else {
+				this.$(".flag").first().css("display", "none");
+			}
 		},
 		render_stats: function() {
 			var numVotes = this.model.get("votes");
@@ -951,14 +953,27 @@ function() {
 				if (this.model.get("parent_id") == null) {
 					var self = this;
 					$(this.el).append("<div class='comments'></div>");
-					$(this.el).append("<div class='submit-comment'><input type='text' class='comment-input' placeholder='your comment'></input><button class='anonymous-comment'></button><button class='share'>Share</button></div>");
+					$(this.el).append("<div class='submit-comment'><input type='text' class='comment-input' placeholder='Enter comment...'></input><button class='anonymous-comment'></button><button class='share'>Share</button></div>");
 					console.log($(this.el).children("a.comment-link"));
 					$(this.el).children("div").children(".actions").children("a.comment-link").click(function(e) {
 						console.log("showing comment area");
 						e.preventDefault();
 						$(self.el).children(".submit-comment").slideToggle("fast");
 					});
+					
+					var commentbox = $(this.el).children(".submit-comment").children(".anonymous-comment");
+					commentbox.mouseover(function() {
+						commentbox.append("<div class='tooltip'>Anonymous to classmates</div>");
+					});
+					commentbox.mouseout(function() {
+						$(".tooltip").remove();
+					});
 				}
+				$(this.el).hover(function() {
+					if (this.can_flag) {
+						$(this).children("div").children(".actions").children(".flag").toggle("fast");
+					}
+				});
 			}
 		},
 	});
@@ -967,8 +982,7 @@ function() {
 	var ConversationView = Backbone.View.extend({
 		el: $("#conversation"),
 		events: {
-			'click .anonymous-post': 'toggle_anon',
-			'click .anonymous-comment': 'toggle_anon'
+			'click .anonymous-post': 'toggle_anon'
 		},
 		initialize: function() {
 			_.bindAll(this, 
@@ -992,16 +1006,18 @@ function() {
 			var self = this;
 			this.$(".share").unbind().click(function() {
 				var insight = self.$(".post-input").val();
-				//console.log("Insight:", insight);
-				//console.log(self.anon);
-				if (!self.anon) {
-					//console.log("Doing non-anon post!");
-					event_model.get_client().post(insight);
-				} else {
-					//console.log("doing anon post!");
-					event_model.get_client().anon_post(insight);
+				if (insight.length > 2) {
+					//console.log("Insight:", insight);
+					//console.log(self.anon);
+					if (!self.anon) {
+						//console.log("Doing non-anon post!");
+						event_model.get_client().post(insight);
+					} else {
+						//console.log("doing anon post!");
+						event_model.get_client().anon_post(insight);
+					}
+					self.$(".post-input").val("");
 				}
-				self.$(".post-input").val("");
 			});
 			
 			//Listen for changes to this event
@@ -1042,6 +1058,7 @@ function() {
 			$(message_view.el).fadeIn();
 		},
 		toggle_anon: function() {
+			// Toggles anonymous posts
 			this.anon = !this.anon;
 			this.$(".anonymous-post").toggleClass("active");
 			if (this.anon) {
@@ -1169,9 +1186,9 @@ function() {
 		});
 		
 		// If edit button clicked, show the calendar and edit event form
-		$("button.edit").click(function(e) {
-			e.preventDefault();
-			e.stopPropagation();
+		$("button.edit").click(function(event) {
+			event.preventDefault();
+			event.stopPropagation();
 			$("#conversation").hide();
 			$(".content.calendar").fadeIn();
 			$(".container .upcoming").fadeOut();
@@ -1203,37 +1220,62 @@ function() {
 		});
 		
 		// New event form
-		$(".fc-event").click(function(e) {
-			e.stopPropagation()
+		$(".fc-event").click(function(event) {
+			event.stopPropagation()
 		  $(".new-event").slideDown();
 		});
 		
-		$(".fc-widget-content").click(function(e) {
-			e.stopPropagation();
+		$(".fc-widget-content").click(function(event) {
+			event.stopPropagation();
 		  $(".new-event").slideDown();
 			$(".container .upcoming").fadeOut();
 		});
 		
-		$(".new-event form .close").click(function(e) {
-		  e.preventDefault();
+		$(".new-event form .close").click(function(event) {
+		  event.preventDefault();
 		  $(".new-event").slideUp();
 		});
 		
-		$(".new-event").click(function(e) { e.stopPropagation(); });
-		$("#calendar div.fc-event.fc-event-skin").click(function(e) { e.stopPropagation(); });
+		$(".new-event").click(function(event) { event.stopPropagation(); });
+		$("#calendar div.fc-event.fc-event-skin").click(function(event) { event.stopPropagation(); });
 		
-		$("body").click(function(e) {
+		$("body").click(function() {
 			$(".new-event").slideUp();
 			$(".container .upcoming").fadeIn();
 		});
 		
 		// Conversation
-		$("#posts a.comment-link").click(function(e) {
-			console.log("showing comment area");
-			e.preventDefault();
-			$(this).parent().parent().parent().children(".submit-comment").slideToggle("fast");
+		$("textarea.post-input").keypress(function(event) {
+			if (event.which == 13) {
+				$(this).parent().children(".share").click();
+				$(this).val("");
+				$(this).blur();
+			}
+		});
+		if ($("textarea.post-input").val() != "") $("textarea.post-input").rows = 3;
+		$("input.comment-input").keypress(function(e) {
+			if (e.which == 13) {
+				$(this).parent().children(".share").click();
+				$(this).val("");
+				$(this).blur();
+			}
 		});
 		
+		$("#posts a").click(function(e) { e.preventDefault(); });
+		
+		$(".anonymous-post").mouseover(function() {
+			$(this).append("<div class='tooltip'>Anonymous to classmates</div>");
+		});
+		$(".anonymous-post").mouseout(function() {
+			$(".tooltip").remove();
+		});
+		
+		$(".post").mouseover(function() {
+			$(this).children("div").children(".actions").children(".flag").fadeIn("fast");
+		});
+		$(".post").mouseout(function() {
+			$(this).children("div").children(".actions").children(".flag").fadeOut("fast");
+		});
 	});
 </script>
 {% endblock scripts %}
@@ -1241,7 +1283,7 @@ function() {
 {% block body %}
 <div id="head-wrapper" class="container">
 	<header class="sixteen columns">
-		<a href="/"><img src="[[ image('logo-bubbles.png') ]]" /></a>
+		<a id="head-logo" href="/"><img src="[[ image('logo-bubbles.png') ]]" /></a>
 		<ul id="nav">
       <li><a href="#">Account</a></li>
       <li><a href="[[reverse_url('ViewClasses')]]">Change Classes</a></li>
@@ -1334,14 +1376,14 @@ function() {
         		<option value="Other">Other</option>
         	</select>
         </div>
-		<div id="file-bank">
-			File bank
-			<div class="message"></div>
-			<div class="event-id"></div>
-			<select class="files" multiple="multiple">
-			</select>
-			<button class="save">Save Changes</button>
-		</div>
+				<div id="file-bank">
+					File bank
+					<div class="message"></div>
+					<div class="event-id"></div>
+					<select class="files" multiple="multiple">
+					</select>
+					<button class="save">Save Changes</button>
+				</div>
         <div id="file-edit">
         	<div class="message"></div>
         	<select class="tags" multiple="multiple">
@@ -1384,20 +1426,20 @@ function() {
               $(function() {createUploader()});
           </script>
         </div>
-      </div>
+      </div> <!-- new event end -->
 
-		<div class="upcoming">
+			<div class="upcoming">
 		  	<h4>Upcoming Events</h4>
 		  	<table border="0" cellpadding="0" cellspacing="0">
-		  		<tbody id="upcoming_items">
-		  		  <tr>
-		  				<td class="date">Dec 12</td>
-		  				<td class="time">10:30a &ndash; 12:00p</td>
-		  				<td><a href="#">Lecture</a></td>
-		  			</tr>
-		  		</tbody>
+	  		<tbody id="upcoming_items">
+	  		  <tr>
+	  				<td class="date">Dec 12</td>
+	  				<td class="time">10:30a &ndash; 12:00p</td>
+	  				<td><a href="#">Lecture</a></td>
+	  			</tr>
+	  		</tbody>
 		  	</table>
-		</div>
+			</div>
 		
 		</div> <!-- twelve columns calendar end -->
       
@@ -1406,7 +1448,7 @@ function() {
 			<button id="show-calendar">Back to calendar</button>
 			<div class="message"></div>
 			<div class="new-post">
-		  	<textarea class="post-input" placeholder="Drop your insight" maxlength="310"></textarea>
+		  	<textarea class="post-input" placeholder="Drop your insight" maxlength="310" rows="1" onclick="this.rows=3;" onblur="this.rows=1;"></textarea>
 		  	<button class="anonymous-post"></button>
 		  	<button class="share">Share</button>
 			</div>
