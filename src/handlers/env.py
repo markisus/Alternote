@@ -8,6 +8,7 @@ import db.users
 import os
 import tornado.web
 import db.classes
+import db.conversations
 from db.classes import unpack_userids
 env = Environment(variable_start_string='[[', variable_end_string=']]', loader=PackageLoader('res', 'templates'))
 prof_code = "alternote_rocks"
@@ -62,6 +63,12 @@ class BaseHandler(tornado.web.RequestHandler):
         params = UserDict(self.request.arguments)
         params.getlist = lambda key:params[key] #wtforms needs this
         return params
+    
+    def reveal_anon(self, post):
+        if post['author']['_id'] == 'Anonymous':
+            post['is_author'] = db.conversations.is_anon_author(self.get_current_user(), post['_id'])
+#        print("Revealed anon post: " + str(post))
+        return post
     
     def render_out(self, *args, **kwargs):
         self.write(self.template.render(*args, **kwargs))

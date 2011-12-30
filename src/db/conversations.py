@@ -2,12 +2,20 @@ from db.collections import *
 from time import time
 from datetime import datetime
 from db.users import get_user_display_info
+import cgi
 
 def record_anon_item(userid, objectid):
+    print("\tanon: " + str(userid) + " " + str(objectid))
     objectid = ObjectId(objectid)
-    users.insert({'_id':userid}, {"$addToSet":{"anonymous_items":objectid}})
+    users.update({'_id':userid}, {"$addToSet":{"anonymous_items":objectid}})
         
 #Get the user object with only the info we need for display purposes
+def is_anon_author(userid, objectid):
+    objectid = ObjectId(objectid)
+    result = users.find_one({"anonymous_items":objectid}, {"_id":1})
+    if not result:
+        return False
+    return str(result['_id']) == userid
 
 def get_event(eventid):
     eventid = ObjectId(eventid)
@@ -70,7 +78,7 @@ def create_message_for_event(userid, message, parent_id=None, eventid=None, anon
             raise ValueError("Parent not found")
         else:
             eventid = parent['event_id']
-    data = {'message':message,
+    data = {'message':cgi.escape(message),
                   'votes':0,
                   'flags':0,
                   'event_id':ObjectId(eventid),
@@ -81,6 +89,7 @@ def create_message_for_event(userid, message, parent_id=None, eventid=None, anon
     id = posts.insert(data)
     data.update({'_id': id})
     if anonymous: 
+        print("Recording anon item!")
         record_anon_item(userid, id)
     return data
 

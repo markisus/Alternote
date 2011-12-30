@@ -1,5 +1,13 @@
 //var client = {};
 function Client(eventid, userid, messages) {
+	//Util method
+	var get = function(object, key, deflt) {
+		if (!_.isUndefined(object[key])) {
+			return object[key];
+		}
+		return deflt;
+	}
+	
 	var self = this;
 	console.log("Inside client");
 	
@@ -202,6 +210,7 @@ function Client(eventid, userid, messages) {
 				'votes':0, 
 				'flags':0,
 				'parent_id':null,
+				'is_author': get(data, 'is_author', false),
 				'timestamp':data['timestamp']
 				}
 		);
@@ -217,6 +226,7 @@ function Client(eventid, userid, messages) {
 				'votes':0, 
 				'flags':0,
 				'parent_id':data['parent_id'],
+				'is_author': get(data, 'is_author', false),
 				'timestamp':data['timestamp']
 				}
 		);

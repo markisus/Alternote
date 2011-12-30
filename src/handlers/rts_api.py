@@ -4,23 +4,7 @@ from db.conversations import *
 from collections import defaultdict
 import json
 from backbone import collection_to_Backbone
-
-class BaseHandler(tornado.web.RequestHandler):
-    def get_current_user(self):
-        session = self.get_cookie('session', None)
-        if not session: return None
-        return db_get_userid(session)
-    
-    def __unpack_params(self, adict):
-        """Tornado encapsulates HTTP params within list objects (idk why)
-        so we need this method to unpack them"""
-        unpacked = dict()
-        for param in adict.keys():
-            unpacked[param] = adict[param][0]
-        return unpacked
-    
-    def get_params(self):
-        return self.__unpack_params(self.request.arguments)
+from env import BaseHandler
     
 class JSONPHandler(BaseHandler):
     def write(self, eventid, chunk):
@@ -143,12 +127,14 @@ class PollHandler(Listener):
         print("Poll finished")
         #Fall back to the ioloop and wait for self.notify to be called
         
-
 #/get/(eventid)
 class PostGetter(JSONPHandler):
     @tornado.web.authenticated
     def get(self, eventid):
         posts = get_top_posts_for_event(eventid)
+        #Find anon stuff and mark the current user as the true author if he is
+        #reveal
+        posts = [self.reveal_anon(p) for p in posts]
         #to backbone...
 #        print(posts)
         collection_to_Backbone(posts)
@@ -156,7 +142,7 @@ class PostGetter(JSONPHandler):
         votes_and_flags = get_user_votes_and_flags(userid)
         last_element = EVENT_REGISTRY.get_newest_index_in_cache_for_eventid(eventid)
         #the js client expects a dictionary of actions, so we wrap the dictionary in another dictionary
-        result = {-1: {'action':'get', 'last_element':last_element, 'posts':list(posts), 'votes_and_flags':votes_and_flags}}
+        result = {-1: {'action':'get', 'last_element':last_element, 'posts':posts, 'votes_and_flags':votes_and_flags}}
 #        print("Sending result: " + str(result))
         self.write(eventid, json.dumps(result,  default=str, cls=None))
        
@@ -171,9 +157,9 @@ class Comment(BaseHandler):
         eventid = get_eventid_of_post(postid)
         userid = self.get_current_user()
         user = get_user_display_info(userid, self.anon)
-        
             
         comment = create_comment_for_post(userid, postid, message, self.anon)
+        self.reveal_anon(comment)
         
         datum = {
                  'action':'comment', 
@@ -181,6 +167,7 @@ class Comment(BaseHandler):
                  'parent_id':postid, 
                  'message':message, 
                  'objectid':str(comment['_id']),
+                 'is_author':comment['is_author'],
                  'timestamp':comment['timestamp']
                  }
         
@@ -201,19 +188,47 @@ class Post(BaseHandler):
         user = get_user_display_info(userid, self.anon)
         
         post = create_post_for_event(userid, eventid, message, self.anon)
+        self.reveal_anon(post)
         
         datum = {
                  'action':'post', 
                  'user':user, 
                  'message':message, 
                  'objectid':str(post['_id']), 
+                 'is_author':post['is_author'],
                  'timestamp':post['timestamp']
                  }
+        
         print("Adding post to event cache")
         EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
         print("notifying listeners")
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
 
+##/delete/(messageid)/
+#class Delete(BaseHandler):
+#        
+#    @tornado.web.authenticated
+#    def get(self, message_id):
+#        userid = self.get_current_user()
+#        #Check if user is the author
+#        message = get_post(message_id)
+#        author_id = message['author']['_id']
+#        if author_id == 'Anonymous':
+#            pass
+#        comment = create_comment_for_post(userid, postid, message, self.anon)
+#        
+#        datum = {
+#                 'action':'comment', 
+#                 'user':user, 
+#                 'parent_id':postid, 
+#                 'message':message, 
+#                 'objectid':str(comment['_id']),
+#                 'timestamp':comment['timestamp']
+#                 }
+#        
+#        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
+#        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
+        
 class VoteObject(BaseHandler):    
     @tornado.web.authenticated
     def get(self, objectid):
