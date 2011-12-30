@@ -32,6 +32,9 @@
 			<%= model.get('author')['first_name'] %>
 			<%= model.get('author')['last_name'] %>
 		</div>
+		<% if (model.get('is_author')) { %>
+			<a href="#!"class="delete">x</a>
+		<% } %>
 		<%= model.get('message') %> <br/>
 		<div class="meta">
 			<span class="votes">+<%= model.get('votes') %></span>
@@ -957,7 +960,6 @@ function() {
 					$(this.el).append("<div class='submit-comment'><input type='text' class='comment-input' placeholder='Enter comment...'></input><button class='anonymous-comment'></button><button class='share'>Share</button></div>");
 					console.log($(this.el).children("a.comment-link"));
 					$(this.el).children("div").children(".actions").children("a.comment-link").click(function(e) {
-						console.log("showing comment area");
 						e.preventDefault();
 						$(self.el).children(".submit-comment").slideToggle("fast");
 					});
@@ -974,6 +976,9 @@ function() {
 					if (this.can_flag) {
 						$(this).children("div").children(".actions").children(".flag").toggle("fast");
 					}
+				});
+				$(this.el).hover(function() {
+					$(this).children("div").children("a.delete").toggleClass("active");
 				});
 			}
 		},
@@ -1113,9 +1118,9 @@ function() {
 		var blue = $(".link-blue").css("color");
 		$('#calendar').fullCalendar({
 			header: {
-				left: 'prev,next today',
-				center: 'title',
-				right: 'month,basicWeek,basicDay'
+				left: 'prev,title,next today',
+				center: '',
+				right: ''
 			},
 			editable: false,
 			events: "[[ reverse_url('CalendarFeed', class_id) ]]",
@@ -1154,20 +1159,6 @@ function() {
 			else
 				triangle.html('▲');
 		});
-
-		/* $("#conversations p.header a").click(function(event) {
-			var ul = $(this).parent().parent().children("ul");
-			var newHeight = 'auto';
-			
-			if (ul.css("max-height") == "auto")
-				newHeight = '189px';
-			
-			ul.animate({
-				'max-height': newHeight
-			}, 500, function() {
-				// Animation complete
-			});
-		}); */
 		
 		$("#conversations li a").click(function() {
 			var link = $(this).attr("href");
@@ -1221,6 +1212,10 @@ function() {
 		});
 		
 		// New event form
+		$(".new-event-button").click(function(event) {
+			event.stopPropagation()
+			$(".new-event").slideDown();
+		});
 		$(".fc-event").click(function(event) {
 			event.stopPropagation()
 		  $(".new-event").slideDown();
@@ -1351,6 +1346,7 @@ function() {
     </div>
     
 	  <div class="twelve columns content calendar">
+			<button class="new-event-button">Create new event</button>
 	    <div id="calendar"></div>
 	    
 	    <div class="new-event twelve columns">
@@ -1428,19 +1424,6 @@ function() {
           </script>
         </div>
       </div> <!-- new event end -->
-
-			<div class="upcoming">
-		  	<h4>Upcoming Events</h4>
-		  	<table border="0" cellpadding="0" cellspacing="0">
-	  		<tbody id="upcoming_items">
-	  		  <tr>
-	  				<td class="date">Dec 12</td>
-	  				<td class="time">10:30a &ndash; 12:00p</td>
-	  				<td><a href="#">Lecture</a></td>
-	  			</tr>
-	  		</tbody>
-		  	</table>
-			</div>
 		
 		</div> <!-- twelve columns calendar end -->
       
