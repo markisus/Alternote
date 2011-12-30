@@ -64,9 +64,11 @@ class BaseHandler(tornado.web.RequestHandler):
         params.getlist = lambda key:params[key] #wtforms needs this
         return params
     
-    def reveal_anon(self, post):
+    def reveal_author(self, post):
         if post['author']['_id'] == 'Anonymous':
             post['is_author'] = db.conversations.is_anon_author(self.get_current_user(), post['_id'])
+        else:
+            post['is_author'] = post['author']['id'] == self.get_current_user()
 #        print("Revealed anon post: " + str(post))
         return post
     

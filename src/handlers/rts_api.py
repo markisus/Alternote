@@ -134,7 +134,7 @@ class PostGetter(JSONPHandler):
         posts = get_top_posts_for_event(eventid)
         #Find anon stuff and mark the current user as the true author if he is
         #reveal
-        posts = [self.reveal_anon(p) for p in posts]
+        posts = [self.reveal_author(p) for p in posts]
         #to backbone...
 #        print(posts)
         collection_to_Backbone(posts)
@@ -159,7 +159,7 @@ class Comment(BaseHandler):
         user = get_user_display_info(userid, self.anon)
             
         comment = create_comment_for_post(userid, postid, message, self.anon)
-        self.reveal_anon(comment)
+        self.reveal_author(comment)
         
         datum = {
                  'action':'comment', 
@@ -188,7 +188,7 @@ class Post(BaseHandler):
         user = get_user_display_info(userid, self.anon)
         
         post = create_post_for_event(userid, eventid, message, self.anon)
-        self.reveal_anon(post)
+        self.reveal_author(post)
         
         datum = {
                  'action':'post', 
