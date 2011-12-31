@@ -204,30 +204,34 @@ class Post(BaseHandler):
         print("notifying listeners")
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
 
-##/delete/(messageid)/
-#class Delete(BaseHandler):
-#        
-#    @tornado.web.authenticated
-#    def get(self, message_id):
-#        userid = self.get_current_user()
-#        #Check if user is the author
-#        message = get_post(message_id)
-#        author_id = message['author']['_id']
-#        if author_id == 'Anonymous':
-#            pass
-#        comment = create_comment_for_post(userid, postid, message, self.anon)
-#        
-#        datum = {
-#                 'action':'comment', 
-#                 'user':user, 
-#                 'parent_id':postid, 
-#                 'message':message, 
-#                 'objectid':str(comment['_id']),
-#                 'timestamp':comment['timestamp']
-#                 }
-#        
-#        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
-#        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
+#/delete/(messageid)/
+class Delete(BaseHandler):
+        
+    @tornado.web.authenticated
+    def get(self, message_id):
+        print("Deleting...")
+        userid = self.get_current_user()
+        eventid = get_eventid_of_object(message_id)
+        #Check if user is the author
+        message = get_post(message_id)
+        author_id = message['author']['_id']
+        if author_id == 'Anonymous':
+            if not is_anon_author(userid, message_id):
+                raise ValueError(userid + " is not the author of " + message_id)
+        elif author_id != userid:
+            raise ValueError(userid + " is not the author of  " + message_id)
+
+        delete_object(message_id)
+        print("Delete success")
+            
+        
+        datum = {
+                 'action':'destroy', 
+                 'objectid':message_id,
+                 }
+        
+        EVENT_REGISTRY.add_datum_to_event_cache(eventid, datum)
+        EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
         
 class VoteObject(BaseHandler):    
     @tornado.web.authenticated

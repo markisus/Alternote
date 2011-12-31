@@ -32,6 +32,7 @@ def get_post(postid):
     return result
 
 def get_eventid_of_object(objectid):
+    objectid = ObjectId(objectid)
     result = get_eventid_of_post(objectid) or get_eventid_of_comment(objectid)
     if result == None:
         raise KeyError("No object with key " + str(objectid) + " exists")

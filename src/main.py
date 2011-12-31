@@ -97,6 +97,7 @@ application = tornado.web.Application([
     (r'/get/(\w+)/?', handlers.rts_api.PostGetter),
     (r'/comment/(\w+)/(.+)/?', handlers.rts_api.Comment),
     (r'/post/(\w+)/(.+)/?', handlers.rts_api.Post),
+    (r'/delete/(\w+)/?', handlers.rts_api.Delete),
     (r'/anon_comment/(\w+)/(.+)/?', handlers.rts_api.Comment, {'anon':True}),
     (r'/anon_post/(\w+)/(.+)/?', handlers.rts_api.Post, {'anon':True}),
     (r'/vote/(\w+)/?', handlers.rts_api.VoteObject),

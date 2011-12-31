@@ -132,6 +132,7 @@ function() {
 	//Calendar Event Model - depends on File Collection
 	var Event = Backbone.Model.extend({
 		initialize: function() {
+			this.messages = new Messages();
 		},
 		get_files: function() {
 			var self = this;
@@ -147,18 +148,15 @@ function() {
 		},
 		has_active_convo: function() {
 			has_active = (server_timestamp > this.get('convo_start')) && (this.get("dummy") == false);
-			/*if (has_active) {
-				//Checking if the thing has a convo? well we might as well start up the listener
-				this.get_client();
-			}*/
 			return has_active;
 		},
 		get_client: function() {
 			if (!_.isUndefined(this.client)) {
+				//console.log("Returning old client");
 				return this.client;
 			} else {
+				console.log("Returning new client");
 				//Initialize the Messages collection correlated with the client
-				this.messages = new Messages();
 				var client = new Client(this.get("id"), user_id, this.messages);
 				this.client = client;
 				
@@ -836,8 +834,8 @@ function() {
 	var MessageView = Backbone.View.extend({
 		tagName: "div",
 		initialize: function() {
-			console.log("INIT MESGVIEW");
-			_.bindAll(this, "toggle_anon", "toggle_vote", "toggle_flag", "handle_vote", "handle_flag", "render_stats");
+			console.log("Initializing MessageView Object, ", this.model.get("message"));
+			_.bindAll(this, "render_destroy", "toggle_anon", "toggle_vote", "toggle_flag", "handle_vote", "handle_flag", "render_stats");
 			this.can_vote = true;
 			this.can_flag = true;
 			this.template = _.template($("#message-template").html());
@@ -849,9 +847,15 @@ function() {
 			this.model.bind("toggle_flag", self.toggle_flag);
 			this.model.bind("toggle_vote", self.toggle_vote);
 			this.model.bind("change", self.render_stats);
+			this.model.bind("destroy", self.render_destroy);
+		},
+		render_destroy: function() {
+			//console.log("Got destroy!");
+			//console.log($(this.el));
+			$(this.el).hide(100);
 		},
 		handle_vote: function() {
-			console.log("Handling vote");
+			//console.log("Handling vote");
 			var self = this;
 			if (this.can_vote) {
 				this.collection.get_client().vote(self.model.get("id"));
@@ -958,7 +962,7 @@ function() {
 					var self = this;
 					$(this.el).append("<div class='comments'></div>");
 					$(this.el).append("<div class='submit-comment'><input type='text' class='comment-input' placeholder='Enter comment...'></input><button class='anonymous-comment'></button><button class='share'>Share</button></div>");
-					console.log($(this.el).children("a.comment-link"));
+					//console.log($(this.el).children("a.comment-link"));
 					$(this.el).children("div").children(".actions").children("a.comment-link").click(function(e) {
 						e.preventDefault();
 						$(self.el).children(".submit-comment").slideToggle("fast");
@@ -980,6 +984,10 @@ function() {
 				$(this.el).hover(function() {
 					$(this).children("div").children("a.delete").toggleClass("active");
 				});
+				var self = this;
+				this.$(".delete").click(function(){
+					self.collection.get_client().destroy(self.model.get("id"));
+				});
 			}
 		},
 	});
@@ -991,6 +999,7 @@ function() {
 			'click .anonymous-post': 'toggle_anon'
 		},
 		initialize: function() {
+			console.log("Initializing the ConversationView");
 			_.bindAll(this, 
 				"new_message_handler",
 				"toggle_anon");
@@ -1001,25 +1010,21 @@ function() {
 		unbind_current_model: function() {
 			if (!_.isUndefined(this.model)) {
 				this.model.client.halt();
+				this.model.messages.unbind("add", self.new_message_handler);
 			}
 			this.model = undefined;
 		},
 		bind_event_model: function(event_model) {
+			console.log("Binding event model ", event_model.get('title'));
 			this.unbind_current_model();
 			this.model = event_model;
-			//Initialize the client
-			this.model.get_client();
 			var self = this;
 			this.$(".share").unbind().click(function() {
 				var insight = self.$(".post-input").val();
 				if (insight.length > 2) {
-					//console.log("Insight:", insight);
-					//console.log(self.anon);
 					if (!self.anon) {
-						//console.log("Doing non-anon post!");
 						event_model.get_client().post(insight);
 					} else {
-						//console.log("doing anon post!");
 						event_model.get_client().anon_post(insight);
 					}
 					self.$(".post-input").val("");
@@ -1028,16 +1033,13 @@ function() {
 			
 			//Listen for changes to this event
 			var self = this;
-			this.model.messages.bind("add", function(message){
-				//console.log("Listened to ", message);
-				self.new_message_handler(message);
-			});
+			this.model.messages.bind("add", self.new_message_handler);
+			console.log("Done binding, ready to render.");
 			this.render();
 		},
 		new_message_handler: function(message) {
 			//What happens depends on if the message is a post or comment
 			if (message.get("parent_id") == null) {
-				//console.log("Handling post");
 				//The message is a post b.c. it has no parent
 				this.append_post(message);
 			} else {
@@ -1057,9 +1059,6 @@ function() {
 			var parent_id = message_model.get("parent_id");
 			var message_view = this.make_view_for_message(message_model);
 			$(message_view.el).css("display", "none");
-			//console.log("Appending comment");
-			//console.log($("#" + parent_id + " .comments"));
-			//console.log(message_view.el);
 			this.$("#" + parent_id + " .comments").append(message_view.el);
 			$(message_view.el).fadeIn();
 		},
@@ -1084,18 +1083,8 @@ function() {
 			this.$("#posts").html("");
 			if(!_.isUndefined(this.model)) {
 				var self = this;
-				//console.log("LOOKING AT POSTS!!!!");
-				_(this.model.messages.get_parentless()).forEach(function(item) {
-					self.append_post(item);
-					//Add the comments for the post
-					//console.log("Checking comments for ", item);
-					var comments = self.model.messages.get_children_of_model(item);
-					//console.log(comments);
-					comments.forEach(function(comment) {
-						//console.log("Found comment");
-						self.append_comment(comment);
-					});
-				});
+				//Initialize the client
+				this.model.get_client().start();
 			}
 			else {
 				this.$(".message").html("Please bind a convo")

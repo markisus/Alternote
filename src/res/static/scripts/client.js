@@ -17,22 +17,33 @@ function Client(eventid, userid, messages) {
 		self.eventid = eventid;
 		self.userid = userid;
 		self.messages = messages;
-		self.get();
-		console.log("Initialized.");
+		self.halted = false;
+		//if (!self.old) {
+			self.get();
+		//}
+		//console.log("Initialized.");
 	};
 	
 	var nonce = 0;
 	
 	self.injectScript = function(src) {
 		var _inject = function(src) {
-			console.log("Injecting " + src);
-			nonce++;
+			//console.log("Injecting " + src);
+			nonce++;/*
 			var div = document.getElementById('scriptInject');
-			console.log(div);
+			//console.log(div);
 			var script = document.createElement('script');
 			script.setAttribute('type', 'text/javascript');
 			script.setAttribute('src', rts_address + src + '?' + nonce);
-			div.appendChild(script);
+			div.appendChild(script);*/
+			self.current_request = $.ajax({
+				url:rts_address + src + '?' + nonce,
+				success: function(data){
+					console.log(data);
+					eval(data);
+				},
+			});
+			console.log(self.current_request)
 		};
 		if (!self.halted) {
 			self.timerID = window.setTimeout(_inject, 100, src);
@@ -44,11 +55,12 @@ function Client(eventid, userid, messages) {
 		window.clearTimeout(self.timerID);
 		var div = document.getElementById('scriptInject');
 		div.innerHTML = "";
-		console.log("Halted");
+		if (!_.isUndefined(self.current_request)) self.current_request.abort();
+		//console.log("Halted");
 	};
 	
 	self.callback = function(data) {
-		console.log("callback...");
+		//console.log("callback...");
 		for (key in data) {
 			if (parseInt(key) > parseInt(self.last_element)) self.last_element = parseInt(key);
 			var data_piece = data[key];
@@ -60,12 +72,12 @@ function Client(eventid, userid, messages) {
 	};
 	
 	self.get = function() {
-		console.log(self.eventid);
+		//console.log(self.eventid);
 		self.injectScript("/get/" + self.eventid);
 	};
 	
 	self.listen = function() {
-		console.log("Listening...");
+		//console.log("Listening...");
 		self.injectScript("/poll/" + self.eventid + "/" + self.last_element);
 	};
 	
@@ -87,6 +99,10 @@ function Client(eventid, userid, messages) {
 	
 	self.post = function(message) {
 		_post_helper("post", self.eventid, message);
+	};
+	
+	self.destroy = function(objectid) {
+		self.injectScript("/delete/" + objectid);
 	};
 	
 	self.anon_post = function(message) {
@@ -130,11 +146,11 @@ function Client(eventid, userid, messages) {
 	
 	//Actions will be called from self.callback
 	self.xget = function(data) {
-		console.log("xget");
+		//console.log("xget");
 		self.last_element = data['last_element'];
 		self.votes_and_flags = data['votes_and_flags'];
 		var posts = data['posts'];
-		console.log(posts);
+		//console.log(posts);
 		/*
 		for (key in posts) {
 			var post = posts[key];
@@ -144,6 +160,7 @@ function Client(eventid, userid, messages) {
 				_render_comment(comment['_id'], comment['author'], comment['message'], comment['votes'], comment['flags']);
 			}
 		}*/
+		self.messages.reset([]);
 		_(posts).forEach(function(item){
 			self.messages.add(item);
 		});
@@ -151,7 +168,7 @@ function Client(eventid, userid, messages) {
 	};
 	
 	self.xvote = function(data) {
-		console.log(data);
+		//console.log(data);
 		var id = data['objectid'];
 		var action_id = data['userid'];
 		
@@ -160,11 +177,11 @@ function Client(eventid, userid, messages) {
 		if (action_id == self.userid) {
 			self.messages.get(id).trigger("toggle_vote")
 		}
-		console.log(data);
+		//console.log(data);
 	};
 	
 	self.xunvote = function(data) {
-		console.log(data);
+		//console.log(data);
 		var id = data['objectid'];
 		var action_id = data['userid'];
 		
@@ -173,7 +190,7 @@ function Client(eventid, userid, messages) {
 		if (action_id == self.userid) {
 			self.messages.get(id).trigger("toggle_vote");
 		}
-		console.log(data);
+		//console.log(data);
 	};
 	
 	self.xflag = function(data) {
@@ -185,11 +202,11 @@ function Client(eventid, userid, messages) {
 		if (action_id == self.userid) {
 			self.messages.get(id).trigger("toggle_flag")
 		}
-		console.log(data);
+		//console.log(data);
 	};
 	
 	self.xunflag = function(data) {
-		console.log(data);
+		//console.log(data);
 		var id = data['objectid'];
 		var action_id = data['userid'];
 		
@@ -198,7 +215,7 @@ function Client(eventid, userid, messages) {
 		if (action_id == self.userid) {
 			self.messages.get(id).trigger("toggle_flag")
 		}
-		console.log(data);
+		//console.log(data);
 	};
 	
 	self.xpost = function(data) {
@@ -217,7 +234,7 @@ function Client(eventid, userid, messages) {
 	};
 	
 	self.xcomment = function(data) {
-		console.log(data);
+		//console.log(data);
 		self.messages.add(
 				{'id':data['objectid'], 
 				'event_id':self.eventid,
@@ -232,6 +249,19 @@ function Client(eventid, userid, messages) {
 		);
 	};
 	
-	console.log("initializing");
-	self.initialize(eventid, userid, messages);
+	self.xdestroy = function(data) {
+		//console.log("Destroying ", data)
+		//console.log(data);
+		id = data['objectid']
+		self.messages.get(id).trigger('destroy')
+		self.messages.remove(self.messages.get(id));
+	};
+	
+	self.start = function() {
+		self.old = true;
+		if(!self.halted) {			
+			self.halt();
+		}
+		self.initialize(eventid, userid, messages);
+	}
 };
