@@ -941,7 +941,7 @@ function() {
 				$(this.el).attr("id", this.model.get("id"));
 				$(this.el).html(this.template({model:this.model}));
 				//Prepend avatar!
-				$(this.el).prepend("<img class='authorimg' src='/account/avatar/" + this.model.get("user_id") + "'/>")
+				$(this.el).prepend("<img class='authorimg' src='/account/avatar/" + this.model.get("author")["_id"] + "'/>")
 				this.render_stats();
 				//Create timestamp
 				var timestamp = new TimestampWidget();
