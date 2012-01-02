@@ -642,7 +642,8 @@ ul#footer-links {
 	.authorimg {
 		float: left;
 		margin-left: -50px;
-		height: 40px;
+		max-height: 40px;
+		max-width: 40px;
 	}
 	
 	.timestamp {
@@ -691,7 +692,8 @@ ul#footer-links {
 		
 		.author { display: inline; margin-right: 5px; }
 		img.authorimg { 
-			height: 30px;
+			max-width: 30px;
+			max-height: 30px;
 			margin-left: -40px;
 		}
 		&.professor { .adminpost; }
@@ -873,7 +875,7 @@ ul#footer-links {
 		
 		#event-edit, #file-edit, #file-bank { 
 		    float: left;
-		    padding: 10px; 
+		    padding: 10px;
 		}
 		#event-edit { 
 			padding-bottom: 0; 
@@ -1156,6 +1158,9 @@ ul#footer-links {
 			td {
 				height: 2.5em;
 				padding: 5px;
+				&.field {
+					font-weight: bold;
+				}
 			}
 			.edit-field {
 				display: none;

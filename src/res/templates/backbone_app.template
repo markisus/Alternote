@@ -639,8 +639,8 @@ function() {
 				this.$(".hours-before").val(this.model.get("hours_before"));
 				this.$(".days-before").val(this.model.get("days_before"));
 				this.$(".save").html("Save").unbind("click").bind("click", self.commit_edit);
+				this.$(".save").bind("click", file_bank.save);
 				this.$(".delete").html("Delete").show();
-				this.$(".chzn-select").chosen();
 				this.$(".delete").bind("click", function() {
 					self.model.destroy({
 						success: function(data) {
@@ -807,9 +807,6 @@ function() {
 			this.$(".files").html("");
 			if (!_.isUndefined(this.model)) {
 				var self = this;
-				this.$(".save").unbind().click(function(){
-					self.save();
-				});
 				files.forEach(function(item) {
 					//Supply file bank
 					self.$(".files").append(
@@ -819,6 +816,8 @@ function() {
 				_(this.model.get_files()).forEach(function(item) {
 					this.$('option[value="' + item.get('id') + '"]').attr('selected', 'selected')
 				});
+				this.$(".chzn-select").chosen();
+				this.$(".chzn-select").trigger("liszt:updated");
 			}
 			//console.log("File bank render");
 		}
@@ -1198,6 +1197,7 @@ function() {
 				if(class_doc.is_priveleged(user_id)) {
 					var event_model = events.get(calEvent.id);
 					event_edit.bind_event_model(event_model);
+					file_bank.bind_event_model(event_model);
 				}
 			},
 			eventBackgroundColor: transparent,
@@ -1314,7 +1314,7 @@ function() {
 		addTooltip(".anonymous-post", "Anonymous to classmates");
 		addTooltip("#posts a.delete", "Delete this post");
 		
-		// $(".chzn-select").chosen();
+		$(".chzn-select").chosen();
 	});
 </script>
 <script src="[[ script('fileuploader.js') ]]" type="text/javascript"></script>
@@ -1344,7 +1344,7 @@ function() {
 {% block body %}
 <div id="head-wrapper" class="container">
 	<header class="sixteen columns">
-		<a id="head-logo" href="/"><img src="[[ image('logo-bubbles.png') ]]" /></a>
+		<a id="head-logo" href="[[reverse_url('ViewClasses')]]"><img src="[[ image('logo-bubbles.png') ]]" /></a>
 		<ul id="nav">
       <li><a href="[[reverse_url('AccountPage')]]">Account</a></li>
       <li><a href="[[reverse_url('ViewClasses')]]">View Classes</a></li>
@@ -1445,7 +1445,6 @@ function() {
 					<div class="event-id"></div>
 					<select class="files chzn-select" multiple="multiple" data-placeholder="Tag file(s)...">
 					</select>
-					<button class="save">Save Tags</button>
 				</div>
         <div id="file-edit">
         	<div class="message"></div>

@@ -1023,7 +1023,8 @@ ul#footer-links li a:hover {
 .post .authorimg {
   float: left;
   margin-left: -50px;
-  height: 40px;
+  max-height: 40px;
+  max-width: 40px;
 }
 .post .timestamp {
   float: left;
@@ -1092,7 +1093,8 @@ ul#footer-links li a:hover {
   margin-right: 5px;
 }
 .post .comment img.authorimg {
-  height: 30px;
+  max-width: 30px;
+  max-height: 30px;
   margin-left: -40px;
 }
 .post .comment.professor {
@@ -1614,6 +1616,9 @@ ul#footer-links li a:hover {
 #account-page table tr td {
   height: 2.5em;
   padding: 5px;
+}
+#account-page table tr td.field {
+  font-weight: bold;
 }
 #account-page table tr .edit-field {
   display: none;
