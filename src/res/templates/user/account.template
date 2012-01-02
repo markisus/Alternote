@@ -3,12 +3,20 @@
 {% block page_specific_scripts %}
 	<script type="text/javascript" src="[[ script('jquery-1.6.4.js') ]]"></script>
 	<script src="[[ script('fileuploader.js') ]]" type="text/javascript"></script>
-  <script>        
+  <script>
+  		var nonce = 0;        
       function createUploader(){     
           var uploader = new qq.FileUploader({
               element: document.getElementById('file-uploader-demo1'),
               action: '[[ reverse_url("AvatarUpload") ]]',
-              onComplete: function() { console.log("File upload completed"); },
+              allowedExtensions: ['jpg', 'gif', 'png', 'bmp'],
+              
+              onComplete: function() { 
+              	console.log("File upload completed");
+              	console.log($("#current-avatar"));
+              	$("#current-avatar-container").children().remove();
+              	$("#current-avatar-container").append("<b>Done.<br/>Please refresh the page.</b>");
+              },
               debug: true
           });           
       }
@@ -48,7 +56,7 @@
 
 <div id="avatar" class="four columns content">
 	Profile Picture <br/>
-	<img id="current-avatar" src="[[ get_avatar_url(user_id) ]]">
+	<span id="current-avatar-container"><img id="current-avatar" src="[[ get_avatar_url(user_id) ]]"></span>
 	
 	<div id="file-upload">
 		Upload Profile Picture:

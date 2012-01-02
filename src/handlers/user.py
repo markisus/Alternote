@@ -14,7 +14,8 @@ def get_avatar_url(user_id):
     return "/static/avatars/" + file_name
 
 class GetAvatar(BaseHandler):
-    def get(self, user_id):
+    def get(self, user_id, random_string=None):
+        self.set_status(303)
         self.redirect(get_avatar_url(user_id))
         
 

@@ -31,6 +31,7 @@ application = tornado.web.Application([
     URLSpec(r"/account/?", user.AccountPage, name="AccountPage"),
     URLSpec(r"/account/upload_avatar/?", user.AvatarUpload, name="AvatarUpload"),
     URLSpec(r"/account/avatar/(?P<user_id>[\w|\-|@|\.]+)/?", user.GetAvatar, name="GetAvatar"),
+    URLSpec(r"/account/avatar/(?P<user_id>[\w|\-|@|\.]+)/(\d+)", user.GetAvatar, name="GetAvatarHack"),
     URLSpec(r"/account/change_password/?", user.ChangePassword, name="ChangePassword"),
     
     #Admin Methods

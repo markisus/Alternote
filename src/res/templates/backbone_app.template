@@ -606,9 +606,15 @@ function() {
 				days_before:days_before,
 				}
 			this.model.save(changes, {
-				success: function(data) {
-					//console.log("Success: ", data);
+				success: function() {
 					this.$('#message').html("Success!");
+					//The server will have calculated a convo_start time for this object, re-sync:
+					events.fetch(
+						{'success':function(){
+								events.trigger("change");
+							}
+						}
+					);
 				},
 				error: function(data) {
 					//console.log("Error: ", data);
