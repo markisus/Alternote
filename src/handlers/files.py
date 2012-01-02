@@ -3,55 +3,59 @@ from tornado.web import authenticated
 from constants import static_path
 import os
 from forms.forms import FileForm
+import tornado
 import db.classes
 import db.files
 import urllib
+import threading
+import time
+uLock = threading.RLock()
 #File Uploading/Management
 
 
-class Files(ClassViewHandler):
-    template = env.get_or_select_template("files/edit_files.template")
-
-    def render_get(self, class_id):
-            files = db.files.get_records(class_id)
-            sorted_files = sorted(files, cmp=lambda x,y: cmp(x['name'], y['name'])) #Lexicographic sort
-            return self.template.render(form=FileForm(), files=sorted_files)
-
-       
-    def render_post(self, class_id):
-        if not self.user_type in ['professor', 'ta']:
-            raise ValueError("You need to be a prof or a ta")
-        found = True
-        try:
-            f = self.request.files['file'][0]
-        except KeyError as e:
-            found = False
-            print(e.message)
-            
-        if found:
-            name = f['filename']
-            type = f['content_type']
-            body = f['body']
-            
-            #Check if file exists in database
-            if db.files.check_record(class_id, name):
-                self.write("A file with this name already exists!")
-                return
-            else:
-                upload_path = os.path.join(static_path, "files", class_id)
-                if not os.path.exists(upload_path):
-                    os.makedirs(upload_path)
-                print(upload_path)
-                file_path = os.path.join(upload_path, name)
-                file = open(file_path, 'wb')
-                file.write(body)
-                #Add meta data to the database
-                db.files.create_record(class_id, name, type)
-                #Everything Okay?
-                print(self.reverse_url("Files", class_id))
-                self.redirect(self.reverse_url("Files", urllib.quote(class_id)))
-        else:
-            self.write("Did you forget to choose a file?")
+#class Files(ClassViewHandler):
+#    template = env.get_or_select_template("files/edit_files.template")
+#
+#    def render_get(self, class_id):
+#            files = db.files.get_records(class_id)
+#            sorted_files = sorted(files, cmp=lambda x,y: cmp(x['name'], y['name'])) #Lexicographic sort
+#            return self.template.render(form=FileForm(), files=sorted_files)
+#
+#       
+#    def render_post(self, class_id):
+#        if not self.user_type in ['professor', 'ta']:
+#            raise ValueError("You need to be a prof or a ta")
+#        found = True
+#        try:
+#            f = self.request.files['file'][0]
+#        except KeyError as e:
+#            found = False
+#            print(e.message)
+#            
+#        if found:
+#            name = f['filename']
+#            type = f['content_type']
+#            body = f['body']
+#            
+#            #Check if file exists in database
+#            if db.files.check_record(class_id, name):
+#                self.write("A file with this name already exists!")
+#                return
+#            else:
+#                upload_path = os.path.join(static_path, "files", class_id)
+#                if not os.path.exists(upload_path):
+#                    os.makedirs(upload_path)
+#                print(upload_path)
+#                file_path = os.path.join(upload_path, name)
+#                file = open(file_path, 'wb')
+#                file.write(body)
+#                #Add meta data to the database
+#                db.files.create_record(class_id, name, type)
+#                #Everything Okay?
+#                print(self.reverse_url("Files", class_id))
+#                self.redirect(self.reverse_url("Files", urllib.quote(class_id)))
+#        else:
+#            self.write("Did you forget to choose a file?")
             
 class FileUpload(BaseHandler):  
     def save_file_normal(self, class_id):
@@ -74,22 +78,32 @@ class FileUpload(BaseHandler):
         db.files.create_record(class_id, file_name, file_name.split(".")[-1])
         
     def save_file_xhr(self, class_id):
+        print("\tWaiting for lock...")
+        uLock.acquire()
+        print("\tAcquired lock...")
         body = self.request.body
         name = self.get_argument('qqfile')
         self.write_file_to_disk(class_id, name, body)
         self.write("{success:'ok'}")
-        self.finish()
-        
+        tornado.ioloop.IOLoop.instance().add_callback(self.finish)
+        uLock.release()
+        print("\tDone. Releasing lock")
+    
+    @tornado.web.asynchronous
     def post(self, class_id):
         print("File Upload...")
         if (self.get_argument("qqfile", False)):
             #XHR uploading
             print("XHRUploading")
-            self.save_file_xhr(class_id)
+            print("Creating thread object")
+            uThread = threading.Thread(group=None, target=self.save_file_xhr, name="file upload thread", args=(), kwargs={'class_id': class_id})
+            print("Starting thread....")
+            uThread.start()
+            print("Main thread returning...")
+#            self.save_file_xhr(class_id)
         else:
             print("Regular uploading")
             self.save_file_normal(class_id)
-            
 class FileDelete(BaseHandler):           
     @authenticated
     @check_prof            

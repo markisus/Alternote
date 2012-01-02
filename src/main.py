@@ -29,7 +29,7 @@ application = tornado.web.Application([
     
     #User Account
     URLSpec(r"/account/?", user.AccountPage, name="AccountPage"),
-    URLSpec(r"/accounts/upload_avatar/?", user.AvatarUpload, name="AvatarUpload"),
+    URLSpec(r"/account/upload_avatar/?", user.AvatarUpload, name="AvatarUpload"),
     URLSpec(r"/account/avatar/(?P<user_id>[\w|\-|@|\.]+)/?", user.GetAvatar, name="GetAvatar"),
     
     #Admin Methods
@@ -47,7 +47,7 @@ application = tornado.web.Application([
     URLSpec(r"/classes/codes/(?P<class_id>[\w|\-|%]+)", classes.ViewCodes, name="ViewCodes"),
 
     #Files
-    URLSpec(r"/files/edit/(?P<class_id>[\w|\-|%]+)", files.Files, name="Files"),
+    #URLSpec(r"/files/edit/(?P<class_id>[\w|\-|%]+)", files.Files, name="Files"),
     URLSpec(r"/files/upload/(?P<class_id>[\w|\-|%]+)", files.FileUpload, name="FileUpload"),
     URLSpec(r"/files/delete/(?P<class_id>[\w|\-|%]+)", files.FileDelete, name="FileDelete"),
     URLSpec(r"/files/tags/(?P<class_id>[\w|\-|%]+)/(?P<record_id>\w+)", files.FileTags, name="FileTags"),
