@@ -78,7 +78,6 @@
 			<input id="last_name" class="edit-field" type="text" placeholder="Edit Name" name="last_name" />
 			[[ user_info['first_name'] + " " + user_info['last_name'] ]]
 		</td>
-		<td class="edit"><a href="#!">Edit</a></td>
 	</tr>
   <tr>
 		<td class="field">School</td>
@@ -91,7 +90,7 @@
 		<td class="field">Classes</td>
 		<td class="value">
 			{% for class in user_info['classes'] %}
-				[[ class['name'] ]], 
+				[[ class['name'] ]] <br/>
 			{% endfor %}
 		</td>
   <tr>
@@ -104,14 +103,13 @@
 			<input id="old_pass" class="edit-field" type="text" name="old_pass" placeholder="Old Password" />
 			<input id="new_pass" class="edit-field" type="text" name="new_pass" placeholder="New Password" />
 			<input id="new_pass_repeat" class="edit-field" type="text" name="new_pass_repeat" placeholder="Repeat New Password" />
+			<input type="submit" id="account-info-submit"></input>
 			********
 		</td>
 		<td class="edit"><a href="#!">Edit</a></td>
 	</tr>
 </tbody>
 </table>
-
-<input type="submit" id="account-info-submit"></input>
 
 </div> <!-- End account-page -->
 

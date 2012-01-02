@@ -102,7 +102,7 @@
 	<input type="text" class="date"/>
 	<input type="text" class="hour"/>:
 	<input type="text" class="minute"/>
-	<input type="text" class="ap"/>
+	<input type="text" class="ap" maxlength="1"/>
 </script>
 <!-- Backbone app -->
 <script type="text/javascript">
@@ -640,6 +640,7 @@ function() {
 				this.$(".days-before").val(this.model.get("days_before"));
 				this.$(".save").html("Save").unbind("click").bind("click", self.commit_edit);
 				this.$(".delete").html("Delete").show();
+				this.$(".chzn-select").chosen();
 				this.$(".delete").bind("click", function() {
 					self.model.destroy({
 						success: function(data) {
@@ -897,8 +898,6 @@ function() {
 			this.model.bind("destroy", self.render_destroy);
 		},
 		render_destroy: function() {
-			//console.log("Got destroy!");
-			//console.log($(this.el));
 			$(this.el).hide(100);
 		},
 		handle_vote: function() {
@@ -1049,8 +1048,14 @@ function() {
 					}
 				});
 				
-				this.$(".delete").click(function(){
-					self.collection.get_client().destroy(self.model.get("id"));
+				this.$(".delete").click(function(event){
+					event.preventDefault();
+					$(this).html("");
+					$(this).prepend("<button class='delete-confirm'>Delete this post</button>");
+					$(this).children(".delete-confirm").click(function(event){
+						event.stopPropagation();
+						self.collection.get_client().destroy(self.model.get("id"));
+					});
 				});
 			}
 		},
@@ -1236,13 +1241,11 @@ function() {
 			var link = $(this).attr("href");
 			$(".twelve.columns").load(link);
 		});
-
 		
 		// Re-show the calendar from a conversation view
 		$("#show-calendar").click(function() {
 			$("#conversation").hide();
 			$(".content.calendar").fadeIn();
-			$(".container .upcoming").fadeIn();
 		});
 
 		// Sidebar navigation
@@ -1311,7 +1314,7 @@ function() {
 		addTooltip(".anonymous-post", "Anonymous to classmates");
 		addTooltip("#posts a.delete", "Delete this post");
 		
-		$(".chzn-select").chosen();
+		// $(".chzn-select").chosen();
 	});
 </script>
 <script src="[[ script('fileuploader.js') ]]" type="text/javascript"></script>

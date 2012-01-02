@@ -1000,6 +1000,12 @@ ul#footer-links li a:hover {
   padding: 4px 2px;
   text-align: center;
 }
+.post a.delete .delete-confirm {
+  padding: 2px 6px;
+  position: absolute;
+  width: 100px;
+  right: 10px;
+}
 .post .author {
   font-weight: bold;
 }
@@ -1632,8 +1638,10 @@ ul#footer-links li a:hover {
   color: #333;
 }
 #account-page #account-info-submit {
-  float: right;
-  margin-right: 156px;
+  display: none;
+  position: absolute;
+  margin-top: 100px;
+  margin-left: 142px;
 }
 ul#classes {
   float: left;
