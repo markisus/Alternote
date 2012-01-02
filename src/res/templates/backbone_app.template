@@ -987,11 +987,10 @@ function() {
 				$(this.el).html(this.template({model:this.model}));
 				//Embedly stuff
 				this.$(".message").embedly({
-					key:'48e65268f1c411e0a3514040d3dc5c07',maxWidth: 250,
-        			wmode: 'transparent',
-        			method: 'after',
-        			}
-    			);
+					key:'48e65268f1c411e0a3514040d3dc5c07',
+					maxWidth: 250,
+        	wmode: 'transparent'
+        });
 				//Prepend avatar!
 				$(this.el).prepend("<img class='authorimg' src='/account/avatar/" + this.model.get("author")["_id"] + "'/>")
 				this.render_stats();
@@ -1286,22 +1285,11 @@ function() {
 		
 		// Conversation
 		$("textarea.post-input").keypress(function(event) {
-			if (event.which == 13) {
-				$(this).parent().children(".share").click();
-				$(this).val("");
-				$(this).blur();
-			} else if ($(this).val().length > 300) {
+			if ($(this).val().length > 300) {
 				this.rows = 6;
 			}
 		});
 		if ($("textarea.post-input").val() != "") $("textarea.post-input").rows = 3;
-		$("#posts .comment-input").keypress(function(event) {
-			if (event.which == 13) {
-				$(this).parent().children(".share").click();
-				$(this).val("");
-				$(this).blur();
-			}
-		});
 		
 		$("#convo-details-link").click(function() {
 			$("#convo-details").slideToggle("fast");

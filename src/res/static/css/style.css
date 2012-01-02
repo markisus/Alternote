@@ -254,6 +254,14 @@ a {
 .link-blue:hover {
   color: #333;
 }
+.overflow-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -khtml-text-overflow: ellipsis;
+}
 .tooltip {
   position: absolute;
   background: rgba(0, 0, 0, 0.85);
@@ -860,11 +868,12 @@ ul#footer-links li a:hover {
 }
 .sidebar ul.sidebar-content li button.convo {
   width: 85%;
-  white-space: nowrap;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
-  -moz-text-overflow: ellipsis;
   -webkit-text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -khtml-text-overflow: ellipsis;
 }
 .sidebar ul.sidebar-content li button.edit {
   display: none;
@@ -924,6 +933,47 @@ ul#footer-links li a:hover {
 }
 .post p {
   line-height: 1.5em;
+}
+.post .embed {
+  float: left;
+  width: 100%;
+  margin-top: 5px;
+}
+.post .embed .message {
+  float: left;
+}
+.post .embed a {
+  max-width: 300px;
+  float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -khtml-text-overflow: ellipsis;
+  /* color: #619ecf; */
+
+  color: #009ed9;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.post .embed a:hover {
+  color: #333;
+}
+.post .embed a.provider {
+  display: none;
+}
+.post .embed img {
+  float: left;
+  margin: 5px 10px 0 0;
+}
+.post .embed img.thumb {
+  max-width: 90px;
+  max-height: 90px;
+}
+.post .embed iframe {
+  width: 100% !important;
 }
 .post a.delete {
   float: right;
@@ -1081,11 +1131,12 @@ ul#footer-links li a:hover {
 }
 #conversation #convo-title {
   width: 76%;
-  white-space: nowrap;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
-  -moz-text-overflow: ellipsis;
   -webkit-text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -khtml-text-overflow: ellipsis;
 }
 #conversation #convo-details {
   width: 100%;
@@ -1552,6 +1603,7 @@ ul#footer-links li a:hover {
 }
 #account-page table {
   margin-top: 15px;
+  margin-right: 110px;
 }
 #account-page table tr td {
   height: 2.5em;
@@ -1578,6 +1630,10 @@ ul#footer-links li a:hover {
 }
 #account-page table a:hover {
   color: #333;
+}
+#account-page #account-info-submit {
+  float: right;
+  margin-right: 156px;
 }
 ul#classes {
   float: left;
