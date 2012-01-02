@@ -1,4 +1,5 @@
 from db.collections import *
+import hashlib
 
 def get_user_display_info(userid, anon=False):
 #    print("Getting user disiplay info, anon: " + str(anon))
@@ -18,6 +19,8 @@ def anonymize(author):
 
 def create_user(first_name, last_name, password, email, school, type="student"):
     print("Inside create user!")
+    m = hashlib.sha256()
+    m.update(password)
     return users.insert(
                  {'_id':email,
                   'classes':[],
@@ -28,7 +31,7 @@ def create_user(first_name, last_name, password, email, school, type="student"):
                   'last_name':last_name,
                   'email':email,
                   'school':school,
-                  'password':password,
+                  'password': m.hexdigest(),
                   'type':type,
                   }
                 , safe=True)
