@@ -263,19 +263,45 @@ function() {
 		tagName: "div",
 		template: _.template($('#sidebar-item-template').html()),
 		render: function() {
-			var model = this.model;
-			var result = $(this.el).html(this.template({model:model}));
-			//When someone clicks this, it will fill the edit widget
+			var self = this;
+			var model = self.model;
+			var result = $(self.el).html(self.template({model:model}));
+			//When someone clicks self, it will fill the edit widget
 			
-			this.$('.edit').click(function() {
+			self.$('.edit').click(function() {
 				//Show event+file bank page
 				event_edit.bind_event_model(model);
 				file_bank.bind_event_model(model);
 			});
 			
-			this.$('.convo').click(function() {
+			self.$('.convo').click(function() {
 				//Show convo page
 				conversation_view.bind_event_model(model);
+			});
+			
+					
+			// If a conversation is clicked, show it
+			self.$("button.convo").click(function() {
+				$(".content.calendar").hide();
+				$("#conversation").fadeIn();
+				// Toggle active state in sidebar
+				$("ul.sidebar-content div").removeClass("active");
+				$(self).parent().parent().addClass("active");
+			});
+			
+			// Show the edit icon if hovering over list of events
+			$(self.el).hover(function() {
+				self.$(".edit").toggle();
+			});
+			
+			// If edit button clicked, show the calendar and edit event form
+			self.$("button.edit").click(function(event) {
+				event.preventDefault();
+				event.stopPropagation();
+				$("#conversation").hide();
+				$(".content.calendar").fadeIn();
+				$(".container .upcoming").fadeOut();
+				$(".new-event").slideDown();
 			});
 			return result;
 		}
@@ -305,6 +331,7 @@ function() {
 			this.render();
 		},
 		render_events: function() {
+			console.log("Rendering events");
 			events.sort();
 			this.render_upcoming();
 			this.render_past();
@@ -348,7 +375,7 @@ function() {
 			this.$("#conversation-list").html("");
 			convos
 			.filter(function(item) {
-				//console.log("Looking at " + item.get('title') + " has convo: " + item.has_active_convo());
+				console.log("Looking at " + item.get('title') + " has convo: " + item.has_active_convo());
 				return item.has_active_convo();
 			})
 			.forEach(function(item) {
@@ -1204,30 +1231,7 @@ function() {
 			var link = $(this).attr("href");
 			$(".twelve.columns").load(link);
 		});
-		
-		// If a conversation is clicked, show it
-		$("button.convo").click(function() {
-			$(".content.calendar").hide();
-			$("#conversation").fadeIn();
-			// Toggle active state in sidebar
-			$("ul.sidebar-content div").removeClass("active");
-			$(this).parent().parent().addClass("active");
-		});
-		
-		// Show the edit icon if hovering over list of events
-		$("ul.sidebar-content div li").hover(function() {
-			$(this).children(".edit").toggle();
-		});
-		
-		// If edit button clicked, show the calendar and edit event form
-		$("button.edit").click(function(event) {
-			event.preventDefault();
-			event.stopPropagation();
-			$("#conversation").hide();
-			$(".content.calendar").fadeIn();
-			$(".container .upcoming").fadeOut();
-			$(".new-event").slideDown();
-		});
+
 		
 		// Re-show the calendar from a conversation view
 		$("#show-calendar").click(function() {

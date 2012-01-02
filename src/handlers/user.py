@@ -47,6 +47,8 @@ class AvatarUpload(BaseHandler):
     def write_file_to_disk(self, file_name, contents):
         print("saving file to disk")
         extension = file_name.split(".")[-1]
+        if not extension in ["jpg", "png", "gif", "bmp"]:
+            raise ValueError(extension + " not allowed as an avatar")
         file_name = self.get_current_user() + "." + extension
         upload_path = os.path.join(static_path, "avatars")
         if not os.path.exists(upload_path):
