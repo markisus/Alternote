@@ -326,6 +326,36 @@ select {
   transition-duration: 0.15s, 0.15s;
   transition-timing-function: linear, linear;
 }
+#file-upload {
+  float: left;
+  width: 190px;
+}
+#file-upload .qq-upload-button {
+  float: left;
+  cursor: pointer;
+  color: #FFF;
+  text-shadow: none;
+  font-size: 14px;
+  font-weight: normal;
+  min-width: 80px;
+  width: auto;
+  padding: 6px;
+  margin: 0 5px 0 0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-transition: background-color 0.15s linear;
+  -moz-transition: background-color 0.15s linear;
+  transition: background-color 0.15s linear;
+  background: #c6272b;
+  border-color: #f4c5c7;
+}
+#file-upload .qq-upload-button:hover {
+  background-color: #da4649;
+}
+#file-upload .qq-upload-list {
+  list-style: none;
+}
 .chzn-search input {
   /* Allows chzn results to display properly */
 
@@ -387,7 +417,7 @@ header ul#nav li a:hover, header ul#nav li a.active {
   border-color: #CCC;
 }
 ul#footer-links {
-  width: 430px;
+  width: 432px;
   height: 20px;
   margin: 20px auto 10px auto;
 }
@@ -766,11 +796,6 @@ ul#footer-links li a:hover {
   float: left;
   width: 100%;
 }
-.sidebar ul.sidebar-content#conversation-list div.active, .sidebar ul.sidebar-content#past-events-list div.active, .sidebar ul.sidebar-content#upcoming-list div.active {
-  /* padding-left: 3px;
-					background: #F6F6F6; */
-
-}
 .sidebar ul.sidebar-content#conversation-list div.active li button.convo, .sidebar ul.sidebar-content#past-events-list div.active li button.convo, .sidebar ul.sidebar-content#upcoming-list div.active li button.convo {
   cursor: default;
   text-decoration: none;
@@ -834,7 +859,8 @@ ul#footer-links li a:hover {
   text-decoration: underline;
 }
 .sidebar ul.sidebar-content li button.convo {
-  width: 80%;
+  width: 85%;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   -moz-text-overflow: ellipsis;
@@ -985,7 +1011,7 @@ ul#footer-links li a:hover {
 .post .actions a.flag img {
   width: 16px;
 }
-.post .actions a.flag.flagged, .post .actions a.flag:hover {
+.post .actions a.flag.flagged {
   filter: alpha(opacity=85);
   -khtml-opacity: 0.85;
   -moz-opacity: 0.85;
@@ -1049,10 +1075,29 @@ ul#footer-links li a:hover {
   padding-left: 8px;
   border-left: solid 1px #CCC;
 }
-#conversation #convo-title {
+#conversation #convo-title, #conversation #convo-details {
   float: left;
-  width: 80%;
   margin-bottom: 10px;
+}
+#conversation #convo-title {
+  width: 76%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+}
+#conversation #convo-details {
+  width: 100%;
+}
+#conversation #convo-details-link {
+  float: left;
+  font-size: 12px;
+  margin-top: 5px;
+  filter: alpha(opacity=75);
+  -khtml-opacity: 0.75;
+  -moz-opacity: 0.75;
+  opacity: 0.75;
 }
 #conversation #message {
   display: none;
@@ -1125,13 +1170,6 @@ ul#footer-links li a:hover {
 .calendar table.fc-header {
   width: 99% !important;
   margin: 0 7px;
-  /* .fc-state-active, .fc-button:hover {
-	        border: solid 1px #DDD;
-	        #gradient .vertical(#FFF, #EEE);
-            .border-radius(3px);
-            .fc-button-content { color: #333; }
-        } */
-
 }
 .calendar table.fc-header span.fc-header-title h2 {
   font-size: 12px;
@@ -1197,6 +1235,8 @@ ul#footer-links li a:hover {
   background-color: #F6F6F6;
 }
 .calendar .fc-content .fc-event-skin {
+  white-space: nowrap;
+  overflow: hidden;
   color: #009ed9;
   -webkit-transition: color 0.1s linear;
   -moz-transition: color 0.1s linear;
@@ -1212,15 +1252,24 @@ ul#footer-links li a:hover {
   border-bottom: solid 1px #CCC;
   margin: 0 0 0 -1px;
 }
-.calendar .new-event #event-edit,
-.calendar .new-event #file-edit,
-.calendar .new-event #file-bank,
-.calendar .new-event #file-upload {
+.calendar .new-event #event-edit, .calendar .new-event #file-edit, .calendar .new-event #file-bank {
   float: left;
   padding: 10px;
 }
 .calendar .new-event #event-edit {
   padding-bottom: 0;
+}
+.calendar .new-event #event-edit .chzn-container {
+  margin: 2px 10px 10px 5px;
+}
+.calendar .new-event #event-edit .chzn-container span {
+  margin-top: 5px;
+}
+.calendar .new-event #file-upload {
+  width: 400px;
+}
+.calendar .new-event #file-upload ul.qq-upload-list {
+  margin: 0;
 }
 .calendar .new-event a#hide {
   position: absolute;
@@ -1249,7 +1298,7 @@ ul#footer-links li a:hover {
   font-weight: normal;
   min-width: 80px;
   height: 40px;
-  margin: 0 4px 10px 4px;
+  margin: 2px 4px 10px 4px;
   -webkit-transition: background-color 0.15s linear;
   -moz-transition: background-color 0.15s linear;
   transition: background-color 0.15s linear;
@@ -1322,7 +1371,6 @@ ul#footer-links li a:hover {
 }
 .calendar .new-event .chzn-container {
   float: left;
-  margin: 2px 10px 10px 5px;
   font-size: 14px;
 }
 .calendar .new-event .chzn-container .chzn-single {
@@ -1330,6 +1378,10 @@ ul#footer-links li a:hover {
 }
 .calendar .new-event .chzn-container input {
   margin: 1px 0;
+}
+.calendar .new-event .chzn-container span {
+  margin: 0;
+  float: none;
 }
 .calendar .new-event input[type="checkbox"] {
   width: auto;
@@ -1364,71 +1416,26 @@ ul#footer-links li a:hover {
   float: left;
   margin: 5px 0;
 }
+.calendar .new-event #file-bank {
+  padding-top: 0;
+}
+.calendar .new-event #file-bank .chzn-container {
+  font-size: 13px;
+}
+.calendar .new-event #file-bank button {
+  float: left;
+  font-size: 14px;
+  height: auto;
+  margin: 0 0 0 5px;
+}
 .calendar .new-event #file-edit {
+  display: none;
   width: 260px;
 }
 .calendar .new-event #file-edit button {
   float: left;
   height: 30px;
   margin-bottom: 0;
-}
-.calendar .new-event #file-upload {
-  float: right;
-  width: 190px;
-}
-.calendar .new-event #file-upload .qq-upload-button {
-  cursor: pointer;
-  color: #FFF;
-  text-shadow: none;
-  font-size: 14px;
-  font-weight: normal;
-  min-width: 80px;
-  margin: 2px 5px 10px 2px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  -webkit-transition: background-color 0.15s linear;
-  -moz-transition: background-color 0.15s linear;
-  transition: background-color 0.15s linear;
-  background: #c6272b;
-  border-color: #f4c5c7;
-}
-.calendar .new-event #file-upload .qq-upload-button:hover {
-  background-color: #da4649;
-}
-.calendar .upcoming {
-  display: none;
-  float: left;
-  width: 80%;
-  padding: 10px;
-}
-.calendar .upcoming h4 {
-  font-weight: normal;
-  margin-bottom: 0.5em;
-}
-.calendar .upcoming table {
-  width: 75%;
-}
-.calendar .upcoming table tr td {
-  height: 1.5em;
-  padding: 5px;
-}
-.calendar .upcoming table tr td a:hover {
-  color: #000;
-  -webkit-transition: color 0.1s linear;
-  -moz-transition: color 0.1s linear;
-  transition: color 0.1s linear;
-}
-.calendar .upcoming table a {
-  /* color: #619ecf; */
-
-  color: #009ed9;
-  -webkit-transition: color 0.1s linear;
-  -moz-transition: color 0.1s linear;
-  transition: color 0.1s linear;
-}
-.calendar .upcoming table a:hover {
-  color: #333;
 }
 .registration {
   border-left: solid 1px #CCC;
@@ -1518,6 +1525,59 @@ ul#footer-links li a:hover {
   font-style: italic;
   font-size: 12px;
   line-height: 14px;
+}
+#account-page {
+  float: left;
+  width: 100%;
+}
+#account-page hr {
+  margin-bottom: 0;
+}
+#account-page #avatar {
+  padding-top: 15px;
+  margin-left: 0;
+  border-right: solid 1px #EEE;
+}
+#account-page #avatar #current-avatar {
+  max-width: 75%;
+}
+#account-page #avatar #file-upload {
+  margin-top: 10px;
+}
+#account-page #avatar #file-upload .qq-uploader {
+  margin-top: 5px;
+}
+#account-page #avatar #file-upload ul.qq-upload-list {
+  margin: 5px 20px;
+}
+#account-page table {
+  margin-top: 15px;
+}
+#account-page table tr td {
+  height: 2.5em;
+  padding: 5px;
+}
+#account-page table tr .edit-field {
+  display: none;
+  position: absolute;
+  margin: -5px 0 0 -5px;
+}
+#account-page table tr .edit-field#new_pass {
+  margin-top: 30px;
+}
+#account-page table tr .edit-field#new_pass_repeat {
+  margin-top: 65px;
+}
+#account-page table a {
+  /* color: #619ecf; */
+
+  color: #009ed9;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+#account-page table a:hover {
+  color: #333;
 }
 ul#classes {
   float: left;

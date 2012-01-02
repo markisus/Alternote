@@ -3,3 +3,5 @@
 .pydevproject
 /.settings
 *.DS_Store
+src/res/static/files
+src/res/static/avatars

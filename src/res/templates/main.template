@@ -9,8 +9,6 @@
 	<script type="text/javascript" src="[[ script('chosen.jquery.min.js') ]]"></script>
 	{% block page_specific_scripts %}
 	{% endblock %}
-	{% block sidebar_scripts %}
-	{% endblock %}
 {% endblock %}
 
 {% block css %}
@@ -21,6 +19,8 @@
 	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" />
 	<link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="[[ css('style.css') ]]" />
+	{% block page_specific_styles %}
+	{% endblock %}
 {% endblock %}
 
 {% block body %}

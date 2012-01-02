@@ -23,7 +23,9 @@ class AccountPage(BaseHandler):
     
     @authenticated
     def get(self):
-        self.render_out(user_id=self.get_current_user())
+        user_id = self.get_current_user()
+        user_info = db.users.get_user_display_info(user_id)
+        self.render_out(user_id=user_id, user_info=user_info)
         
 class ChangePassword(BaseHandler):      
     @authenticated

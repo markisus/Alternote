@@ -1,5 +1,11 @@
 {% extends 'main.template' %}
 
+{% block nav %}
+  <li><a href="[[reverse_url('AccountPage')]]">Account</a></li>
+  <li><a href="[[reverse_url('ViewClasses')]]">View Classes</a></li>
+  <li><a href="[[reverse_url('LogoutHandler')]]">Log Out</a></li>
+{% endblock %}
+
 {% block content %}
 	<br/>
 	<h4>Select a Course</h4> <hr/>
