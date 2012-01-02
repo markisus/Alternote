@@ -20,9 +20,9 @@
 			$("td.edit").click(function(event) {
 				event.preventDefault();
 				$(this).parent().children(".value").children(".edit-field").show("fast");
-				$("button.account-info-submit").show("fast");
+				$("#account-info-submit").show("fast");
 			});
-			$("button.account-info-submit").click(function(event) {
+			$("#account-info-submit").click(function(event) {
 				old_pass = $("#old_pass").val();
 				new_pass = $("#new_pass").val();
 				new_pass_repeat = $("#new_pass_repeat").val();
@@ -102,6 +102,8 @@
 	</tr>
 </tbody>
 </table>
+
+<input type="submit" id="account-info-submit"></input>
 
 </div> <!-- End account-page -->
 

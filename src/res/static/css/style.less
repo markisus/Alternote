@@ -50,6 +50,15 @@ a {
 	&:hover { color: #333; }
 }
 
+.overflow-ellipsis {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	-webkit-text-overflow: ellipsis;
+	-moz-text-overflow: ellipsis;
+	-khtml-text-overflow: ellipsis;
+}
+
 .tooltip {
 	position: absolute;
 	background: rgba(0,0,0,0.85);
@@ -524,11 +533,7 @@ ul#footer-links {
 			    
 			    &.convo { 
 			        width: 85%;
-					white-space: nowrap;
-			        overflow: hidden;
-			        text-overflow: ellipsis;
-			        -moz-text-overflow: ellipsis;
-			        -webkit-text-overflow: ellipsis;
+					.overflow-ellipsis
 			    }
 		        
 		        &.edit {
@@ -581,6 +586,29 @@ ul#footer-links {
 	&.professor { .adminpost; }
 	
 	p { line-height: 1.5em; }
+	
+	.embed {
+		float: left;
+		width: 100%;
+		margin-top: 5px;
+		.message { float: left; }
+		a { 
+			max-width: 300px;
+			float: left;
+			.overflow-ellipsis;
+			.link-blue; 
+			&.provider { display: none; }
+		}
+		img {
+			float: left;
+			margin: 5px 10px 0 0;
+			&.thumb {
+				max-width: 90px;
+				max-height: 90px;
+			}
+		}
+		iframe { width: 100% !important; }
+	}
 	
 	a.delete {
 		float: right;
@@ -697,11 +725,7 @@ ul#footer-links {
 	
 	#convo-title { 
 		width: 76%;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		-moz-text-overflow: ellipsis;
-		-webkit-text-overflow: ellipsis;
+		.overflow-ellipsis
 	}
 	
 	#convo-details { width: 100%; }
@@ -1121,6 +1145,7 @@ ul#footer-links {
 	}
 	table {
 		margin-top: 15px;
+		margin-right: 110px;
 		tr {
 			td {
 				height: 2.5em;
@@ -1137,6 +1162,10 @@ ul#footer-links {
 		}
 		
 		a { .link-blue; }
+	}
+	#account-info-submit {
+		float: right;
+		margin-right: 156px;
 	}
 }
 
