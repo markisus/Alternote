@@ -778,6 +778,7 @@ function() {
 	var FileBank = Backbone.View.extend({
 		el: $("#file-bank"),
 		initialize: function() {
+			_.bindAll(this, "save");
 			this.template = _.template("<option value='<%= file_id %>'><%= file_name %></option>")
 			this.render();
 		},
@@ -785,9 +786,13 @@ function() {
 			this.model = model;
 			this.render();
 		},
+		unbind_event_model: function() {
+			this.model = undefined;
+			this.render();
+		},
 		//Add/remove files to/from class
 		save: function() {
-			//console.log("Saving", this.model);
+			console.log("Saving", this.model);
 			var self = this;
 			var all_files = files.pluck("id");
 			var selected_files = _(this.$("select option:selected")).map(function(item){
@@ -800,7 +805,7 @@ function() {
 			_(unselected_files).forEach(function(id) {
 				files.get(id).remove_tag(self.model.get("id"));
 			});
-			//console.log(all_files, selected_files, unselected_files);
+			console.log(all_files, selected_files, unselected_files);
 		},
 		render: function() {
 			//Clear current list
@@ -816,10 +821,18 @@ function() {
 				_(this.model.get_files()).forEach(function(item) {
 					this.$('option[value="' + item.get('id') + '"]').attr('selected', 'selected')
 				});
-				this.$(".chzn-select").chosen();
-				this.$(".chzn-select").trigger("liszt:updated");
+			} else {
+				var self = this;
+				files.forEach(function(item) {
+					//Supply file bank
+					self.$(".files").append(
+						self.template({file_id: item.get("id"), file_name: item.get("name")})
+					);
+				});
 			}
 			//console.log("File bank render");
+			this.$(".chzn-select").chosen();
+			this.$(".chzn-select").trigger("liszt:updated");
 		}
 	});
 	window.file_bank = new FileBank();
@@ -1192,6 +1205,7 @@ function() {
 				if(class_doc.is_priveleged(user_id)) {
 					event_edit.prepare_new_event(date);
 				}
+				file_bank.unbind_event_model();
 			},
 			eventClick: function(calEvent, jsEvent, view) {
 				if(class_doc.is_priveleged(user_id)) {
@@ -1267,6 +1281,10 @@ function() {
 		
 		// New event form
 		$(".new-event-button").click(function(event) {
+			if(class_doc.is_priveleged(user_id)) {
+				event_edit.prepare_new_event(new Date(server_timestamp+"-05:00"));
+			}
+			file_bank.unbind_event_model();
 			$(".new-event").slideDown();
 		});
 		$(".fc-event").click(function(event) {
