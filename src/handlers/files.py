@@ -9,6 +9,7 @@ import db.files
 import urllib
 import threading
 import time
+import functools
 uLock = threading.RLock()
 #File Uploading/Management
 
@@ -84,11 +85,15 @@ class FileUpload(BaseHandler):
         body = self.request.body
         name = self.get_argument('qqfile')
         self.write_file_to_disk(class_id, name, body)
-        self.write("{success:'ok'}")
-        tornado.ioloop.IOLoop.instance().add_callback(self.finish)
+#        self.write("{success:'ok'}")
+        tornado.ioloop.IOLoop.instance().add_callback(functools.partial(self.finish_upload, class_id=class_id))
         uLock.release()
         print("\tDone. Releasing lock")
     
+    def finish_upload(self, class_id):
+        self.write("{success:'ok'}")
+        self.finish()
+        
     @tornado.web.asynchronous
     def post(self, class_id):
         print("File Upload...")
@@ -104,6 +109,7 @@ class FileUpload(BaseHandler):
         else:
             print("Regular uploading")
             self.save_file_normal(class_id)
+            
 class FileDelete(BaseHandler):           
     @authenticated
     @check_prof            
