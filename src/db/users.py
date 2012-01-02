@@ -10,6 +10,22 @@ def get_user_display_info(userid, anon=False):
         anonymize(result)
     return result
 
+def reset_password(user_id, old_password, new_password):
+    m_old = hashlib.sha256()
+    m_old.update(old_password)
+    
+    m_new = hashlib.sha256()
+    m_new.update(new_password)
+    
+    #Check old password
+    pw = users.find_one({'_id':user_id}, {'password':1})['password']
+    
+    if pw == m_old.hexdigest():
+        users.update({'_id':user_id}, {'$set': {'password':m_new.hexdigest()}})
+        return True
+    else:
+        return False
+    
 def anonymize(author):
     author['_id'] = "Anonymous"
     author['first_name'] = "Anonymous"

@@ -3,6 +3,7 @@ from tornado.web import authenticated
 from constants import static_path
 import db.users
 import os
+import tornado
 
 #Handlers related to user account stuff
 def get_avatar_url(user_id):
@@ -24,6 +25,16 @@ class AccountPage(BaseHandler):
     def get(self):
         self.render_out(user_id=self.get_current_user())
         
+class ChangePassword(BaseHandler):      
+    @authenticated
+    def post(self):
+        old_pass = self.get_argument("old_pass") 
+        new_pass = self.get_argument("new_pass")
+        if db.users.reset_password(self.get_current_user(), old_pass, new_pass):
+            return
+        else:
+            raise tornado.web.HTTPError(401)
+       
 class AvatarUpload(BaseHandler):  
     def save_file_normal(self):
         print("saving normal file")

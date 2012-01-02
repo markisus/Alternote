@@ -16,6 +16,7 @@
 {% endblock css %}
 
 {% block scripts %}
+
 <script type="text/javascript" src="[[ script('date.format.js') ]]"></script>
 <script type="text/javascript" src="[[ script('json2.js') ]]"></script>
 <script type="text/javascript" src="[[ script('jquery-1.6.4.js') ]]"></script>
@@ -24,8 +25,16 @@
 <script type="text/javascript" src="[[ script('backbone.js') ]]"></script>
 <script type="text/javascript" src="[[ script('client.js') ]]"></script>
 <script type="text/javascript" src="[[ script('chosen.jquery.min.js') ]]"></script>
+<script src="http://scripts.embed.ly/jquery.embedly.min.js"></script>
 
 <!-- Backbone Templates -->
+<script type="text/javascript">
+	//Template helper method
+	window.linkify = function(text) {
+	    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+	    return text.replace(exp,"<a href='$1'>$1</a>"); 
+	}
+</script>
 <script type="text/template" id="message-template">
 	<div>
 		<div class="author">
@@ -35,7 +44,9 @@
 		<% if (model.get('is_author')) { %>
 			<a href="#!"class="delete">x</a>
 		<% } %>
-		<%= model.get('message') %> <br/>
+		<div class="message">
+		<%= linkify(model.get('message')) %>
+		</div>
 		<div class="meta">
 			<span class="votes">+<%= model.get('votes') %></span>
 		</div>
@@ -947,6 +958,13 @@ function() {
 				}
 				$(this.el).attr("id", this.model.get("id"));
 				$(this.el).html(this.template({model:this.model}));
+				//Embedly stuff
+				this.$(".message").embedly({
+					key:'48e65268f1c411e0a3514040d3dc5c07',maxWidth: 250,
+        			wmode: 'transparent',
+        			method: 'after',
+        			}
+    			);
 				//Prepend avatar!
 				$(this.el).prepend("<img class='authorimg' src='/account/avatar/" + this.model.get("author")["_id"] + "'/>")
 				this.render_stats();
