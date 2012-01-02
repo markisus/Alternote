@@ -39,10 +39,13 @@
 		<div class="meta">
 			<span class="votes">+<%= model.get('votes') %></span>
 		</div>
-		<span class="timestamp" style="margin-top: 3px;"><span style="color:#333;">&nbsp; &#8226; &nbsp;</span></span> 
+		<span class="timestamp" style="margin-top: 3px;">&nbsp; &#8226; &nbsp;</span> 
 		<div class="actions">
-			<a href="#!" class="vote">like</a> &nbsp; &#8226; &nbsp;
-			<a href="#!" class="comment-link">comment</a>
+			<a href="#!" class="vote">like</a>
+			<% if (model.get('parent_id') == null) { %>
+				&nbsp; &#8226; &nbsp;
+				<a href="#!" class="comment-link">comment</a>
+			<% } %>
 			<a href="#!" class="flag"><img src="[[ image('flag-icon.png') ]]" /></a>
 		</div>
 	</div>
@@ -429,7 +432,7 @@ function() {
 						self.render();
 						},
 					error: function() {
-						self.$(".message").html("Error!");
+						self.$("#message").html("Error!");
 						}
 				});
 			}
@@ -438,7 +441,7 @@ function() {
 			//Clear the current tags:
 			this.$(".tags").html("");
 			//Clear the message
-			this.$(".message").html("");
+			this.$("#message").html("");
 			if(!_.isUndefined(this.model)) {
 				tags = this.model.get("tags");
 				var self = this;
@@ -458,7 +461,7 @@ function() {
 			}
 			else {
 				//console.log("No bound model");
-				this.$(".message").html("Please bind a file.");
+				this.$("#message").html("Please bind a file.");
 			}
 			//console.log("Rendering");
 		}
@@ -471,10 +474,10 @@ function() {
 		initialize: function() {
 			//Attach the self-rendering datetimeinput widgets
 			this.dtStart = new DatetimeInputWidget(
-				{el:this.$(".start-widget")}
+				{el:this.$("#start-widget")}
 			);
 			this.dtFinish = new DatetimeInputWidget(
-				{el:this.$(".finish-widget")}
+				{el:this.$("#finish-widget")}
 			);
 			this.dtStart.options.that_floor = _(this.dtFinish.floor).bind(this.dtFinish);
 			this.dtFinish.options.that_ceil = _(this.dtStart.ceil).bind(this.dtStart);
@@ -503,22 +506,22 @@ function() {
 		},
 		prepare_new_event: function(date) {
 			//console.log("Preparing event");
-			this.$(".message").html("");
+			this.$("#message").html("");
 			this.model = undefined; //Reset model
-			this.$(".event-id").html("");
-			this.$(".title").val("");
+			this.$("#event-id").html("");
+			this.$("#title").val("");
 			this.dtStart.set_date(date, true);
 			this.dtFinish.set_date(date, true);
 			this.$(".details").val("");
 			this.$(".auto-convo").trigger("change"); //Trigger re-render of checkbox
 			var self = this;
-			this.$(".save").html("New").unbind("click").bind("click", this.commit_new);
+			this.$(".save").html("Create new").unbind("click").bind("click", this.commit_new);
 			this.$(".delete").hide();
 		},
 		commit_new: function() {
 			//console.log("called commit_new");
 			//Create a new event
-			var title = this.$(".title").val()
+			var title = this.$("#title").val()
 			var start = this.dtStart.get_ISO_string();
 			var finish = this.dtFinish.get_ISO_string();
 			var details = this.$(".details").val();
@@ -529,7 +532,7 @@ function() {
 			event = {title:title, start:start, finish:finish, details:details, type:type, dummy:!auto_convo}
 			events.create(event, {
 				success: function() {
-					this.$('.message').html("Success!");
+					this.$('#message').html("Success!");
 					//The server will have calculated a convo_start time for this object, re-sync:
 					events.fetch(
 						{'success':function(){
@@ -539,14 +542,14 @@ function() {
 					);
 				},
 				error: function() {
-					this.$('.message').html("Error!");
+					this.$('#message').html("Error!");
 					this.model = undefined;
 				},
 			});
 		},
 		commit_edit: function() {
-			var id = this.$(".event-id").html();
-			var title = this.$(".title").val();
+			var id = this.$("#event-id").html();
+			var title = this.$("#title").val();
 			var start = this.dtStart.get_ISO_string()//.slice(0,17);
 			var finish = this.dtFinish.get_ISO_string()//.slice(0, 17);
 			var details = this.$(".details").val();
@@ -567,21 +570,21 @@ function() {
 			this.model.save(changes, {
 				success: function(data) {
 					//console.log("Success: ", data);
-					this.$('.message').html("Success!");
+					this.$('#message').html("Success!");
 				},
 				error: function(data) {
 					//console.log("Error: ", data);
-					this.$('.message').html("Error :(");
+					this.$('#message').html("Error :(");
 				}
 			});
 		},
 		render: function() {
 			//console.log("Render called");
-			this.$(".message").html("");
+			this.$("#message").html("");
 			if (!_.isUndefined(this.model)) {
 				//Populate the field with model attrs
-				this.$(".event-id").html(this.model.get("id"));
-				this.$(".title").val(this.model.get("title"));
+				this.$("#event-id").html("Editing " + this.model.get("id"));
+				this.$("#title").val(this.model.get("title"));
 				this.dtStart.set_date(this.model.get_date("start"));
 				this.dtFinish.set_date(this.model.get_date("finish"));
 				this.$(".details").val(this.model.get("details"));
@@ -597,13 +600,13 @@ function() {
 					self.model.destroy({
 						success: function(data) {
 							//console.log("Success: ", data);
-							self.$('.message').html("Success!");
+							self.$('#message').html("Success!");
 							self.model = undefined;
 							self.render();
 						},
 						error: function(data) {
 							//console.log("Error: ", data);
-							self.$('.message').html("Error :(");
+							self.$('#message').html("Error :(");
 						}
 					});
 				});
@@ -834,7 +837,7 @@ function() {
 	var MessageView = Backbone.View.extend({
 		tagName: "div",
 		initialize: function() {
-			console.log("Initializing MessageView Object, ", this.model.get("message"));
+			// console.log("Initializing MessageView Object, ", this.model.get("message"));
 			_.bindAll(this, "render_destroy", "toggle_anon", "toggle_vote", "toggle_flag", "handle_vote", "handle_flag", "render_stats");
 			this.can_vote = true;
 			this.can_flag = true;
@@ -976,15 +979,26 @@ function() {
 						$(".tooltip").remove();
 					});
 				}
-				$(this.el).hover(function() {
-					if (this.can_flag) {
-						$(this).children("div").children(".actions").children(".flag").toggle("fast");
+				
+				var self = this;
+				$(this.el).mouseover(function() {
+					$(this).children("div").children("a.delete").addClass("active");					
+					if (self.can_flag) {
+						$(this).children("div").children(".actions").children(".flag").show();
 					}
 				});
-				$(this.el).hover(function() {
-					$(this).children("div").children("a.delete").toggleClass("active");
+				$(this.el).mouseout(function() {
+					$(this).children("div").children("a.delete").removeClass("active");
+					var flagIcon = $(this).children("div").children(".actions").children(".flag");
+					if (self.can_flag) {
+						flagIcon.removeClass("flagged");
+						flagIcon.hide();
+					} else {
+						flagIcon.addClass("flagged");
+						flagIcon.show();
+					}
 				});
-				var self = this;
+				
 				this.$(".delete").click(function(){
 					self.collection.get_client().destroy(self.model.get("id"));
 				});
@@ -1079,15 +1093,18 @@ function() {
 			}
 		},
 		render: function() {
-			this.$(".message").html("");
+			this.$("#convo-message").html("");
 			this.$("#posts").html("");
 			if(!_.isUndefined(this.model)) {
+				this.$("#message").html("");
+				this.$("#message").removeClass("active");
+				this.$("#convo-title").html(this.model.get("title"));
 				var self = this;
 				//Initialize the client
 				this.model.get_client().start();
-			}
-			else {
-				this.$(".message").html("Please bind a convo")
+			} else {
+				this.$("#message").html("Please bind a convo");
+				this.$("#message").addClass("active");
 			}
 		}
 	});
@@ -1097,12 +1114,8 @@ function() {
 </script>
 <script type='text/javascript' src='[[ script('fullcalendar.min.js') ]]'></script>
 <script type='text/javascript'>
+	// Calendar UI
 	$(document).ready(function() {
-		/*
-		var date = new Date();
-		var d = date.getDate();
-		var m = date.getMonth();
-		var y = date.getFullYear();*/
 		var transparent = "rgba(255,255,255,0)";
 		var blue = $(".link-blue").css("color");
 		$('#calendar').fullCalendar({
@@ -1135,9 +1148,23 @@ function() {
 		events.bind('destroy', refetch);
 	});
 </script>
-<!-- Sidebar -->
+
 <script type="text/javascript">
 	$(document).ready(function() {
+		// Global jquery
+		$(".chzn-select").chosen();
+		
+		function addTooltip(selector, content) {
+			$(selector).mouseover(function() {
+				$(this).append("<div class='tooltip'>" + content + "</div>");
+				console.log("Adding tooltip for " + selector);
+			});
+			$(selector).mouseout(function() {
+				$(".tooltip").remove();
+			});
+		}
+		
+		// Sidebar UI
 		$("p.header a").click(function(event) {
 			event.preventDefault();
 			$(this).parent().parent().children("ul").slideToggle('fast');
@@ -1153,12 +1180,15 @@ function() {
 			var link = $(this).attr("href");
 			$(".twelve.columns").load(link);
 		});
-
+		
 		// If a conversation is clicked, show it
-		$("#conversation-list button.convo").click(function() {
+		$("button.convo").click(function() {
 			$(".content.calendar").hide();
 			$(".container .upcoming").hide();
 			$("#conversation").fadeIn();
+			// Toggle active state in sidebar
+			$("#conversation-list div").removeClass("active");
+			$(this).parent().parent().addClass("active");
 		});
 		
 		// Show the edit icon if hovering over list of lectures
@@ -1222,12 +1252,16 @@ function() {
 		});
 		
 		$(".new-event").click(function(event) { event.stopPropagation(); });
-		$("#calendar div.fc-event.fc-event-skin").click(function(event) { event.stopPropagation(); });
-		
-		$("body").click(function() {
-			$(".new-event").slideUp();
-			$(".container .upcoming").fadeIn();
+		$("#calendar div.fc-event.fc-event-skin").click(function(event) { 
+			event.stopPropagation(); 
 		});
+		
+		$("#event-edit a#hide").click(function() {
+			$(".new-event").slideUp();
+		});
+		addTooltip("#event-edit a#hide", "Hide this form");
+		addTooltip("#start-widget", "Try using the mousewheel");
+		addTooltip("#finish-widget", "Try using the mousewheel");
 		
 		// Conversation
 		$("textarea.post-input").keypress(function(event) {
@@ -1235,32 +1269,23 @@ function() {
 				$(this).parent().children(".share").click();
 				$(this).val("");
 				$(this).blur();
+			} else if ($(this).val().length > 300) {
+				this.rows = 6;
 			}
 		});
 		if ($("textarea.post-input").val() != "") $("textarea.post-input").rows = 3;
-		$("input.comment-input").keypress(function(e) {
-			if (e.which == 13) {
+		$("#posts .comment-input").keypress(function(event) {
+			if (event.which == 13) {
 				$(this).parent().children(".share").click();
 				$(this).val("");
 				$(this).blur();
 			}
 		});
 		
-		$("#posts a").click(function(e) { e.preventDefault(); });
+		$("#posts a").click(function(event) { event.preventDefault(); });
 		
-		$(".anonymous-post").mouseover(function() {
-			$(this).append("<div class='tooltip'>Anonymous to classmates</div>");
-		});
-		$(".anonymous-post").mouseout(function() {
-			$(".tooltip").remove();
-		});
-		
-		$(".post").mouseover(function() {
-			$(this).children("div").children(".actions").children(".flag").fadeIn("fast");
-		});
-		$(".post").mouseout(function() {
-			$(this).children("div").children(".actions").children(".flag").fadeOut("fast");
-		});
+		addTooltip(".anonymous-post", "Anonymous to classmates");
+		addTooltip("#posts a.delete", "Delete this post");
 	});
 </script>
 {% endblock scripts %}
@@ -1340,27 +1365,30 @@ function() {
 	    
 	    <div class="new-event twelve columns">
   	    <div id="event-edit">
-        	<div class="message"></div>
-        	<div class="event-id"></div>
-        	<input class="title" type="text" name="title" placeholder="Event title"/>
-        	<button class="save"></button>
-        	<button class="delete"></button>
-        	<!-- <div class="help">Try mouseover and scroll wheel</div> -->
-        	<div class="start-widget" class="datetime-input-widget">Start:</div>
-        	<div class="finish-widget" class="datetime-input-widget">Finish:</div>
-        	<textarea class="details" placeholder="Event details"/></textarea>
-        	<br/>
-        	Auto convo:
-        	<input class="auto-convo" type="checkbox" />
-        	<div class="auto-convo-inputs">
-        		<input type="text" placeholder="Hours before" class="hours-before" />
-        		<input type="text" placeholder="Days before" class="days-before" />
-        	</div>
-        	<select class="type">
+					<a href="#!" id="hide">x</a>
+        	<div id="message"></div>
+        	<div id="event-id"></div>
+        	<input id="title" type="text" name="title" placeholder="Event title"/>
+        	<select class="type chzn-select">
         		<option value="Lecture">Lecture</option>
         		<option value="Assignment">Assignment</option>
         		<option value="Other">Other</option>
         	</select>
+        	<button class="save"></button>
+        	<button class="delete"></button>
+        	<!-- <div class="help">Try mouseover and scroll wheel</div> -->
+        	<div id="start-widget" class="datetime-input-widget">Start:</div>
+        	<div id="finish-widget" class="datetime-input-widget">Finish:</div>
+        	<textarea class="details" placeholder="Event details"/></textarea>
+        	<br/>
+        	<label for="auto-convo" id="auto-convo-label">Auto convo:</label>
+        	<input class="auto-convo" type="checkbox" />
+        	<div class="auto-convo-inputs">
+        		<label for="hours-before">Hours before:</label>
+						<input type="text" class="hours-before" name="hours-before" />
+	        	<label for="days-before">Days before:</label>
+        		<input type="text" class="days-before" name="days-before" />
+        	</div>
         </div>
 				<div id="file-bank">
 					File bank
@@ -1371,6 +1399,7 @@ function() {
 					<button class="save">Save Changes</button>
 				</div>
         <div id="file-edit">
+					File edit
         	<div class="message"></div>
         	<select class="tags" multiple="multiple">
         	</select>
@@ -1417,11 +1446,11 @@ function() {
 		</div> <!-- twelve columns calendar end -->
       
 		<div class="twelve columns content conversation" id="conversation">
-			<h3>Lecture Conversation</h3>
+			<h3 id="convo-title">Lecture Conversation</h3>
 			<button id="show-calendar">Back to calendar</button>
-			<div class="message"></div>
+			<div id="message"></div>
 			<div class="new-post">
-		  	<textarea class="post-input" placeholder="Drop your insight" maxlength="310" rows="1" onclick="this.rows=3;" onblur="this.rows=1;"></textarea>
+		  	<textarea class="post-input" placeholder="Drop your insight" maxlength="1000" rows="1" onclick="this.rows=3;" onblur="this.rows=1;"></textarea>
 		  	<button class="anonymous-post"></button>
 		  	<button class="share">Share</button>
 			</div>

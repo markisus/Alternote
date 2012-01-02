@@ -15,6 +15,11 @@
 	transition-timing-function: linear, linear;
 }
 
+::selection, ::-moz-selection { 
+	color: #FFF; 
+	background: @lightBlue; 
+}
+
 a {
 	text-decoration: none;
 	.transition(color .1s linear);
@@ -47,7 +52,7 @@ a {
 
 .tooltip {
 	position: absolute;
-	background: rgba(0,0,0,0.75);
+	background: rgba(0,0,0,0.85);
 	padding: 4px 0;
 	color: #EEE;
 	text-shadow: none;
@@ -69,7 +74,7 @@ button.anonymous-post, button.anonymous-comment {
 	
 	.tooltip {
 		width: 90px;
-		margin-left: 100px;
+		margin-left: 110px;
 		margin-top: -18px;
 	}
 }
@@ -432,25 +437,22 @@ ul#footer-links {
 		    margin-bottom: 0px;
 		    
 		    &:hover { overflow-y: scroll; }
+		
+			div {
+				float: left;
+				width: 100%;
+				&.active { 
+					/* padding-left: 3px;
+					background: #F6F6F6; */
+					li button.convo { 
+						cursor: default; 
+						text-decoration: none;
+						font-weight: bold;
+					}
+				}
+			}
 		}
-		/*
-		&#upcoming-list {
-		    max-height: 214px;
-		    overflow: hidden;
-		    
-		    &:hover { overflow-y: scroll; }
-    		li {
-    			border: none;
-    			&:hover { background: transparent; }
-    			p.date { 
-    				float: right;
-    				margin-right: 5px;
-    				font-size: 14px;
-    				color: #161616;
-    			} 
-    		}
-    	}
-    	*/
+		
     	&#file-list {
     	    li { border: none; }
     	    button {
@@ -517,20 +519,6 @@ ul#footer-links {
 		        }
 		    }
 			
-			/*
-			&:last-child {
-				border: none;
-				
-				a {
-					font-size: 12px;
-					float: right;
-					margin-right: 5px;
-					.link-blue;
-				}
-				
-				&:hover { background-color: transparent; }
-			}
-			*/
 			p.date {
 				font-size: 12px;
 				color: #999;
@@ -578,6 +566,13 @@ ul#footer-links {
 		.transition(color 0.1s linear);
 		&.active { color: #666; }
 		&:hover { color: #000; }
+		.tooltip {
+			width: 60px;
+			margin-left: 27px;
+			margin-top: -18px;
+			padding: 4px 2px;
+			text-align: center;
+		}
 	}
 	
 	.author {
@@ -603,6 +598,7 @@ ul#footer-links {
 		font-size: 12px;
 		display: inline;
 		width: 60%;
+		color: #999;
 		
 		p { float: left; }
 		a { 
@@ -615,8 +611,8 @@ ul#footer-links {
 				margin-top: 1px;
 				position: absolute;
 				.opacity(50);
-				
 				img { width: 16px; }
+				&.flagged, &:hover { .opacity(85); }
 			}
 		}
 	}
@@ -640,8 +636,6 @@ ul#footer-links {
 			margin-left: -40px;
 		}
 		&.professor { .adminpost; }
-		a.comment-link { display: none; }
-		a.flag { margin-left: 5px; }
 		a.delete { margin-top: -2px; }
 		.meta { margin: 3px -16px 0 0; }
 	}
@@ -671,15 +665,24 @@ ul#footer-links {
     padding-left: 8px;
     border-left: solid 1px #CCC;
 
-	h3 { 
+	#convo-title { 
 		float: left;
 		width: 80%; 
 		margin-bottom: 10px; 
 	}
 	
-	#posts {
-		float: left;
-		width: 100%;
+	#message {
+		display: none;
+		width: 99%;
+		.border-radius(3px);
+		background: #DEE;
+		color: #000;
+		&.active {
+			display: block;
+			float: left;
+			padding: 5px;
+			margin-bottom: 10px;
+		}
 	}
 
 	#show-calendar {
@@ -687,6 +690,11 @@ ul#footer-links {
 		margin: 0;
 		float: right;
 		.opacity(75);
+	}
+
+	#posts {
+		float: left;
+		width: 100%;
 	}
 	
 	.new-post {
@@ -796,20 +804,37 @@ ul#footer-links {
 		border-bottom: solid 1px #CCC;
 		margin: 0 0 0 -1px;
 		
-		#event-edit, #file-edit, #file-upload { 
+		#event-edit, #file-edit, #file-bank, #file-upload { 
 		    float: left;
 		    padding: 10px; 
 		}
 		#event-edit { padding-bottom: 0; }
+		
+		a#hide {
+			position: absolute;
+			right: 15px;
+			margin-top: -5px;
+			padding: 2px 6px;
+			color: #666;
+			.transition(color 0.1s linear);
+			&:hover { color: #000; }
+			.tooltip {
+				width: 60px;
+				margin-left: 27px;
+				margin-top: -18px;
+				padding: 4px 2px;
+				text-align: center;
+			}
+		}
 		
 		button {
 		    color: #FFF;
 		    text-shadow: none;
 		    font-size: 14px;
 		    font-weight: normal;
-		    width: 80px;
+		    min-width: 80px;
 		    height: 40px;
-		    margin: 2px 5px 10px 5px;
+		    margin: 0 4px 10px 4px;
 		    .transition(background-color 0.15s linear);
 		}
 		
@@ -830,9 +855,17 @@ ul#footer-links {
 			margin: 5px 5px 11px 5px;
 		}
 		
-		.start-widget, .finish-widget {
+		#start-widget, #finish-widget {
 		    font-weight: bold;
 		    float: left;
+			.tooltip {
+				width: 80px;
+				margin-left: 240px;
+				margin-top: -40px;
+				padding: 4px;
+				text-align: center;
+				font-weight: normal;
+			}
 		}
 		
 		input[type="text"] { 
@@ -853,12 +886,28 @@ ul#footer-links {
 		    margin-top: 8px;
 		}
 		
-		input.title {
+		input#title {
 			height: 40px;
 			padding: 5px;
 			margin: 2px 10px 5px 0;
 			font-size: 16px;
-			width: 70%;
+			width: 50%;
+			float: left;
+		}
+		
+		select.type {
+		    float: left;
+		    margin: 2px 10px 10px 5px;
+			width: 120px;
+			height: 38px;
+		}
+		
+		.chzn-container {
+			float: left;
+			margin: 2px 10px 10px 5px;
+			font-size: 14px;
+			.chzn-single { height: 38px; }
+			input { margin: 1px 0; }
 		}
 		
 		input[type="checkbox"] {
@@ -871,11 +920,27 @@ ul#footer-links {
 			float: left;
 		}
 		
-		.auto-convo-inputs { float: right; margin-right: 10px; }
-		input.hours-before, input.days-before { width: 80px; }
-		select.type {
-		    float: right;
-		    margin: 5px 10px 10px 5px;
+		#auto-convo-label {
+			float: none;
+			display: inline;
+			margin-left: 5px;
+		}
+		
+		.auto-convo-inputs { 
+			float: right; 
+			margin-right: 10px;
+			width: 175px;
+			label { 
+				font-weight: normal;
+				float: left; 
+				width: 80px; 
+			}
+			input.hours-before, input.days-before { 
+				width: 18px;
+				float: left;
+				padding: 2px;
+				margin: 3px; 
+			}
 		}
 		
 		label { 
@@ -884,7 +949,7 @@ ul#footer-links {
 		}
 		
 		#file-edit {
-		    width: 280px;
+		    width: 260px;
 		    
 			button {
 			    float: left;
@@ -903,8 +968,8 @@ ul#footer-links {
     		    text-shadow: none;
     		    font-size: 14px;
     		    font-weight: normal;
-    		    width: 80px;
-    		    margin: 2px 5px 10px 5px;
+    		    min-width: 80px;
+    		    margin: 2px 5px 10px 2px;
     		    .border-radius(3px);
     		    .transition(background-color 0.15s linear);
     		    background: @lightRed;

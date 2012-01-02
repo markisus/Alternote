@@ -217,6 +217,10 @@
 #reset .reset-html5 section {
   display: block;
 }
+::selection, ::-moz-selection {
+  color: #FFF;
+  background: #009ed9;
+}
 a {
   text-decoration: none;
   -webkit-transition: color 0.1s linear;
@@ -252,7 +256,7 @@ a {
 }
 .tooltip {
   position: absolute;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.85);
   padding: 4px 0;
   color: #EEE;
   text-shadow: none;
@@ -282,7 +286,7 @@ button.anonymous-post.active, button.anonymous-comment.active {
 }
 button.anonymous-post .tooltip, button.anonymous-comment .tooltip {
   width: 90px;
-  margin-left: 100px;
+  margin-left: 110px;
   margin-top: -18px;
 }
 .profpost {
@@ -715,25 +719,6 @@ ul#footer-links li a:hover {
 .sidebar ul.sidebar-content {
   float: left;
   width: 100%;
-  /*
-		&#upcoming-list {
-		    max-height: 214px;
-		    overflow: hidden;
-		    
-		    &:hover { overflow-y: scroll; }
-    		li {
-    			border: none;
-    			&:hover { background: transparent; }
-    			p.date { 
-    				float: right;
-    				margin-right: 5px;
-    				font-size: 14px;
-    				color: #161616;
-    			} 
-    		}
-    	}
-    	*/
-
 }
 .sidebar ul.sidebar-content img {
   width: 20px;
@@ -777,6 +762,20 @@ ul#footer-links li a:hover {
 .sidebar ul.sidebar-content#conversation-list:hover, .sidebar ul.sidebar-content#past-events-list:hover, .sidebar ul.sidebar-content#upcoming-list:hover {
   overflow-y: scroll;
 }
+.sidebar ul.sidebar-content#conversation-list div, .sidebar ul.sidebar-content#past-events-list div, .sidebar ul.sidebar-content#upcoming-list div {
+  float: left;
+  width: 100%;
+}
+.sidebar ul.sidebar-content#conversation-list div.active, .sidebar ul.sidebar-content#past-events-list div.active, .sidebar ul.sidebar-content#upcoming-list div.active {
+  /* padding-left: 3px;
+					background: #F6F6F6; */
+
+}
+.sidebar ul.sidebar-content#conversation-list div.active li button.convo, .sidebar ul.sidebar-content#past-events-list div.active li button.convo, .sidebar ul.sidebar-content#upcoming-list div.active li button.convo {
+  cursor: default;
+  text-decoration: none;
+  font-weight: bold;
+}
 .sidebar ul.sidebar-content#file-list li {
   border: none;
 }
@@ -810,21 +809,6 @@ ul#footer-links li a:hover {
   -webkit-transition: background-color 0.15s linear;
   -moz-transition: background-color 0.15s linear;
   transition: background-color 0.15s linear;
-  /*
-			&:last-child {
-				border: none;
-				
-				a {
-					font-size: 12px;
-					float: right;
-					margin-right: 5px;
-					.link-blue;
-				}
-				
-				&:hover { background-color: transparent; }
-			}
-			*/
-
 }
 .sidebar ul.sidebar-content li button {
   border: none;
@@ -933,6 +917,13 @@ ul#footer-links li a:hover {
 .post a.delete:hover {
   color: #000;
 }
+.post a.delete .tooltip {
+  width: 60px;
+  margin-left: 27px;
+  margin-top: -18px;
+  padding: 4px 2px;
+  text-align: center;
+}
 .post .author {
   font-weight: bold;
 }
@@ -963,6 +954,7 @@ ul#footer-links li a:hover {
   font-size: 12px;
   display: inline;
   width: 60%;
+  color: #999;
 }
 .post .actions p {
   float: left;
@@ -993,6 +985,12 @@ ul#footer-links li a:hover {
 .post .actions a.flag img {
   width: 16px;
 }
+.post .actions a.flag.flagged, .post .actions a.flag:hover {
+  filter: alpha(opacity=85);
+  -khtml-opacity: 0.85;
+  -moz-opacity: 0.85;
+  opacity: 0.85;
+}
 .post .meta {
   float: right;
 }
@@ -1020,12 +1018,6 @@ ul#footer-links li a:hover {
 
   background-color: #fff3e2;
   border-top: none;
-}
-.post .comment a.comment-link {
-  display: none;
-}
-.post .comment a.flag {
-  margin-left: 5px;
 }
 .post .comment a.delete {
   margin-top: -2px;
@@ -1057,14 +1049,25 @@ ul#footer-links li a:hover {
   padding-left: 8px;
   border-left: solid 1px #CCC;
 }
-#conversation h3 {
+#conversation #convo-title {
   float: left;
   width: 80%;
   margin-bottom: 10px;
 }
-#conversation #posts {
+#conversation #message {
+  display: none;
+  width: 99%;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background: #DEE;
+  color: #000;
+}
+#conversation #message.active {
+  display: block;
   float: left;
-  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
 }
 #conversation #show-calendar {
   padding: 3px 8px;
@@ -1074,6 +1077,10 @@ ul#footer-links li a:hover {
   -khtml-opacity: 0.75;
   -moz-opacity: 0.75;
   opacity: 0.75;
+}
+#conversation #posts {
+  float: left;
+  width: 100%;
 }
 #conversation .new-post .post-input {
   width: 90%;
@@ -1205,21 +1212,44 @@ ul#footer-links li a:hover {
   border-bottom: solid 1px #CCC;
   margin: 0 0 0 -1px;
 }
-.calendar .new-event #event-edit, .calendar .new-event #file-edit, .calendar .new-event #file-upload {
+.calendar .new-event #event-edit,
+.calendar .new-event #file-edit,
+.calendar .new-event #file-bank,
+.calendar .new-event #file-upload {
   float: left;
   padding: 10px;
 }
 .calendar .new-event #event-edit {
   padding-bottom: 0;
 }
+.calendar .new-event a#hide {
+  position: absolute;
+  right: 15px;
+  margin-top: -5px;
+  padding: 2px 6px;
+  color: #666;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.calendar .new-event a#hide:hover {
+  color: #000;
+}
+.calendar .new-event a#hide .tooltip {
+  width: 60px;
+  margin-left: 27px;
+  margin-top: -18px;
+  padding: 4px 2px;
+  text-align: center;
+}
 .calendar .new-event button {
   color: #FFF;
   text-shadow: none;
   font-size: 14px;
   font-weight: normal;
-  width: 80px;
+  min-width: 80px;
   height: 40px;
-  margin: 2px 5px 10px 5px;
+  margin: 0 4px 10px 4px;
   -webkit-transition: background-color 0.15s linear;
   -moz-transition: background-color 0.15s linear;
   transition: background-color 0.15s linear;
@@ -1242,9 +1272,17 @@ ul#footer-links li a:hover {
   float: left;
   margin: 5px 5px 11px 5px;
 }
-.calendar .new-event .start-widget, .calendar .new-event .finish-widget {
+.calendar .new-event #start-widget, .calendar .new-event #finish-widget {
   font-weight: bold;
   float: left;
+}
+.calendar .new-event #start-widget .tooltip, .calendar .new-event #finish-widget .tooltip {
+  width: 80px;
+  margin-left: 240px;
+  margin-top: -40px;
+  padding: 4px;
+  text-align: center;
+  font-weight: normal;
 }
 .calendar .new-event input[type="text"] {
   width: 70px;
@@ -1268,12 +1306,30 @@ ul#footer-links li a:hover {
   float: left;
   margin-top: 8px;
 }
-.calendar .new-event input.title {
+.calendar .new-event input#title {
   height: 40px;
   padding: 5px;
   margin: 2px 10px 5px 0;
   font-size: 16px;
-  width: 70%;
+  width: 50%;
+  float: left;
+}
+.calendar .new-event select.type {
+  float: left;
+  margin: 2px 10px 10px 5px;
+  width: 120px;
+  height: 38px;
+}
+.calendar .new-event .chzn-container {
+  float: left;
+  margin: 2px 10px 10px 5px;
+  font-size: 14px;
+}
+.calendar .new-event .chzn-container .chzn-single {
+  height: 38px;
+}
+.calendar .new-event .chzn-container input {
+  margin: 1px 0;
 }
 .calendar .new-event input[type="checkbox"] {
   width: auto;
@@ -1283,23 +1339,33 @@ ul#footer-links li a:hover {
   width: 180px;
   float: left;
 }
+.calendar .new-event #auto-convo-label {
+  float: none;
+  display: inline;
+  margin-left: 5px;
+}
 .calendar .new-event .auto-convo-inputs {
   float: right;
   margin-right: 10px;
+  width: 175px;
 }
-.calendar .new-event input.hours-before, .calendar .new-event input.days-before {
+.calendar .new-event .auto-convo-inputs label {
+  font-weight: normal;
+  float: left;
   width: 80px;
 }
-.calendar .new-event select.type {
-  float: right;
-  margin: 5px 10px 10px 5px;
+.calendar .new-event .auto-convo-inputs input.hours-before, .calendar .new-event .auto-convo-inputs input.days-before {
+  width: 18px;
+  float: left;
+  padding: 2px;
+  margin: 3px;
 }
 .calendar .new-event label {
   float: left;
   margin: 5px 0;
 }
 .calendar .new-event #file-edit {
-  width: 280px;
+  width: 260px;
 }
 .calendar .new-event #file-edit button {
   float: left;
@@ -1316,8 +1382,8 @@ ul#footer-links li a:hover {
   text-shadow: none;
   font-size: 14px;
   font-weight: normal;
-  width: 80px;
-  margin: 2px 5px 10px 5px;
+  min-width: 80px;
+  margin: 2px 5px 10px 2px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
