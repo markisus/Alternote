@@ -64,8 +64,8 @@ class CreateSchoolForm(Form):
     
 class ChangePasswordForm(Form):
     old_pass = PasswordField("Old Password")
-    old_pass_repeat = PasswordField("Repeat Old Password", [validators.EqualTo(fieldname="old_pass", message="Two old passwords do not match")])
     new_pass = PasswordField("New Password", [validators.Length(min=4)])
+    new_pass_repeat = PasswordField("Repeat New Password", [validators.EqualTo(fieldname="new_pass", message="Two new passwords do not match")])
     submit = SubmitField("Change Password")
 
 def time_validate(form, field):
