@@ -79,7 +79,10 @@ def create_message_for_event(userid, message, parent_id=None, eventid=None, anon
             raise ValueError("Parent not found")
         else:
             eventid = parent['event_id']
-    data = {'message':cgi.escape(message),
+    message = cgi.escape(message)
+    message = message.replace("\n", "<br/>")
+    print("Creating message: " + message)
+    data = {'message':message,
                   'votes':0,
                   'flags':0,
                   'event_id':ObjectId(eventid),
@@ -92,6 +95,7 @@ def create_message_for_event(userid, message, parent_id=None, eventid=None, anon
     if anonymous: 
         print("Recording anon item!")
         record_anon_item(userid, id)
+    print(data)
     return data
 
 #Now the function also gets comments...

@@ -3,8 +3,7 @@
 {% block title %}Alternote Alpha{% endblock %}
 
 {% block scripts %}
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="[[ script('jquery-1.6.4.js') ]]"></script>
 	<script type="text/javascript" src="[[ script('tabs.js') ]]"></script>
 	<script type="text/javascript" src="[[ script('chosen.jquery.min.js') ]]"></script>
 	{% block page_specific_scripts %}
@@ -31,7 +30,6 @@
 	<link rel="stylesheet" type="text/css" href="[[ css('layout.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="[[ css('skeleton.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="[[ css('chosen.css') ]]" />
-	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" />
 	<link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
 	<link rel="stylesheet" type="text/css" href="[[ css('style.css') ]]" />
 	<style type="text/css">

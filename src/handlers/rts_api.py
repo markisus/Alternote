@@ -126,7 +126,7 @@ class PollHandler(Listener):
         EVENT_REGISTRY.register_listener_on_event(eventid, self)
         print("Poll finished")
         #Fall back to the ioloop and wait for self.notify to be called
-        
+
 #/get/(eventid)
 class PostGetter(JSONPHandler):
     @tornado.web.authenticated
@@ -165,7 +165,7 @@ class Comment(BaseHandler):
                  'action':'comment', 
                  'user':user, 
                  'parent_id':postid, 
-                 'message':message, 
+                 'message':comment['message'], 
                  'objectid':str(comment['_id']),
                  'is_author':comment['is_author'],
                  'timestamp':comment['timestamp']
@@ -193,7 +193,7 @@ class Post(BaseHandler):
         datum = {
                  'action':'post', 
                  'user':user, 
-                 'message':message, 
+                 'message':post['message'], 
                  'objectid':str(post['_id']), 
                  'is_author':post['is_author'],
                  'timestamp':post['timestamp']

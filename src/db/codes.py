@@ -33,7 +33,7 @@ def create_admin_code(class_id):
 
 def lookup_codes(class_id):
     result = codes.find({'class_id':class_id})
-    return result
+    return list(result)
 
 def lookup_code(code_id):
     result = codes.find_one({'_id':code_id})

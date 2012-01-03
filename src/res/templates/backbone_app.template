@@ -841,7 +841,7 @@ function() {
 		window.event_edit = new EventEdit();
 		$("#event-edit").show();
 	} else {
-		alert("Not privelged!");
+		//alert("Not privelged!");
 	}
 	
 	//Timestamp Widget
@@ -1003,11 +1003,15 @@ function() {
 				$(this.el).attr("id", this.model.get("id"));
 				$(this.el).html(this.template({model:this.model}));
 				//Embedly stuff
-				this.$(".message").embedly({
-					key:'48e65268f1c411e0a3514040d3dc5c07',
-					maxWidth: 250,
-        	wmode: 'transparent'
-        });
+				try {
+					this.$(".message").embedly({
+						key:'48e65268f1c411e0a3514040d3dc5c07',
+						maxWidth: 250,
+			        	wmode: 'transparent'
+			        });
+		        } catch(something) {
+		        	console.log("Exception caught");
+		        }
 				//Prepend avatar!
 				$(this.el).prepend("<img class='authorimg' src='/account/avatar/" + this.model.get("author")["_id"] + "'/>")
 				this.render_stats();
@@ -1204,8 +1208,8 @@ function() {
 			dayClick: function(date) {
 				if(class_doc.is_priveleged(user_id)) {
 					event_edit.prepare_new_event(date);
+					file_bank.unbind_event_model();
 				}
-				file_bank.unbind_event_model();
 			},
 			eventClick: function(calEvent, jsEvent, view) {
 				if(class_doc.is_priveleged(user_id)) {
@@ -1279,37 +1283,38 @@ function() {
 			$("#info-content").fadeIn();
 		});
 		
-		// New event form
-		$(".new-event-button").click(function(event) {
-			if(class_doc.is_priveleged(user_id)) {
-				event_edit.prepare_new_event(new Date(server_timestamp+"-05:00"));
-			}
-			file_bank.unbind_event_model();
-			$(".new-event").slideDown();
-		});
-		$(".fc-event").click(function(event) {
-		  $(".new-event").slideDown();
-		});
-		
-		$(".fc-widget-content").click(function(event) {
-		  $(".new-event").slideDown();
-		});
-		
-		$(".new-event form .close").click(function(event) {
-		  $(".new-event").slideUp();
-		});
-		
-		$("#calendar div.fc-event.fc-event-skin").click(function(event) { 
-			$(".new-event").slideDown();
-		});
-		
-		$("#event-edit a#hide").click(function() {
-			$(".new-event").slideUp();
-		});
-		addTooltip("#event-edit a#hide", "Hide this form");
-		addTooltip("#start-widget", "Try using the mousewheel");
-		addTooltip("#finish-widget", "Try using the mousewheel");
-		
+		if (class_doc.is_priveleged()) {
+			// New event form
+			$(".new-event-button").click(function(event) {
+				if(class_doc.is_priveleged(user_id)) {
+					event_edit.prepare_new_event(new Date(server_timestamp+"-05:00"));
+				}
+				file_bank.unbind_event_model();
+				$(".new-event").slideDown();
+			});
+			$(".fc-event").click(function(event) {
+			  $(".new-event").slideDown();
+			});
+			
+			$(".fc-widget-content").click(function(event) {
+			  $(".new-event").slideDown();
+			});
+			
+			$(".new-event form .close").click(function(event) {
+			  $(".new-event").slideUp();
+			});
+			
+			$("#calendar div.fc-event.fc-event-skin").click(function(event) { 
+				$(".new-event").slideDown();
+			});
+			
+			$("#event-edit a#hide").click(function() {
+				$(".new-event").slideUp();
+			});
+			addTooltip("#event-edit a#hide", "Hide this form");
+			addTooltip("#start-widget", "Try using the mousewheel");
+			addTooltip("#finish-widget", "Try using the mousewheel");
+		}
 		// Conversation
 		$("textarea.post-input").keypress(function(event) {
 			if ($(this).val().length > 300) {
@@ -1419,7 +1424,17 @@ function() {
     			  <div class="purple-line" style="width:82%;"></div>
     			<ul id="file-list" class="sidebar-content"></ul>
     		</div>
-    		
+    		{% if codes %}
+    		<div id="codes">
+    			<p class="header"><a href="">Codes <span class="triangle">&#9660;</span></a></p>
+    			  <div class="purple-line" style="width:66%;"></div>
+    			<ul id="code-list" class="sidebar-content">
+    				{% for code in codes %}
+    					<li>[[ code.type ]] : [[ code._id ]] </li>
+    				{% endfor %}
+    			</ul>
+    		</div>
+    		{% endif %}
     		<div id="classmates">
     			<p class="header"><a href="">Classmates <span class="triangle">&#9660;</span></a></p>
     			  <div class="purple-line" style="width:66%;"></div>
@@ -1429,7 +1444,9 @@ function() {
     </div>
 
 	  <div class="twelve columns content calendar">
+	  		{% if riveleged %}
 			<button class="new-event-button">Create new event</button>
+			{% endif %}
 	    <div id="calendar"></div>
 	    
 	    <div class="new-event twelve columns">
