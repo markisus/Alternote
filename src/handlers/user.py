@@ -1,6 +1,7 @@
-from env import BaseHandler, env
-from tornado.web import authenticated
 from constants import static_path
+from env import BaseHandler, env
+from forms import forms
+from tornado.web import authenticated
 import db.users
 import os
 import tornado
@@ -26,18 +27,24 @@ class AccountPage(BaseHandler):
     def get(self):
         user_id = self.get_current_user()
         user_info = db.users.get_user_display_info(user_id)
-        self.render_out(user_id=user_id, user_info=user_info)
+        form = forms.ChangePasswordForm()
+        self.render_out(user_id=user_id, user_info=user_info, form=form,)
         
-class ChangePassword(BaseHandler):      
     @authenticated
     def post(self):
-        old_pass = self.get_argument("old_pass") 
-        new_pass = self.get_argument("new_pass")
-        if db.users.reset_password(self.get_current_user(), old_pass, new_pass):
-            return
-        else:
-            raise tornado.web.HTTPError(401)
-       
+        form = forms.ChangePasswordForm(formdata=self.get_params())
+        user_id = self.get_current_user()
+        user_info = db.users.get_user_display_info(user_id)
+        if form.validate():
+            old_pass = self.get_argument("old_pass") 
+            new_pass = self.get_argument("new_pass")
+            if db.users.reset_password(self.get_current_user(), old_pass, new_pass):
+                self.render_out(user_id=user_id, user_info=user_info, form=form, message="Success!")
+                return
+            else:
+                form.old_pass.errors.append("Old password incorrect")
+        self.render_out(user_id=user_id, user_info=user_info, form=form,)
+
 class AvatarUpload(BaseHandler):  
     def save_file_normal(self):
         print("saving normal file")

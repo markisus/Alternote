@@ -99,13 +99,14 @@
 	</tr>
   <tr>
 		<td class="field">Password</td>
+		<h1>[[ message ]]</h1>
 		<td class="value">
-			<input id="old_pass" class="edit-field" type="text" name="old_pass" placeholder="Old Password" />
-			<input id="new_pass" class="edit-field" type="text" name="new_pass" placeholder="New Password" />
-			<input id="new_pass_repeat" class="edit-field" type="text" name="new_pass_repeat" placeholder="Repeat New Password" />
-			<input type="submit" id="account-info-submit"></input>
-			********
-		</td>
+			<form method="post">
+				[[ with_errors(form.old_pass) ]]
+				[[ with_errors(form.old_pass_repeat) ]]<hr>
+				[[ with_errors(form.new_pass) ]]
+				[[ with_errors(form.submit) ]]
+			</form>
 		<td class="edit"><a href="#!">Edit</a></td>
 	</tr>
 </tbody>

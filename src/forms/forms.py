@@ -9,8 +9,8 @@ class LoginForm(Form):
     submit = SubmitField("Submit")
     
 class MailingListForm(Form):
-		email = TextField('Email address...', [validators.Email()])
-		submit = SubmitField("Go")
+    email = TextField('Email address...', [validators.Email()])
+    submit = SubmitField("Go")
 
 class RegistrationCodeForm(Form):
     code = TextField('Access code...')
@@ -61,6 +61,12 @@ class CreateSchoolForm(Form):
     school_name = TextField('School Name', [validators.Length(min=1)])
     tags = TextField('Tags (space separated)')
     submit = SubmitField("Create School")
+    
+class ChangePasswordForm(Form):
+    old_pass = PasswordField("Old Password")
+    old_pass_repeat = PasswordField("Repeat Old Password", [validators.EqualTo(fieldname="old_pass", message="Two old passwords do not match")])
+    new_pass = PasswordField("New Password", [validators.Length(min=4)])
+    submit = SubmitField("Change Password")
 
 def time_validate(form, field):
     if field.data:
