@@ -568,7 +568,7 @@ ul#footer-links li a:hover {
   line-height: 1.3em;
 }
 #index #join input[type="text"] {
-  color: #666;
+  color: #333;
   width: 230px;
   margin-top: 5px;
   margin-bottom: 0;
@@ -896,6 +896,37 @@ ul#footer-links li a:hover {
   -moz-opacity: 0.8;
   opacity: 0.8;
 }
+.sidebar ul.sidebar-content li .files {
+  font-size: 12px;
+  font-style: italic;
+}
+.sidebar ul.sidebar-content li .files p {
+  float: left;
+  color: #777;
+}
+.sidebar ul.sidebar-content li .files ul {
+  float: left;
+  width: 85%;
+  margin: -20px 0 5px 32px;
+  font-style: normal;
+}
+.sidebar ul.sidebar-content li .files ul li {
+  font-size: 12px;
+  border: none;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -khtml-text-overflow: ellipsis;
+}
+.sidebar ul.sidebar-content li .files ul li a {
+  color: #777;
+}
+.sidebar ul.sidebar-content li .files ul li a:hover {
+  color: #333;
+}
 .sidebar ul.sidebar-content li p.date {
   font-size: 12px;
   color: #999;
@@ -1138,7 +1169,7 @@ ul#footer-links li a:hover {
   margin-bottom: 10px;
 }
 #conversation #convo-title {
-  width: 76%;
+  max-width: 70%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1146,13 +1177,22 @@ ul#footer-links li a:hover {
   -moz-text-overflow: ellipsis;
   -khtml-text-overflow: ellipsis;
 }
+#conversation #convo-time {
+  float: left;
+  font-size: 12px;
+  line-height: 30px;
+  height: 30px;
+  color: #666;
+  margin-left: 10px;
+}
 #conversation #convo-details {
   width: 100%;
 }
 #conversation #convo-details-link {
-  float: left;
+  float: right;
   font-size: 12px;
   margin-top: 5px;
+  margin-right: 10px;
   filter: alpha(opacity=75);
   -khtml-opacity: 0.75;
   -moz-opacity: 0.75;
@@ -1205,6 +1245,41 @@ ul#footer-links li a:hover {
 .calendar {
   margin: 5px 0 0 0 !important;
   border-left: solid 1px #CCC;
+}
+.calendar #file-upload {
+  width: 200px;
+  float: right;
+}
+.calendar #file-upload .qq-upload-button {
+  float: right;
+  margin-top: 5px;
+  font-size: 12px;
+  padding: 4px 5px;
+}
+.calendar #file-upload ul.qq-upload-list {
+  margin: 0;
+  position: absolute;
+  background: #FFF;
+  width: 195px;
+  margin-top: 36px;
+  z-index: 10;
+  /*
+				border: solid 1px #CCC;
+				.border-radius(3px);
+				.box-shadow(0px 1px 5px rgba(50,50,50,0.2);
+			*/
+
+}
+.calendar #file-upload ul.qq-upload-list li {
+  padding: 3px 6px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -khtml-text-overflow: ellipsis;
+  /* &.qq-upload-success { background-color: #EEF; } */
+
 }
 .calendar .new-event-button {
   float: right;
@@ -1323,12 +1398,6 @@ ul#footer-links li a:hover {
 }
 .calendar .new-event #event-edit .chzn-container span {
   margin-top: 5px;
-}
-.calendar .new-event #file-upload {
-  width: 400px;
-}
-.calendar .new-event #file-upload ul.qq-upload-list {
-  margin: 0;
 }
 .calendar .new-event a#hide {
   position: absolute;

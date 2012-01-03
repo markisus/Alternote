@@ -4,7 +4,6 @@
 
 {% block scripts %}
 	<script type="text/javascript" src="[[ script('jquery-1.6.4.js') ]]"></script>
-	<script type="text/javascript" src="[[ script('tabs.js') ]]"></script>
 	<script type="text/javascript" src="[[ script('chosen.jquery.min.js') ]]"></script>
 	{% block page_specific_scripts %}
 	<script type="text/javascript">

@@ -3,16 +3,15 @@
 {% block title %}Alternote Class{% endblock %}
 
 {% block css %}
-	<link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
-	<link rel="stylesheet" type="text/css" href="[[ css('fileuploader.css') ]]" />
-	
-	<link rel="stylesheet" type="text/css" href="[[ css('base.css') ]]" />
-	<link rel="stylesheet" type="text/css" href="[[ css('layout.css') ]]" />
-	<link rel="stylesheet" type="text/css" href="[[ css('skeleton.css') ]]" />
-	<link rel="stylesheet" type="text/css" href="[[ css('chosen.css') ]]" />
-	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" />
-	<link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
-	<link rel="stylesheet" type="text/css" href="[[ css('style.css') ]]" />
+  <link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
+  <link rel="stylesheet" type="text/css" href="[[ css('fileuploader.css') ]]" />
+  
+  <link rel="stylesheet" type="text/css" href="[[ css('base.css') ]]" />
+  <link rel="stylesheet" type="text/css" href="[[ css('layout.css') ]]" />
+  <link rel="stylesheet" type="text/css" href="[[ css('skeleton.css') ]]" />
+  <link rel="stylesheet" type="text/css" href="[[ css('chosen.css') ]]" />
+  <link rel="stylesheet" type="text/css" href="[[ css('fullcalendar.css') ]]" />
+  <link rel="stylesheet" type="text/css" href="[[ css('style.css') ]]" />
 {% endblock css %}
 
 {% block scripts %}
@@ -29,1316 +28,1319 @@
 
 <!-- Backbone Templates -->
 <script type="text/javascript">
-	//Template helper method
-	window.linkify = function(text) {
-	    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-	    return text.replace(exp,"<a href='$1'>$1</a>"); 
-	}
+  //Template helper method
+  window.linkify = function(text) {
+      var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+      return text.replace(exp,"<a href='$1'>$1</a>"); 
+  }
 </script>
 <script type="text/template" id="message-template">
-	<div>
-		<div class="author">
-			<%= model.get('author')['first_name'] %>
-			<%= model.get('author')['last_name'] %>
-		</div>
-		<% if (model.get('is_author')) { %>
-			<a href="#!"class="delete">x</a>
-		<% } %>
-		<div class="message">
-		<%= linkify(model.get('message')) %>
-		</div>
-		<div class="meta">
-			<span class="votes">+<%= model.get('votes') %></span>
-		</div>
-		<span class="timestamp" style="margin-top: 3px;">&nbsp; &#8226; &nbsp;</span> 
-		<div class="actions">
-			<a href="#!" class="vote">like</a>
-			<% if (model.get('parent_id') == null) { %>
-				&nbsp; &#8226; &nbsp;
-				<a href="#!" class="comment-link">comment</a>
-			<% } %>
-			<a href="#!" class="flag"><img src="[[ image('flag-icon.png') ]]" /></a>
-		</div>
-	</div>
+  <div>
+    <div class="author">
+      <%= model.get('author')['first_name'] %>
+      <%= model.get('author')['last_name'] %>
+    </div>
+    <% if (model.get('is_author')) { %>
+      <a href="#!"class="delete">x</a>
+    <% } %>
+    <div class="message">
+    <%= linkify(model.get('message')) %>
+    </div>
+    <div class="meta">
+      <span class="votes">+<%= model.get('votes') %></span>
+    </div>
+    <span class="timestamp" style="margin-top: 3px;">&nbsp; &#8226; &nbsp;</span> 
+    <div class="actions">
+      <a href="#!" class="vote">like</a>
+      <% if (model.get('parent_id') == null) { %>
+        &nbsp; &#8226; &nbsp;
+        <a href="#!" class="comment-link">comment</a>
+      <% } %>
+      <a href="#!" class="flag"><img src="[[ image('flag-icon.png') ]]" /></a>
+    </div>
+  </div>
 </script>
 <script type="text/template" id="sidebar-item-template">
-	<% var startDate = new Date(model.get('start')) %>
-	<% var files = model.get_files() %>
-	<li id="<%= model.get('id') %>" class="<%= model.get('type') %>">
-	  <% if(class_doc.is_priveleged(user_id)) { %>
-		<button class="edit"></button>
-		<% } %>
-		
-	  <% if(model.has_active_convo()) { %>
-		<button class="convo"><%= model.get('title') %></button>
-		<% } else { %>
-		<%= model.get('title') %><br/>
-		<% } %>
-		<p class="date"><%= startDate.format('UTC:m/d h:MMt') %></p>
-		
-		<% if(!_.isEmpty(files)) { %>
-		<div class="files">
-		  Files:
-  		<ul>
-  			<% _(files).forEach(function(file){ %> 
-  				<li><a href="<%= generate_filepath(file.get('name')) %>"><%= file.get('name') %></a></li>
-  			<% }) %>
-  		</ul>
-		</div>
-		<% } %>
-	</li>
+  <% var startDate = new Date(model.get('start')) %>
+  <% var files = model.get_files() %>
+  <li id="<%= model.get('id') %>" class="<%= model.get('type') %>">
+    <% if(class_doc.is_priveleged(user_id)) { %>
+      <button class="edit"></button>
+    <% } %>
+    
+    <% if(model.has_active_convo()) { %>
+      <button class="convo"><%= model.get('title') %></button>
+    <% } else { %>
+      <%= model.get('title') %><br/>
+    <% } %>
+    <p class="date"><%= startDate.format('UTC:m/d h:MMt') %></p>
+    
+    <% if(!_.isEmpty(files)) { %>
+    <div class="files">
+      <p>Files:</p>
+      <ul>
+        <% _(files).forEach(function(file){ %> 
+          <li><a href="<%= generate_filepath(file.get('name')) %>"><%= file.get('name') %></a></li>
+        <% }) %>
+      </ul>
+    </div>
+    <% } %>
+  </li>
 </script>
 <script type="text/template" id="user-template">
-	<li id="<%= user_id %>">
-		<div class="user">
-			<% if (typeof user_type != 'undefined') {print(user_type)} %> <%= first_name %> <%= last_name %> 
-		</div>
-	</li>
+  <li id="<%= user_id %>">
+    <div class="user">
+      <% if (typeof user_type != 'undefined') {print(user_type)} %> <%= first_name %> <%= last_name %> 
+    </div>
+  </li>
 </script>
 <script type="text/template" id="event_template">
-	<div>Event</div>
+  <div>Event</div>
 </script>
 <script type="text/template" id="datetime-input-template">
-	<input type="text" class="date"/>
-	<input type="text" class="hour"/>:
-	<input type="text" class="minute"/>
-	<input type="text" class="ap" maxlength="1"/>
+  <input type="text" class="date"/>
+  <input type="text" class="hour"/>:
+  <input type="text" class="minute"/>
+  <input type="text" class="ap" maxlength="1"/>
 </script>
 <!-- Backbone app -->
 <script type="text/javascript">
 $(
 //On document ready
 function() {
-	//**************** Useful Global Items *********************
-	//User Id
-	window.user_id = "[[user_id]]";
-	
-	//file_path
-	window.generate_filepath = function(filename) {
-		return "/static/files/" + (class_doc.get('id') || class_doc.get('_id')) + "/" + filename;
-	}
-	
-	//server time
-	window.server_timestamp = "[[server_timestamp]]";
-	
-	//meet time format
-	window.day_names = {'m':'Mon', 't':'Tue', 'w':'Wed', 'r':'Thu', 'f':'Fri', 's':'Sat', 'u':'Sun'};
-	window.meet_time_format = function(meet_time) {
-		d = new Date("0000-01-01T" + meet_time);
-		return d.format("UTC:h:MMt")
-	};
-	window.day_order = ["m", "t", "w", "r", "f", "s", "u"];
-	
-	//**************** MODELS *********************
-	//Class Model
-	var Class = Backbone.Model.extend({
-		//Instructors and TAs are priveleged
-		is_priveleged: function(some_user_id) {
-			return	_(this.get('instructors')).chain()
-				.union(this.get('tas'))
-				.pluck('_id')
-				.contains(some_user_id)
-				.value();
-		}
-	});
-	window.class_doc = new Class([[class_doc]]);
-	
-	//Calendar Event Model - depends on File Collection
-	var Event = Backbone.Model.extend({
-		initialize: function() {
-			this.messages = new Messages();
-		},
-		get_files: function() {
-			var self = this;
-			//the files global Collection is defined later
-			return files.filter(function(file) {
-				return file.has_tag(self.get('id'));
-			});
-		},
-		get_date: function(field_name) {
-			var date_string = this.get(field_name);
-			date_string += "-05:00" //Add time zone, Pretend everyone is in eastern time for now
-			return new Date(date_string);
-		},
-		has_active_convo: function() {
-			has_active = (server_timestamp > this.get('convo_start')) && (this.get("dummy") == false);
-			return has_active;
-		},
-		get_client: function() {
-			if (!_.isUndefined(this.client)) {
-				//console.log("Returning old client");
-				return this.client;
-			} else {
-				console.log("Returning new client");
-				//Initialize the Messages collection correlated with the client
-				var client = new Client(this.get("id"), user_id, this.messages);
-				this.client = client;
-				
-				return client;
-			}
-		}
-	});
-	
-	//File Model - depends on Event Collection
-	var File = Backbone.Model.extend({
-		has_tag: function(id) {
-			return _(this.get('tags')).contains(id);
-		},
-		get_classes: function() {
-			//events global Collection is defined later
-			var self = this;
-			return events.filter(function(event) {
-				return self.has_tag(event.get('id'));
-			});
-		},
-		//Todo - add the collection method to save all changed files, remove save call from these
-		remove_tag: function(id) {
-			if (this.has_tag(id)) {
-				this.set("tags", _(this.get("tags")).without(id));
-				this.save();
-			}
-		},
-		add_tag: function(id) {
-			//console.log("Inside add_tag of " + this.get("name") + " with " + id);
-			if (!this.has_tag(id)) {
-				var new_tags = this.get("tags");
-				new_tags.push(id);
-				this.set("tags", new_tags);
-				this.save();
-			}
-		}
-	});
-	 
-	 //Post and comment models
-	 var Message = Backbone.Model.extend({
-	 });
-	 
-	 
-	//**************** COLLECTIONS *********************
-	//Messages
-	var Messages = Backbone.Collection.extend({
-		model: Message,
-		for_event: function(event_id) {
-			return this.filter(
-				function(message){
-					return message.get('event_id')==event_id;
-				}
-			);
-		},
-		get_children_of_id: function(message_id) {
-			return this.filter(
-				function(message) {
-					return message.get('parent_id')==message_id;
-				}
-			);
-		},
-		get_children_of_model: function(message_model) {
-			return this.get_children_of_id(message_model.get('id'));
-		},
-		get_parentless: function() {
-			return this.filter(function(item){return item.get("parent_id") == null});
-		},
-	});
-	
-	//Files Collection
-	var Files = Backbone.Collection.extend({
-		model: File,
-		url: "[[ reverse_url("Files", class_id) ]]",
-	});
-	window.files = new Files([[files]]);
-	
-	//Calendar Events Collection
-	var Events = Backbone.Collection.extend({
-		model: Event,
-		url: "[[ reverse_url("Events", class_id) ]]",
-		comparator: function(event) {
-			return event.get("start");
-		}
-	});
-	window.events = new Events([[events]]);
-	
-	//**************** VIEWS *********************
-	//Sidebar Item
-	var SidebarEvent = Backbone.View.extend({
-		tagName: "div",
-		template: _.template($('#sidebar-item-template').html()),
-		render: function() {
-			var self = this;
-			var model = self.model;
-			var result = $(self.el).html(self.template({model:model}));
-			//When someone clicks self, it will fill the edit widget
-			
-			self.$('.edit').click(function() {
-				//Show event+file bank page
-				event_edit.bind_event_model(model);
-				file_bank.bind_event_model(model);
-			});
-			
-			self.$('.convo').click(function() {
-				//Show convo page
-				conversation_view.bind_event_model(model);
-			});
-			
-					
-			// If a conversation is clicked, show it
-			self.$("button.convo").click(function() {
-				$(".content.calendar").hide();
-				$("#conversation").fadeIn();
-				// Toggle active state in sidebar
-				$("ul.sidebar-content div").removeClass("active");
-				$(self).parent().parent().addClass("active");
-			});
-			
-			// Show the edit icon if hovering over list of events
-			$(self.el).hover(function() {
-				self.$(".edit").toggle();
-			});
-			
-			// If edit button clicked, show the calendar and edit event form
-			self.$("button.edit").click(function(event) {
-				event.preventDefault();
-				event.stopPropagation();
-				$("#conversation").hide();
-				$(".content.calendar").fadeIn();
-				$(".container .upcoming").fadeOut();
-				$(".new-event").slideDown();
-			});
-			return result;
-		}
-	});
-	
-	//Sidebar UI Component
-	var SideBar = Backbone.View.extend({
-		el:$('#sidebar'),
-		initialize: function(){
-			_.bindAll(this, 
-				"render", "render_upcoming", 
-				"render_events", "render_past",
-				"render_conversations", "render_files",
-				"render_honchoes", "render_classmates", 
-				"render_meeting_times", "render_classmates");
-			var self = this;
-			events.bind('change', self.render_events);
-			events.bind('destroy', self.render_events);
-			events.bind('add', self.render_events);
-			//console.log("Binding file change handlers!");
-			files.bind('change', self.render_files);
-			files.bind('change', self.render_events); //File tag changes should affect events
-			files.bind('destroy', self.render_files);
-			files.bind('destroy', self.render_events); //File destruction should affect events
-			files.bind('add', self.render_files);
-			this.max_upcoming = Infinity;
-			this.render();
-		},
-		render_events: function() {
-			console.log("Rendering events");
-			events.sort();
-			this.render_upcoming();
-			this.render_past();
-			this.render_conversations();
-		},
-		render: function(){
-			this.render_upcoming();
-			this.render_past();
-			this.render_conversations();
-			this.render_honchoes();
-			this.render_classmates();
-			this.render_meeting_times();
-			this.render_files();
-		},
-		render_upcoming: function() {
-			var upcoming = events.first(this.max_upcoming);
-			this.$("#upcoming-list").html(""); //Clear current upcoming list
-			_(upcoming)
-			.filter(function(item) {
-				return server_timestamp <= item.get('start');
-			})
-			.forEach(function(item) {
-				var itemView = new SidebarEvent({model:item});
-				this.$("#upcoming-list").append(itemView.render());
-			});		
-		},
-		render_past: function() {
-			var past = events;
-			this.$("#past-events-list").html("");
-			past
-			.filter(function(item) {
-				return (server_timestamp > item.get('start'));
-			})
-			.forEach(function(item) {
-				var itemView = new SidebarEvent({model:item});
-				this.$("#past-events-list").append(itemView.render());
-			});
-		},
-		render_conversations: function() {
-			var convos = events;
-			this.$("#conversation-list").html("");
-			convos
-			.filter(function(item) {
-				console.log("Looking at " + item.get('title') + " has convo: " + item.has_active_convo());
-				return item.has_active_convo();
-			})
-			.forEach(function(item) {
-				var itemView = new SidebarEvent({model:item});
-				this.$("#conversation-list").append(itemView.render());
-			});
-		},
-		render_honchoes: function() {
-			var profs = class_doc.get('instructors');
-			var tas = class_doc.get('tas');
-			var user_template = _.template($("#user-template").html());
-			this.$("#honchoes-list").html("");
-			_(profs).forEach(function(item) {
-				this.$("#honchoes-list").append(user_template({user_type:"Professor", first_name:item.first_name, last_name:item.last_name}));
-			});
-			_(tas).forEach(function(item) {
-				this.$("#honchoes-list").append(user_template({user_type:"TA", first_name:item.first_name, last_name:item.last_name}));
-			});
-		},
-		render_classmates: function() {
-			var classmates = class_doc.get('students');
-			var user_template = _.template($("#user-template").html());
-			this.$("#classmates-list").html("");
-			_(classmates).forEach(function(item) {
-				this.$("#classmates-list").append(user_template({first_name:item.first_name, last_name:item.last_name}));
-			});
-		},
-		render_meeting_times: function() {
-			meeting_times = class_doc.get('meet_times');
-			_(day_order).forEach(
-				function(day_code) {
-					if(!_.isUndefined(meeting_times[day_code])) {
-						var meet_time = "<li><%= day_name %>, <%= start %>-<%= end %></li>";
-						var html = _.template(meet_time, {day_name:day_names[day_code], start:meet_time_format(meeting_times[day_code][0]), end:meet_time_format(meeting_times[day_code][1])});
-						this.$('#meeting-list').append(html);
-					}
-				}
-			);
-		},
-		render_files: function() {
-			//console.log("rendering files");
-			this.$("#file-list").html("");
-			files.forEach(
-				function(file) {
-					var file_format = '<li><a href="<%= generate_filepath(file.get("name")) %>"><%= file.get("name") %></a> <button class="edit">edit</button></li>';
-					var file_info = $(_.template(file_format, {file:file}));
-					$(file_info).children("button.edit").click(function(){file_edit.bind_file_model(file)});
-					this.$("#file-list").append(file_info);
-				}
-			);
-		}
-		
-	});
-	window.sidebar = new SideBar();
-	
-	//File Edit Widget (Change the tags of a file)
-	var FileEdit = Backbone.View.extend({
-		el: $("#file-edit"),
-		initialize: function() {
-			this.template = _.template("<option value='<%= event_id %>'><%= event_name %></option>")
-			this.render();
-		},
-		bind_file_model: function(file_model) {
-			this.model = file_model;
-			var self = this;
-			this.$(".save").unbind().click(function() {
-				self.save();
-			});
-			this.$(".delete").unbind().click(function(){
-				self.delete_file();
-			});
-			this.render()
-		},
-		//Save the tag changes
-		save: function() {
-			//console.log("Saving");
-			var tagged = _(this.$("select option:selected")).map(function(item){
-				return $(item).attr("value");
-			});
-			this.model.set("tags", tagged);
-			this.model.save();
-			
-		},
-		//Delete the file
-		delete_file: function() {
-			var self = this;
-			if(!_.isUndefined(this.model)) {
-				this.model.destroy({
-					success: function() {
-						//Unbind model and rerender
-						self.model = undefined;
-						self.render();
-						},
-					error: function() {
-						self.$("#message").html("Error!");
-						}
-				});
-			}
-		},
-		render: function() {
-			//Clear the current tags:
-			this.$(".tags").html("");
-			//Clear the message
-			this.$("#message").html("");
-			if(!_.isUndefined(this.model)) {
-				tags = this.model.get("tags");
-				var self = this;
-				
-				//Populate Events
-				events.forEach(function(item) {
-					self.$(".tags").append(self.template({event_id:item.get('id'), event_name:item.get('title')}));
-				});
-				
-				//Select the correct events
-				_(this.model.get_classes()).map(
-					function(item){
-						//console.log(this.$('option[value="' + item.get('id') + '"]').attr('selected', 'selected'));
-						return item.get('id');
-					}
-				);
-			}
-			else {
-				//console.log("No bound model");
-				this.$("#message").html("Please bind a file.");
-			}
-			//console.log("Rendering");
-		}
-	});
-	window.file_edit = new FileEdit();
-	
-	//Event Edit Widget (also for creating new events)
-	var EventEdit = Backbone.View.extend({
-		el: $("#event-edit"),
-		initialize: function() {
-			//Attach the self-rendering datetimeinput widgets
-			this.dtStart = new DatetimeInputWidget(
-				{el:this.$("#start-widget")}
-			);
-			this.dtFinish = new DatetimeInputWidget(
-				{el:this.$("#finish-widget")}
-			);
-			this.dtStart.options.that_floor = _(this.dtFinish.floor).bind(this.dtFinish);
-			this.dtFinish.options.that_ceil = _(this.dtStart.ceil).bind(this.dtStart);
-			
-			_.bindAll(this, "commit_edit", "commit_new");
-			
-			var self = this;
-			var toggleConvoInputs = function() {
-				//console.log("Input toggled");
-				if(self.$(".auto-convo").is(":checked")) {
-					//console.log("checked");
-					self.$(".auto-convo-inputs").show();
-				}
-				else {
-					//console.log("unchecked");
-					self.$(".auto-convo-inputs").hide();
-				}
-			}
-			this.$(".auto-convo").change(toggleConvoInputs).trigger("change");
-			
-			this.render();
-		},
-		bind_event_model: function(event_model) {
-			this.model = event_model;
-			this.render();
-		},
-		prepare_new_event: function(date) {
-			//console.log("Preparing event");
-			this.$("#message").html("");
-			this.model = undefined; //Reset model
-			this.$("#event-id").html("");
-			this.$("#title").val("");
-			this.dtStart.set_date(date, true);
-			this.dtFinish.set_date(date, true);
-			this.$(".details").val("");
-			this.$(".auto-convo").trigger("change"); //Trigger re-render of checkbox
-			var self = this;
-			this.$(".save").html("Create Event").unbind("click").bind("click", this.commit_new);
-			this.$(".delete").hide();
-		},
-		commit_new: function() {
-			//console.log("called commit_new");
-			//Create a new event
-			var title = this.$("#title").val()
-			var start = this.dtStart.get_ISO_string();
-			var finish = this.dtFinish.get_ISO_string();
-			var details = this.$(".details").val();
-			var type = this.$(".type").val();
-			var auto_convo = this.$(".auto-convo").attr("checked") == "checked";
-			var hours_before = parseInt(this.$(".hours-before")) || 0; //Default 0
-			var days_before = parseInt(this.$(".days-before")) || 0;
-			event = {title:title, start:start, finish:finish, details:details, type:type, dummy:!auto_convo}
-			events.create(event, {
-				success: function() {
-					this.$('#message').html("Success!");
-					//The server will have calculated a convo_start time for this object, re-sync:
-					events.fetch(
-						{'success':function(){
-								events.trigger("change");
-							}
-						}
-					);
-				},
-				error: function() {
-					this.$('#message').html("Error!");
-					this.model = undefined;
-				},
-			});
-		},
-		commit_edit: function() {
-			var id = this.$("#event-id").html();
-			var title = this.$("#title").val();
-			var start = this.dtStart.get_ISO_string()//.slice(0,17);
-			var finish = this.dtFinish.get_ISO_string()//.slice(0, 17);
-			var details = this.$(".details").val();
-			var type = this.$(".type").val();
-			var auto_convo = this.$(".auto-convo").is(":checked");
-			var hours_before = parseInt(this.$(".hours-before").val()) || 0;
-			var days_before = parseInt(this.$(".days-before").val()) || 0;
-			changes = {
-				title:title, 
-				start:start, 
-				finish:finish, 
-				details:details, 
-				type:type,
-				dummy:!auto_convo,
-				hours_before:hours_before,
-				days_before:days_before,
-				}
-			this.model.save(changes, {
-				success: function() {
-					this.$('#message').html("Success!");
-					//The server will have calculated a convo_start time for this object, re-sync:
-					events.fetch(
-						{'success':function(){
-								events.trigger("change");
-							}
-						}
-					);
-				},
-				error: function(data) {
-					//console.log("Error: ", data);
-					this.$('#message').html("Error :(");
-				}
-			});
-		},
-		render: function() {
-			//console.log("Render called");
-			this.$("#message").html("");
-			if (!_.isUndefined(this.model)) {
-				//Populate the field with model attrs
-				this.$("#event-id").html("Editing " + this.model.get("id"));
-				this.$("#title").val(this.model.get("title"));
-				this.dtStart.set_date(this.model.get_date("start"));
-				this.dtFinish.set_date(this.model.get_date("finish"));
-				this.$(".details").val(this.model.get("details"));
-				this.$(".type").val(this.model.get("type"));
-				var self = this;
-				this.$(".auto-convo").attr("checked", !(this.model.get("dummy")));
-				this.$(".auto-convo").trigger("change"); //Trigger re-render of checkbox
-				this.$(".hours-before").val(this.model.get("hours_before"));
-				this.$(".days-before").val(this.model.get("days_before"));
-				this.$(".save").html("Save").unbind("click").bind("click", self.commit_edit);
-				this.$(".save").bind("click", file_bank.save);
-				this.$(".delete").html("Delete").show();
-				this.$(".delete").bind("click", function() {
-					self.model.destroy({
-						success: function(data) {
-							//console.log("Success: ", data);
-							self.$('#message').html("Success!");
-							self.model = undefined;
-							self.render();
-						},
-						error: function(data) {
-							//console.log("Error: ", data);
-							self.$('#message').html("Error :(");
-						}
-					});
-				});
-			} else {
-				this.prepare_new_event(new Date(server_timestamp+"-05:00"));
-			}	
-		}
-	});
-	//Datetime Input Widget
-	var DatetimeInputWidget = Backbone.View.extend({
-		events: {
-			'mousewheel .date': 'add_day',
-			'mousewheel .hour': 'add_hour',
-			'mousewheel .minute': 'add_five_min',
-			'mousewheel .ap': 'toggle_ap',
-			'blur .date': 'parse_date',
-			'blur .hour': 'parse_hour',
-			'blur .minute': 'parse_minute',
-			'blur .ap': 'parse_hour',
-		},
-		initialize: function() {
-			//Date arithmetic variables
-			this.minute = 60*1000;
-			this.hour = this.minute*60;
-			this.day = this.hour*24;
-			this.template = _.template($("#datetime-input-template").html());
-			$(this.el).append(this.template());
-			this.set_date(new Date(server_timestamp), true); //Renders
-		},
-		set_date: function(date, default_time) {
-			this.date = date;
-			if(default_time) {
-				//Set the time to 12:00pm
-				this.date.setHours(12);
-				this.date.setMinutes(0);
-			}
-			this.render();
-		},
-		add_day: function(event) {
-			this.scroll_wheel_helper(event, this.day);
-		},
-		add_half_day: function(event) {
-			this.scroll_wheel_helper(event, this.day/2);
-		},
-		add_hour: function(event) {
-			this.scroll_wheel_helper(event, this.hour);
-		},
-		add_five_min: function(event) {
-			this.scroll_wheel_helper(event, this.minute*5);
-		},
-		toggle_ap: function(scroll_event) {
-			scroll_event.preventDefault();
-			if (this.date.getHours() >= 12) {
-				this.set_date(new Date(this.date.valueOf() - 12*this.hour));
-			} else {
-				this.set_date(new Date(this.date.valueOf() + 12*this.hour));
-			}
-		},
-		scroll_wheel_helper: function(scroll_event, change) {
-			scroll_event.preventDefault();
-			var deltaY = scroll_event.originalEvent.wheelDeltaY;
-			if (deltaY < 0) {
-				change *= -1;
-			}
-			this.set_date(new Date(this.date.valueOf() + change));
-		},
-		parse_date: function() {
-			var date = this.$('.date').val();
-			var date_array = _(date.split("/")).map(function(item){return parseInt(item)});
-			this.date.setFullYear(date_array[2]);
-			this.date.setMonth(date_array[0]-1);
-			this.date.setDate(date_array[1]);
-			this.render();
-		},
-		parse_hour: function() {
-			var hour = this.$('.hour').val();
-			var ap = this.$('.ap').val();
-			hour = parseInt(hour);
-			if (ap == 'a' && hour == 12) {
-				hour = 0;
-			}
-			if (ap == 'p' && hour != 12) {
-				hour = (hour + 12)%24;
-			}
-			this.date.setHours(hour);
-			this.render();
-		},
-		parse_minute: function() {
-			var minute = this.$('.minute').val();
-			minute = parseInt(minute);
-			this.date.setMinutes(minute);
-			this.render();
-		},
-		get_ISO_string: function() {
-			return this.date.format("yyyy-mm-dd") + "T" + this.date.format("HH:MM");
-		},
-		floor: function(date) {
-			if (date.valueOf() > this.date.valueOf()) {
-				this.set_date(new Date(date.valueOf()));
-			}
-		},
-		ceil: function(date) {
-			if (date.valueOf() < this.date.valueOf()) {
-				this.set_date(new Date(date.valueOf()));
-			}
-		},
-		render: function() {
-			var date = this.date.format('m/d/yyyy');
-			this.$('.date').val(date);
-			var hour = this.date.format('h');
-			this.$('.hour').val(hour);
-			var minute = this.date.format('MM');
-			this.$('.minute').val(minute);
-			var ap = this.date.format('t');
-			this.$('.ap').val(ap);
-			
-			//floor or ceil callback: ie if this is the floor/ceil of another time input, 
-			if (!_.isUndefined(this.options.that_floor)) this.options.that_floor(this.date);
-			if (!_.isUndefined(this.options.that_ceil)) this.options.that_ceil(this.date);
-		},
-	});
-	
-	//Widget to add files to a class
-	var FileBank = Backbone.View.extend({
-		el: $("#file-bank"),
-		initialize: function() {
-			_.bindAll(this, "save");
-			this.template = _.template("<option value='<%= file_id %>'><%= file_name %></option>")
-			this.render();
-		},
-		bind_event_model: function(model) {
-			this.model = model;
-			this.render();
-		},
-		unbind_event_model: function() {
-			this.model = undefined;
-			this.render();
-		},
-		//Add/remove files to/from class
-		save: function() {
-			console.log("Saving", this.model);
-			var self = this;
-			var all_files = files.pluck("id");
-			var selected_files = _(this.$("select option:selected")).map(function(item){
-				return $(item).attr("value");
-			});
-			var unselected_files = _(all_files).difference(selected_files);
-			_(selected_files).forEach(function(id) {
-				files.get(id).add_tag(self.model.get("id"));
-			});
-			_(unselected_files).forEach(function(id) {
-				files.get(id).remove_tag(self.model.get("id"));
-			});
-			console.log(all_files, selected_files, unselected_files);
-		},
-		render: function() {
-			//Clear current list
-			this.$(".files").html("");
-			if (!_.isUndefined(this.model)) {
-				var self = this;
-				files.forEach(function(item) {
-					//Supply file bank
-					self.$(".files").append(
-						self.template({file_id: item.get("id"), file_name: item.get("name")})
-					);
-				});
-				_(this.model.get_files()).forEach(function(item) {
-					this.$('option[value="' + item.get('id') + '"]').attr('selected', 'selected')
-				});
-			} else {
-				var self = this;
-				files.forEach(function(item) {
-					//Supply file bank
-					self.$(".files").append(
-						self.template({file_id: item.get("id"), file_name: item.get("name")})
-					);
-				});
-			}
-			//console.log("File bank render");
-			this.$(".chzn-select").chosen();
-			this.$(".chzn-select").trigger("liszt:updated");
-		}
-	});
-	window.file_bank = new FileBank();
-	
-	if (class_doc.is_priveleged(user_id)) {
-		window.event_edit = new EventEdit();
-		$("#event-edit").show();
-	} else {
-		//alert("Not privelged!");
-	}
-	
-	//Timestamp Widget
-	var TimestampWidget = Backbone.View.extend({
-		tagName: "span",
-		initialize: function() {
-			$(this.el).addClass("timestamp");
-			_.bindAll(this, "neat_string", "render");
-		},
-		set_timestamp: function(timestamp) {
-			this.timestamp = (new Date(timestamp + "-05:00")).getTime();
-			var self = this;
-			self.render();
-			var intervalID = setInterval(self.render, 30000);
-		},
-		neat_string: function(delta_ms) {
-			var sec = 1000;
-			var min = sec*60;
-			var hour = min*60;
-			var day = hour*24;
-			var week = day*7;
-			
-			var delta_week = delta_ms/week;
-			if (delta_week > 2) return Math.floor(delta_week) + " weeks";
-			if (delta_week > 1) return "1 week";
-			
-			var delta_day = delta_ms/day;
-			if (delta_day > 2) return Math.floor(delta_day) + " days";
-			if (delta_day > 1) return "1 day";
-			
-			var delta_hour = delta_ms/hour;
-			if (delta_hour > 2) return Math.floor(delta_hour) + " hours";
-			if (delta_hour > 1) return "1 hour";
-			
-			var delta_min = delta_ms/min;
-			if (delta_min > 2) return Math.floor(delta_min) + " minutes";
-			if (delta_min > 1) return "1 minute";
-			
-			return " a few seconds";
-		},
-		render: function() {
-			var now = (new Date).getTime();
-			var then = this.timestamp;
-			var delta_ms = now-then;
-			var neat_string = this.neat_string(delta_ms);
-			$(this.el).html("posted " + neat_string + " ago");
-		}
-	})
-	//Message View
-	var MessageView = Backbone.View.extend({
-		tagName: "div",
-		initialize: function() {
-			// console.log("Initializing MessageView Object, ", this.model.get("message"));
-			_.bindAll(this, "render_destroy", "toggle_anon", "toggle_vote", "toggle_flag", "handle_vote", "handle_flag", "render_stats");
-			this.can_vote = true;
-			this.can_flag = true;
-			this.template = _.template($("#message-template").html());
-			this.render();
-			var self = this;
-			this.$(".vote").first().click(function(){self.handle_vote()});
-			this.$(".flag").first().click(function(){self.handle_flag()});
-			
-			this.model.bind("toggle_flag", self.toggle_flag);
-			this.model.bind("toggle_vote", self.toggle_vote);
-			this.model.bind("change", self.render_stats);
-			this.model.bind("destroy", self.render_destroy);
-		},
-		render_destroy: function() {
-			$(this.el).hide(100);
-		},
-		handle_vote: function() {
-			//console.log("Handling vote");
-			var self = this;
-			if (this.can_vote) {
-				this.collection.get_client().vote(self.model.get("id"));
-			} else {
-				this.collection.get_client().unvote(self.model.get("id"));
-			}
-		},
-		handle_flag: function() {
-			var self = this;
-			if (this.can_flag) {
-				this.collection.get_client().flag(self.model.get("id"));
-			} else {
-				this.collection.get_client().unflag(self.model.get("id"));
-			}
-		},
-		events: {
-			"click .share": "comment",
-			"click .anonymous-comment": "toggle_anon",
-		},
-		comment: function() {
-			//console.log("Comment, hurr durr!");
-			var self = this;
-			var comment = self.$(".comment-input").val();
-			if (comment.length > 2) {
-				//console.log("Comment:", comment);
-				if (!self.anon) {
-					self.collection.get_client().comment(self.model.get("id"), comment);
-				} else {
-					self.collection.get_client().anon_comment(self.model.get("id"), comment);
-				}
-				self.$(".comment-input").val("");
-				self.$(".submit-comment").fadeOut("fast");
-			}
-		},
-		toggle_anon: function() {
-			// Toggles anonymous comments
-			this.anon = !this.anon;
-			this.$(".anonymous-comment").toggleClass("active");
-			if (this.anon) {
-				this.$("input.comment-input").css({
-					'background-color' : '#666',
-					'color' : '#FFF'
-				});
-			} else {
-				this.$("input.comment-input").css({
-					'background-color' : '#FFF',
-					'color' : '#333'
-				});
-			}
-		},
-		
-		toggle_vote: function() {
-			this.can_vote = !this.can_vote;
-			if (this.can_vote) {
-				this.$(".vote").first().html("like");
-			} else {
-				this.$(".vote").first().html("unlike");
-			}
-		},
-		toggle_flag: function() {
-			// console.log("toggle_flag!");
-			this.can_flag = !this.can_flag;
-			if (!this.can_flag) {
-				this.$(".flag").first().css("display", "inline-block");
-			} else {
-				this.$(".flag").first().css("display", "none");
-			}
-		},
-		render_stats: function() {
-			var numVotes = this.model.get("votes");
-			if (numVotes == 0) {
-				this.$(".votes").first().hide();
-			} else {
-				this.$(".votes").first().html("+ " + numVotes);
-				this.$(".votes").first().show();
-			}
-			
-			this.$(".flags").first().html(this.model.get("flags"));
-		},
-		render: function() {
-			if(!_.isUndefined(this.model)) {
-				if (this.model.get("parent_id") == null) {
-					$(this.el).addClass("post");
-				} else {
-					$(this.el).addClass("comment");
-				}
-				$(this.el).attr("id", this.model.get("id"));
-				$(this.el).html(this.template({model:this.model}));
-				//Embedly stuff
-				try {
-					this.$(".message").embedly({
-						key:'48e65268f1c411e0a3514040d3dc5c07',
-						maxWidth: 250,
-			        	wmode: 'transparent'
-			        });
-		        } catch(something) {
-		        	console.log("Exception caught");
-		        }
-				//Prepend avatar!
-				$(this.el).prepend("<img class='authorimg' src='/account/avatar/" + this.model.get("author")["_id"] + "'/>")
-				this.render_stats();
-				//Create timestamp
-				var timestamp = new TimestampWidget();
-				timestamp.set_timestamp(this.model.get("timestamp"));
-				this.$(".timestamp").first().append(timestamp.el);
-				//Find out if we can vote and flag
-				if (_(this.collection.get_client().votes_and_flags['voted']).contains(this.model.get('id'))) {
-					this.toggle_vote();
-				}
-				if (_(this.collection.get_client().votes_and_flags['flagged']).contains(this.model.get('id'))) {
-					this.toggle_flag();
-				}
-				if (this.model.get("parent_id") == null) {
-					var self = this;
-					$(this.el).append("<div class='comments'></div>");
-					$(this.el).append("<div class='submit-comment'><input type='text' class='comment-input' placeholder='Enter comment...'></input><button class='anonymous-comment'></button><button class='share'>Share</button></div>");
-					//console.log($(this.el).children("a.comment-link"));
-					$(this.el).children("div").children(".actions").children("a.comment-link").click(function(e) {
-						e.preventDefault();
-						$(self.el).children(".submit-comment").slideToggle("fast");
-					});
-					
-					var commentbox = $(this.el).children(".submit-comment").children(".anonymous-comment");
-					commentbox.mouseover(function() {
-						commentbox.append("<div class='tooltip'>Anonymous to classmates</div>");
-					});
-					commentbox.mouseout(function() {
-						$(".tooltip").remove();
-					});
-				}
-				
-				var self = this;
-				$(this.el).mouseover(function() {
-					$(this).children("div").children("a.delete").addClass("active");					
-					if (self.can_flag) {
-						$(this).children("div").children(".actions").children(".flag").show();
-					}
-				});
-				$(this.el).mouseout(function() {
-					$(this).children("div").children("a.delete").removeClass("active");
-					var flagIcon = $(this).children("div").children(".actions").children(".flag");
-					if (self.can_flag) {
-						flagIcon.removeClass("flagged");
-						flagIcon.hide();
-					} else {
-						flagIcon.addClass("flagged");
-						flagIcon.show();
-					}
-				});
-				
-				this.$(".delete").click(function(event){
-					event.preventDefault();
-					$(this).html("");
-					$(this).prepend("<button class='delete-confirm'>Delete this post</button>");
-					$(this).children(".delete-confirm").click(function(event){
-						event.stopPropagation();
-						self.collection.get_client().destroy(self.model.get("id"));
-					});
-				});
-			}
-		},
-	});
-	
-	//Conversation View
-	var ConversationView = Backbone.View.extend({
-		el: $("#conversation"),
-		events: {
-			'click .anonymous-post': 'toggle_anon'
-		},
-		initialize: function() {
-			console.log("Initializing the ConversationView");
-			_.bindAll(this, 
-				"new_message_handler",
-				"toggle_anon");
-			this.message_template = _.template($("#message-template").html());
-			this.anon = false;
-			this.render();
-		},
-		unbind_current_model: function() {
-			if (!_.isUndefined(this.model)) {
-				this.model.client.halt();
-				this.model.messages.unbind("add", self.new_message_handler);
-			}
-			this.model = undefined;
-		},
-		bind_event_model: function(event_model) {
-			console.log("Binding event model ", event_model.get('title'));
-			this.unbind_current_model();
-			this.model = event_model;
-			var self = this;
-			this.$(".share").unbind().click(function() {
-				var insight = self.$(".post-input").val();
-				if (insight.length > 2) {
-					if (!self.anon) {
-						event_model.get_client().post(insight);
-					} else {
-						event_model.get_client().anon_post(insight);
-					}
-					self.$(".post-input").val("");
-				}
-			});
-			
-			//Listen for changes to this event
-			var self = this;
-			this.model.messages.bind("add", self.new_message_handler);
-			console.log("Done binding, ready to render.");
-			this.render();
-		},
-		new_message_handler: function(message) {
-			//What happens depends on if the message is a post or comment
-			if (message.get("parent_id") == null) {
-				//The message is a post b.c. it has no parent
-				this.append_post(message);
-			} else {
-				this.append_comment(message);
-			}
-		},
-		make_view_for_message: function(message_model) {
-			return new MessageView({model:message_model, collection:this.model});
-		},
-		append_post: function(message_model) {
-			var message_view = this.make_view_for_message(message_model);
-			$(message_view.el).css("display", "none");
-			this.$("#posts").prepend(message_view.el);
-			$(message_view.el).fadeIn();
-		},
-		append_comment: function(message_model) {
-			var parent_id = message_model.get("parent_id");
-			var message_view = this.make_view_for_message(message_model);
-			$(message_view.el).css("display", "none");
-			this.$("#" + parent_id + " .comments").append(message_view.el);
-			$(message_view.el).fadeIn();
-		},
-		toggle_anon: function() {
-			// Toggles anonymous posts
-			this.anon = !this.anon;
-			this.$(".anonymous-post").toggleClass("active");
-			if (this.anon) {
-				this.$("textarea.post-input").css({
-					'background-color' : '#666',
-					'color' : '#FFF'
-				});
-			} else {
-				this.$("textarea.post-input").css({
-					'background-color' : '#FFF',
-					'color' : '#333'
-				});
-			}
-		},
-		render: function() {
-			this.$("#convo-message").html("");
-			this.$("#posts").html("");
-			if(!_.isUndefined(this.model)) {
-				this.$("#message").html("");
-				this.$("#message").removeClass("active");
-				this.$("#convo-title").html(this.model.get("title"));
-				this.$("#convo-details").html(this.model.get("details"));
-				if (this.model.get("details") == "") { 
-					this.$("#convo-details-link").html("Show details");
-					this.$("#convo-details").slideUp("fast");
-				} else {
-					this.$("#convo-details-link").html("Hide details");
-					this.$("#convo-details").slideDown("fast");
-				}
-				var self = this;
-				//Initialize the client
-				this.model.get_client().start();
-			} else {
-				this.$("#message").html("Please bind a convo");
-				this.$("#message").addClass("active");
-			}
-		}
-	});
-	window.conversation_view = new ConversationView();
-	
+  //**************** Useful Global Items *********************
+  //User Id
+  window.user_id = "[[user_id]]";
+  
+  //file_path
+  window.generate_filepath = function(filename) {
+    return "/static/files/" + (class_doc.get('id') || class_doc.get('_id')) + "/" + filename;
+  }
+  
+  //server time
+  window.server_timestamp = "[[server_timestamp]]";
+  
+  //meet time format
+  window.day_names = {'m':'Mon', 't':'Tue', 'w':'Wed', 'r':'Thu', 'f':'Fri', 's':'Sat', 'u':'Sun'};
+  window.meet_time_format = function(meet_time) {
+    d = new Date("0000-01-01T" + meet_time);
+    return d.format("UTC:h:MMt")
+  };
+  window.day_order = ["m", "t", "w", "r", "f", "s", "u"];
+  
+  //**************** MODELS *********************
+  //Class Model
+  var Class = Backbone.Model.extend({
+    //Instructors and TAs are priveleged
+    is_priveleged: function(some_user_id) {
+      return  _(this.get('instructors')).chain()
+        .union(this.get('tas'))
+        .pluck('_id')
+        .contains(some_user_id)
+        .value();
+    }
+  });
+  window.class_doc = new Class([[class_doc]]);
+  
+  //Calendar Event Model - depends on File Collection
+  var Event = Backbone.Model.extend({
+    initialize: function() {
+      this.messages = new Messages();
+    },
+    get_files: function() {
+      var self = this;
+      //the files global Collection is defined later
+      return files.filter(function(file) {
+        return file.has_tag(self.get('id'));
+      });
+    },
+    get_date: function(field_name) {
+      var date_string = this.get(field_name);
+      date_string += "-05:00" //Add time zone, Pretend everyone is in eastern time for now
+      return new Date(date_string);
+    },
+    has_active_convo: function() {
+      has_active = (server_timestamp > this.get('convo_start')) && (this.get("dummy") == false);
+      return has_active;
+    },
+    get_client: function() {
+      if (!_.isUndefined(this.client)) {
+        //console.log("Returning old client");
+        return this.client;
+      } else {
+        console.log("Returning new client");
+        //Initialize the Messages collection correlated with the client
+        var client = new Client(this.get("id"), user_id, this.messages);
+        this.client = client;
+        
+        return client;
+      }
+    }
+  });
+  
+  //File Model - depends on Event Collection
+  var File = Backbone.Model.extend({
+    has_tag: function(id) {
+      return _(this.get('tags')).contains(id);
+    },
+    get_classes: function() {
+      //events global Collection is defined later
+      var self = this;
+      return events.filter(function(event) {
+        return self.has_tag(event.get('id'));
+      });
+    },
+    //Todo - add the collection method to save all changed files, remove save call from these
+    remove_tag: function(id) {
+      if (this.has_tag(id)) {
+        this.set("tags", _(this.get("tags")).without(id));
+        this.save();
+      }
+    },
+    add_tag: function(id) {
+      //console.log("Inside add_tag of " + this.get("name") + " with " + id);
+      if (!this.has_tag(id)) {
+        var new_tags = this.get("tags");
+        new_tags.push(id);
+        this.set("tags", new_tags);
+        this.save();
+      }
+    }
+  });
+   
+   //Post and comment models
+   var Message = Backbone.Model.extend({
+   });
+   
+   
+  //**************** COLLECTIONS *********************
+  //Messages
+  var Messages = Backbone.Collection.extend({
+    model: Message,
+    for_event: function(event_id) {
+      return this.filter(
+        function(message){
+          return message.get('event_id')==event_id;
+        }
+      );
+    },
+    get_children_of_id: function(message_id) {
+      return this.filter(
+        function(message) {
+          return message.get('parent_id')==message_id;
+        }
+      );
+    },
+    get_children_of_model: function(message_model) {
+      return this.get_children_of_id(message_model.get('id'));
+    },
+    get_parentless: function() {
+      return this.filter(function(item){return item.get("parent_id") == null});
+    },
+  });
+  
+  //Files Collection
+  var Files = Backbone.Collection.extend({
+    model: File,
+    url: "[[ reverse_url("Files", class_id) ]]",
+  });
+  window.files = new Files([[files]]);
+  
+  //Calendar Events Collection
+  var Events = Backbone.Collection.extend({
+    model: Event,
+    url: "[[ reverse_url("Events", class_id) ]]",
+    comparator: function(event) {
+      return event.get("start");
+    }
+  });
+  window.events = new Events([[events]]);
+  
+  //**************** VIEWS *********************
+  //Sidebar Item
+  var SidebarEvent = Backbone.View.extend({
+    tagName: "div",
+    template: _.template($('#sidebar-item-template').html()),
+    render: function() {
+      var self = this;
+      var model = self.model;
+      var result = $(self.el).html(self.template({model:model}));
+      //When someone clicks self, it will fill the edit widget
+      
+      self.$('.edit').click(function() {
+        //Show event+file bank page
+        event_edit.bind_event_model(model);
+        file_bank.bind_event_model(model);
+      });
+      
+      self.$('.convo').click(function() {
+        //Show convo page
+        conversation_view.bind_event_model(model);
+      });
+      
+          
+      // If a conversation is clicked, show it
+      self.$("button.convo").click(function() {
+        $(".content.calendar").hide();
+        $("#conversation").fadeIn();
+        // Toggle active state in sidebar
+        $("ul.sidebar-content div").removeClass("active");
+        $(self).parent().parent().addClass("active");
+      });
+      
+      // Show the edit icon if hovering over list of events
+      $(self.el).hover(function() {
+        self.$(".edit").toggle();
+      });
+      
+      // If edit button clicked, show the calendar and edit event form
+      self.$("button.edit").click(function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        $("#conversation").hide();
+        $(".content.calendar").fadeIn();
+        $(".container .upcoming").fadeOut();
+        $(".new-event").slideDown();
+      });
+      return result;
+    }
+  });
+  
+  //Sidebar UI Component
+  var SideBar = Backbone.View.extend({
+    el:$('#sidebar'),
+    initialize: function(){
+      _.bindAll(this, 
+        "render", "render_upcoming", 
+        "render_events", "render_past",
+        "render_conversations", "render_files",
+        "render_honchoes", "render_classmates", 
+        "render_meeting_times", "render_classmates");
+      var self = this;
+      events.bind('change', self.render_events);
+      events.bind('destroy', self.render_events);
+      events.bind('add', self.render_events);
+      //console.log("Binding file change handlers!");
+      files.bind('change', self.render_files);
+      files.bind('change', self.render_events); //File tag changes should affect events
+      files.bind('destroy', self.render_files);
+      files.bind('destroy', self.render_events); //File destruction should affect events
+      files.bind('add', self.render_files);
+      this.max_upcoming = Infinity;
+      this.render();
+    },
+    render_events: function() {
+      console.log("Rendering events");
+      events.sort();
+      this.render_upcoming();
+      this.render_past();
+      this.render_conversations();
+    },
+    render: function(){
+      this.render_upcoming();
+      this.render_past();
+      this.render_conversations();
+      this.render_honchoes();
+      this.render_classmates();
+      this.render_meeting_times();
+      this.render_files();
+    },
+    render_upcoming: function() {
+      var upcoming = events.first(this.max_upcoming);
+      this.$("#upcoming-list").html(""); //Clear current upcoming list
+      _(upcoming)
+      .filter(function(item) {
+        return server_timestamp <= item.get('start');
+      })
+      .forEach(function(item) {
+        var itemView = new SidebarEvent({model:item});
+        this.$("#upcoming-list").append(itemView.render());
+      });   
+    },
+    render_past: function() {
+      var past = events;
+      this.$("#past-events-list").html("");
+      past
+      .filter(function(item) {
+        return (server_timestamp > item.get('start'));
+      })
+      .forEach(function(item) {
+        var itemView = new SidebarEvent({model:item});
+        this.$("#past-events-list").append(itemView.render());
+      });
+    },
+    render_conversations: function() {
+      var convos = events;
+      this.$("#conversation-list").html("");
+      convos
+      .filter(function(item) {
+        console.log("Looking at " + item.get('title') + " has convo: " + item.has_active_convo());
+        return item.has_active_convo();
+      })
+      .forEach(function(item) {
+        var itemView = new SidebarEvent({model:item});
+        this.$("#conversation-list").append(itemView.render());
+      });
+    },
+    render_honchoes: function() {
+      var profs = class_doc.get('instructors');
+      var tas = class_doc.get('tas');
+      var user_template = _.template($("#user-template").html());
+      this.$("#honchoes-list").html("");
+      _(profs).forEach(function(item) {
+        this.$("#honchoes-list").append(user_template({user_type:"Professor", first_name:item.first_name, last_name:item.last_name}));
+      });
+      _(tas).forEach(function(item) {
+        this.$("#honchoes-list").append(user_template({user_type:"TA", first_name:item.first_name, last_name:item.last_name}));
+      });
+    },
+    render_classmates: function() {
+      var classmates = class_doc.get('students');
+      var user_template = _.template($("#user-template").html());
+      this.$("#classmates-list").html("");
+      _(classmates).forEach(function(item) {
+        this.$("#classmates-list").append(user_template({first_name:item.first_name, last_name:item.last_name}));
+      });
+    },
+    render_meeting_times: function() {
+      meeting_times = class_doc.get('meet_times');
+      _(day_order).forEach(
+        function(day_code) {
+          if(!_.isUndefined(meeting_times[day_code])) {
+            var meet_time = "<li><%= day_name %>, <%= start %>-<%= end %></li>";
+            var html = _.template(meet_time, {day_name:day_names[day_code], start:meet_time_format(meeting_times[day_code][0]), end:meet_time_format(meeting_times[day_code][1])});
+            this.$('#meeting-list').append(html);
+          }
+        }
+      );
+    },
+    render_files: function() {
+      //console.log("rendering files");
+      this.$("#file-list").html("");
+      files.forEach(
+        function(file) {
+          var file_format = '<li><a href="<%= generate_filepath(file.get("name")) %>"><%= file.get("name") %></a> <button class="edit">edit</button></li>';
+          var file_info = $(_.template(file_format, {file:file}));
+          $(file_info).children("button.edit").click(function(){file_edit.bind_file_model(file)});
+          this.$("#file-list").append(file_info);
+        }
+      );
+    }
+    
+  });
+  window.sidebar = new SideBar();
+  
+  //File Edit Widget (Change the tags of a file)
+  var FileEdit = Backbone.View.extend({
+    el: $("#file-edit"),
+    initialize: function() {
+      this.template = _.template("<option value='<%= event_id %>'><%= event_name %></option>")
+      this.render();
+    },
+    bind_file_model: function(file_model) {
+      this.model = file_model;
+      var self = this;
+      this.$(".save").unbind().click(function() {
+        self.save();
+      });
+      this.$(".delete").unbind().click(function(){
+        self.delete_file();
+      });
+      this.render()
+    },
+    //Save the tag changes
+    save: function() {
+      //console.log("Saving");
+      var tagged = _(this.$("select option:selected")).map(function(item){
+        return $(item).attr("value");
+      });
+      this.model.set("tags", tagged);
+      this.model.save();
+      
+    },
+    //Delete the file
+    delete_file: function() {
+      var self = this;
+      if(!_.isUndefined(this.model)) {
+        this.model.destroy({
+          success: function() {
+            //Unbind model and rerender
+            self.model = undefined;
+            self.render();
+            },
+          error: function() {
+            self.$("#message").html("Error!");
+            }
+        });
+      }
+    },
+    render: function() {
+      //Clear the current tags:
+      this.$(".tags").html("");
+      //Clear the message
+      this.$("#message").html("");
+      if(!_.isUndefined(this.model)) {
+        tags = this.model.get("tags");
+        var self = this;
+        
+        //Populate Events
+        events.forEach(function(item) {
+          self.$(".tags").append(self.template({event_id:item.get('id'), event_name:item.get('title')}));
+        });
+        
+        //Select the correct events
+        _(this.model.get_classes()).map(
+          function(item){
+            //console.log(this.$('option[value="' + item.get('id') + '"]').attr('selected', 'selected'));
+            return item.get('id');
+          }
+        );
+      }
+      else {
+        //console.log("No bound model");
+        this.$("#message").html("Please bind a file.");
+      }
+      //console.log("Rendering");
+    }
+  });
+  window.file_edit = new FileEdit();
+  
+  //Event Edit Widget (also for creating new events)
+  var EventEdit = Backbone.View.extend({
+    el: $("#event-edit"),
+    initialize: function() {
+      //Attach the self-rendering datetimeinput widgets
+      this.dtStart = new DatetimeInputWidget(
+        {el:this.$("#start-widget")}
+      );
+      this.dtFinish = new DatetimeInputWidget(
+        {el:this.$("#finish-widget")}
+      );
+      this.dtStart.options.that_floor = _(this.dtFinish.floor).bind(this.dtFinish);
+      this.dtFinish.options.that_ceil = _(this.dtStart.ceil).bind(this.dtStart);
+      
+      _.bindAll(this, "commit_edit", "commit_new");
+      
+      var self = this;
+      var toggleConvoInputs = function() {
+        //console.log("Input toggled");
+        if(self.$(".auto-convo").is(":checked")) {
+          //console.log("checked");
+          self.$(".auto-convo-inputs").show();
+        }
+        else {
+          //console.log("unchecked");
+          self.$(".auto-convo-inputs").hide();
+        }
+      }
+      this.$(".auto-convo").change(toggleConvoInputs).trigger("change");
+      
+      this.render();
+    },
+    bind_event_model: function(event_model) {
+      this.model = event_model;
+      this.render();
+    },
+    prepare_new_event: function(date) {
+      //console.log("Preparing event");
+      this.$("#message").html("");
+      this.model = undefined; //Reset model
+      this.$("#event-id").html("");
+      this.$("#title").val("");
+      this.dtStart.set_date(date, true);
+      this.dtFinish.set_date(date, true);
+      this.$(".details").val("");
+      this.$(".auto-convo").trigger("change"); //Trigger re-render of checkbox
+      var self = this;
+      this.$(".save").html("Create Event").unbind("click").bind("click", this.commit_new);
+      this.$(".delete").hide();
+    },
+    commit_new: function() {
+      //console.log("called commit_new");
+      //Create a new event
+      var title = this.$("#title").val()
+      var start = this.dtStart.get_ISO_string();
+      var finish = this.dtFinish.get_ISO_string();
+      var details = this.$(".details").val();
+      var type = this.$(".type").val();
+      var auto_convo = this.$(".auto-convo").attr("checked") == "checked";
+      var hours_before = parseInt(this.$(".hours-before")) || 0; //Default 0
+      var days_before = parseInt(this.$(".days-before")) || 0;
+      event = {title:title, start:start, finish:finish, details:details, type:type, dummy:!auto_convo}
+      events.create(event, {
+        success: function() {
+          this.$('#message').html("Success!");
+          //The server will have calculated a convo_start time for this object, re-sync:
+          events.fetch(
+            {'success':function(){
+                events.trigger("change");
+              }
+            }
+          );
+        },
+        error: function() {
+          this.$('#message').html("Error!");
+          this.model = undefined;
+        },
+      });
+    },
+    commit_edit: function() {
+      var id = this.$("#event-id").html();
+      var title = this.$("#title").val();
+      var start = this.dtStart.get_ISO_string()//.slice(0,17);
+      var finish = this.dtFinish.get_ISO_string()//.slice(0, 17);
+      var details = this.$(".details").val();
+      var type = this.$(".type").val();
+      var auto_convo = this.$(".auto-convo").is(":checked");
+      var hours_before = parseInt(this.$(".hours-before").val()) || 0;
+      var days_before = parseInt(this.$(".days-before").val()) || 0;
+      changes = {
+        title:title, 
+        start:start, 
+        finish:finish, 
+        details:details, 
+        type:type,
+        dummy:!auto_convo,
+        hours_before:hours_before,
+        days_before:days_before,
+        }
+      this.model.save(changes, {
+        success: function() {
+          this.$('#message').html("Success!");
+          //The server will have calculated a convo_start time for this object, re-sync:
+          events.fetch(
+            {'success':function(){
+                events.trigger("change");
+              }
+            }
+          );
+        },
+        error: function(data) {
+          //console.log("Error: ", data);
+          this.$('#message').html("Error :(");
+        }
+      });
+    },
+    render: function() {
+      //console.log("Render called");
+      this.$("#message").html("");
+      if (!_.isUndefined(this.model)) {
+        //Populate the field with model attrs
+        this.$("#event-id").html("Editing " + this.model.get("id"));
+        this.$("#title").val(this.model.get("title"));
+        this.dtStart.set_date(this.model.get_date("start"));
+        this.dtFinish.set_date(this.model.get_date("finish"));
+        this.$(".details").val(this.model.get("details"));
+        this.$(".type").val(this.model.get("type"));
+        var self = this;
+        this.$(".auto-convo").attr("checked", !(this.model.get("dummy")));
+        this.$(".auto-convo").trigger("change"); //Trigger re-render of checkbox
+        this.$(".hours-before").val(this.model.get("hours_before"));
+        this.$(".days-before").val(this.model.get("days_before"));
+        this.$(".save").html("Save").unbind("click").bind("click", self.commit_edit);
+        this.$(".save").bind("click", file_bank.save);
+        this.$(".delete").html("Delete").show();
+        this.$(".delete").bind("click", function() {
+          self.model.destroy({
+            success: function(data) {
+              //console.log("Success: ", data);
+              self.$('#message').html("Success!");
+              self.model = undefined;
+              self.render();
+            },
+            error: function(data) {
+              //console.log("Error: ", data);
+              self.$('#message').html("Error :(");
+            }
+          });
+        });
+      } else {
+        this.prepare_new_event(new Date(server_timestamp+"-05:00"));
+      } 
+    }
+  });
+  //Datetime Input Widget
+  var DatetimeInputWidget = Backbone.View.extend({
+    events: {
+      'mousewheel .date': 'add_day',
+      'mousewheel .hour': 'add_hour',
+      'mousewheel .minute': 'add_five_min',
+      'mousewheel .ap': 'toggle_ap',
+      'blur .date': 'parse_date',
+      'blur .hour': 'parse_hour',
+      'blur .minute': 'parse_minute',
+      'blur .ap': 'parse_hour',
+    },
+    initialize: function() {
+      //Date arithmetic variables
+      this.minute = 60*1000;
+      this.hour = this.minute*60;
+      this.day = this.hour*24;
+      this.template = _.template($("#datetime-input-template").html());
+      $(this.el).append(this.template());
+      this.set_date(new Date(server_timestamp), true); //Renders
+    },
+    set_date: function(date, default_time) {
+      this.date = date;
+      if(default_time) {
+        //Set the time to 12:00pm
+        this.date.setHours(12);
+        this.date.setMinutes(0);
+      }
+      this.render();
+    },
+    add_day: function(event) {
+      this.scroll_wheel_helper(event, this.day);
+    },
+    add_half_day: function(event) {
+      this.scroll_wheel_helper(event, this.day/2);
+    },
+    add_hour: function(event) {
+      this.scroll_wheel_helper(event, this.hour);
+    },
+    add_five_min: function(event) {
+      this.scroll_wheel_helper(event, this.minute*5);
+    },
+    toggle_ap: function(scroll_event) {
+      scroll_event.preventDefault();
+      if (this.date.getHours() >= 12) {
+        this.set_date(new Date(this.date.valueOf() - 12*this.hour));
+      } else {
+        this.set_date(new Date(this.date.valueOf() + 12*this.hour));
+      }
+    },
+    scroll_wheel_helper: function(scroll_event, change) {
+      scroll_event.preventDefault();
+      var deltaY = scroll_event.originalEvent.wheelDeltaY;
+      if (deltaY < 0) {
+        change *= -1;
+      }
+      this.set_date(new Date(this.date.valueOf() + change));
+    },
+    parse_date: function() {
+      var date = this.$('.date').val();
+      var date_array = _(date.split("/")).map(function(item){return parseInt(item)});
+      this.date.setFullYear(date_array[2]);
+      this.date.setMonth(date_array[0]-1);
+      this.date.setDate(date_array[1]);
+      this.render();
+    },
+    parse_hour: function() {
+      var hour = this.$('.hour').val();
+      var ap = this.$('.ap').val();
+      hour = parseInt(hour);
+      if (ap == 'a' && hour == 12) {
+        hour = 0;
+      }
+      if (ap == 'p' && hour != 12) {
+        hour = (hour + 12)%24;
+      }
+      this.date.setHours(hour);
+      this.render();
+    },
+    parse_minute: function() {
+      var minute = this.$('.minute').val();
+      minute = parseInt(minute);
+      this.date.setMinutes(minute);
+      this.render();
+    },
+    get_ISO_string: function() {
+      return this.date.format("yyyy-mm-dd") + "T" + this.date.format("HH:MM");
+    },
+    floor: function(date) {
+      if (date.valueOf() > this.date.valueOf()) {
+        this.set_date(new Date(date.valueOf()));
+      }
+    },
+    ceil: function(date) {
+      if (date.valueOf() < this.date.valueOf()) {
+        this.set_date(new Date(date.valueOf()));
+      }
+    },
+    render: function() {
+      var date = this.date.format('m/d/yyyy');
+      this.$('.date').val(date);
+      var hour = this.date.format('h');
+      this.$('.hour').val(hour);
+      var minute = this.date.format('MM');
+      this.$('.minute').val(minute);
+      var ap = this.date.format('t');
+      this.$('.ap').val(ap);
+      
+      //floor or ceil callback: ie if this is the floor/ceil of another time input, 
+      if (!_.isUndefined(this.options.that_floor)) this.options.that_floor(this.date);
+      if (!_.isUndefined(this.options.that_ceil)) this.options.that_ceil(this.date);
+    },
+  });
+  
+  //Widget to add files to a class
+  var FileBank = Backbone.View.extend({
+    el: $("#file-bank"),
+    initialize: function() {
+      _.bindAll(this, "save");
+      this.template = _.template("<option value='<%= file_id %>'><%= file_name %></option>")
+      this.render();
+    },
+    bind_event_model: function(model) {
+      this.model = model;
+      this.render();
+    },
+    unbind_event_model: function() {
+      this.model = undefined;
+      this.render();
+    },
+    //Add/remove files to/from class
+    save: function() {
+      console.log("Saving", this.model);
+      var self = this;
+      var all_files = files.pluck("id");
+      var selected_files = _(this.$("select option:selected")).map(function(item){
+        return $(item).attr("value");
+      });
+      var unselected_files = _(all_files).difference(selected_files);
+      _(selected_files).forEach(function(id) {
+        files.get(id).add_tag(self.model.get("id"));
+      });
+      _(unselected_files).forEach(function(id) {
+        files.get(id).remove_tag(self.model.get("id"));
+      });
+      console.log(all_files, selected_files, unselected_files);
+    },
+    render: function() {
+      //Clear current list
+      this.$(".files").html("");
+      if (!_.isUndefined(this.model)) {
+        var self = this;
+        files.forEach(function(item) {
+          //Supply file bank
+          self.$(".files").append(
+            self.template({file_id: item.get("id"), file_name: item.get("name")})
+          );
+        });
+        _(this.model.get_files()).forEach(function(item) {
+          this.$('option[value="' + item.get('id') + '"]').attr('selected', 'selected')
+        });
+      } else {
+        var self = this;
+        files.forEach(function(item) {
+          //Supply file bank
+          self.$(".files").append(
+            self.template({file_id: item.get("id"), file_name: item.get("name")})
+          );
+        });
+      }
+      //console.log("File bank render");
+      this.$(".chzn-select").chosen();
+      this.$(".chzn-select").trigger("liszt:updated");
+    }
+  });
+  window.file_bank = new FileBank();
+  
+  if (class_doc.is_priveleged(user_id)) {
+    window.event_edit = new EventEdit();
+    $("#event-edit").show();
+  } else {
+    alert("Not privelged!");
+  }
+  
+  //Timestamp Widget
+  var TimestampWidget = Backbone.View.extend({
+    tagName: "span",
+    initialize: function() {
+      $(this.el).addClass("timestamp");
+      _.bindAll(this, "neat_string", "render");
+    },
+    set_timestamp: function(timestamp) {
+      this.timestamp = (new Date(timestamp + "-05:00")).getTime();
+      var self = this;
+      self.render();
+      var intervalID = setInterval(self.render, 30000);
+    },
+    neat_string: function(delta_ms) {
+      var sec = 1000;
+      var min = sec*60;
+      var hour = min*60;
+      var day = hour*24;
+      var week = day*7;
+      
+      var delta_week = delta_ms/week;
+      if (delta_week > 2) return Math.floor(delta_week) + " weeks";
+      if (delta_week > 1) return "1 week";
+      
+      var delta_day = delta_ms/day;
+      if (delta_day > 2) return Math.floor(delta_day) + " days";
+      if (delta_day > 1) return "1 day";
+      
+      var delta_hour = delta_ms/hour;
+      if (delta_hour > 2) return Math.floor(delta_hour) + " hours";
+      if (delta_hour > 1) return "1 hour";
+      
+      var delta_min = delta_ms/min;
+      if (delta_min > 2) return Math.floor(delta_min) + " minutes";
+      if (delta_min > 1) return "1 minute";
+      
+      return " a few seconds";
+    },
+    render: function() {
+      var now = (new Date).getTime();
+      var then = this.timestamp;
+      var delta_ms = now-then;
+      var neat_string = this.neat_string(delta_ms);
+      $(this.el).html("posted " + neat_string + " ago");
+    }
+  })
+  //Message View
+  var MessageView = Backbone.View.extend({
+    tagName: "div",
+    initialize: function() {
+      // console.log("Initializing MessageView Object, ", this.model.get("message"));
+      _.bindAll(this, "render_destroy", "toggle_anon", "toggle_vote", "toggle_flag", "handle_vote", "handle_flag", "render_stats");
+      this.can_vote = true;
+      this.can_flag = true;
+      this.template = _.template($("#message-template").html());
+      this.render();
+      var self = this;
+      this.$(".vote").first().click(function(){self.handle_vote()});
+      this.$(".flag").first().click(function(){self.handle_flag()});
+      
+      this.model.bind("toggle_flag", self.toggle_flag);
+      this.model.bind("toggle_vote", self.toggle_vote);
+      this.model.bind("change", self.render_stats);
+      this.model.bind("destroy", self.render_destroy);
+    },
+    render_destroy: function() {
+      $(this.el).hide(100);
+    },
+    handle_vote: function() {
+      //console.log("Handling vote");
+      var self = this;
+      if (this.can_vote) {
+        this.collection.get_client().vote(self.model.get("id"));
+      } else {
+        this.collection.get_client().unvote(self.model.get("id"));
+      }
+    },
+    handle_flag: function() {
+      var self = this;
+      if (this.can_flag) {
+        this.collection.get_client().flag(self.model.get("id"));
+      } else {
+        this.collection.get_client().unflag(self.model.get("id"));
+      }
+    },
+    events: {
+      "click .share": "comment",
+      "click .anonymous-comment": "toggle_anon",
+    },
+    comment: function() {
+      //console.log("Comment, hurr durr!");
+      var self = this;
+      var comment = self.$(".comment-input").val();
+      if (comment.length > 2) {
+        //console.log("Comment:", comment);
+        if (!self.anon) {
+          self.collection.get_client().comment(self.model.get("id"), comment);
+        } else {
+          self.collection.get_client().anon_comment(self.model.get("id"), comment);
+        }
+        self.$(".comment-input").val("");
+        self.$(".submit-comment").fadeOut("fast");
+      }
+    },
+    toggle_anon: function() {
+      // Toggles anonymous comments
+      this.anon = !this.anon;
+      this.$(".anonymous-comment").toggleClass("active");
+      if (this.anon) {
+        this.$("input.comment-input").css({
+          'background-color' : '#666',
+          'color' : '#FFF'
+        });
+      } else {
+        this.$("input.comment-input").css({
+          'background-color' : '#FFF',
+          'color' : '#333'
+        });
+      }
+    },
+    
+    toggle_vote: function() {
+      this.can_vote = !this.can_vote;
+      if (this.can_vote) {
+        this.$(".vote").first().html("like");
+      } else {
+        this.$(".vote").first().html("unlike");
+      }
+    },
+    toggle_flag: function() {
+      this.can_flag = !this.can_flag;
+      if (!this.can_flag) {
+        this.$(".flag").first().css("display", "inline-block");
+      } else {
+        this.$(".flag").first().css("display", "none");
+      }
+    },
+    render_stats: function() {
+      var numVotes = this.model.get("votes");
+      var numFlags = this.model.get("flags");
+      if (numVotes == 0) {
+        this.$(".votes").first().hide();
+      } else {
+        this.$(".votes").first().html("+ " + numVotes);
+        this.$(".votes").first().show();
+      }
+      if (numFlags > 0) {
+        this.$(".flag").first().show();
+        this.$(".flag").first().addClass("flagged");
+      }
+    },
+    render: function() {
+      if(!_.isUndefined(this.model)) {
+        if (this.model.get("parent_id") == null) {
+          $(this.el).addClass("post");
+        } else {
+          $(this.el).addClass("comment");
+        }
+        $(this.el).attr("id", this.model.get("id"));
+        $(this.el).html(this.template({model:this.model}));
+        // Embedly stuff
+        try {
+          this.$(".message").embedly({
+            key:'48e65268f1c411e0a3514040d3dc5c07',
+            maxWidth: 250,
+            wmode: 'transparent'
+          });
+        } catch(something) {
+          console.log("Embedly exception caught");
+        }
+        //Prepend avatar!
+        $(this.el).prepend("<img class='authorimg' src='/account/avatar/" + this.model.get("author")["_id"] + "'/>")
+        this.render_stats();
+        //Create timestamp
+        var timestamp = new TimestampWidget();
+        timestamp.set_timestamp(this.model.get("timestamp"));
+        this.$(".timestamp").first().append(timestamp.el);
+        //Find out if we can vote and flag
+        if (_(this.collection.get_client().votes_and_flags['voted']).contains(this.model.get('id'))) {
+          this.toggle_vote();
+        }
+        if (_(this.collection.get_client().votes_and_flags['flagged']).contains(this.model.get('id'))) {
+          this.toggle_flag();
+        }
+        if (this.model.get("parent_id") == null) {
+          var self = this;
+          $(this.el).append("<div class='comments'></div>");
+          $(this.el).append("<div class='submit-comment'><input type='text' class='comment-input' placeholder='Enter comment...'></input><button class='anonymous-comment'></button><button class='share'>Share</button></div>");
+          //console.log($(this.el).children("a.comment-link"));
+          $(this.el).children("div").children(".actions").children("a.comment-link").click(function(e) {
+            e.preventDefault();
+            $(self.el).children(".submit-comment").slideToggle("fast");
+          });
+          
+          var commentbox = $(this.el).children(".submit-comment").children(".anonymous-comment");
+          commentbox.mouseover(function() {
+            commentbox.append("<div class='tooltip'>Anonymous to classmates</div>");
+          });
+          commentbox.mouseout(function() {
+            $(".tooltip").remove();
+          });
+        }
+        
+        var self = this;
+        $(this.el).mouseover(function() {
+          $(this).children("div").children("a.delete").addClass("active");          
+          if (self.can_flag) {
+            $(this).children("div").children(".actions").children(".flag").show();
+          }
+        });
+        $(this.el).mouseout(function() {
+          $(this).children("div").children("a.delete").removeClass("active");
+          var flagIcon = $(this).children("div").children(".actions").children(".flag");
+          if (self.can_flag) {
+            flagIcon.removeClass("flagged");
+            flagIcon.hide();
+          } else {
+            flagIcon.addClass("flagged");
+            flagIcon.show();
+          }
+        });
+        
+        this.$(".delete").click(function(event){
+          event.preventDefault();
+          $(this).html("");
+          $(this).prepend("<button class='delete-confirm'>Delete this post</button>");
+          $(this).children(".delete-confirm").click(function(event){
+            event.stopPropagation();
+            self.collection.get_client().destroy(self.model.get("id"));
+          });
+        });
+      }
+    },
+  });
+  
+  //Conversation View
+  var ConversationView = Backbone.View.extend({
+    el: $("#conversation"),
+    events: {
+      'click .anonymous-post': 'toggle_anon'
+    },
+    initialize: function() {
+      console.log("Initializing the ConversationView");
+      _.bindAll(this, 
+        "new_message_handler",
+        "toggle_anon");
+      this.message_template = _.template($("#message-template").html());
+      this.anon = false;
+      this.render();
+    },
+    unbind_current_model: function() {
+      if (!_.isUndefined(this.model)) {
+        this.model.client.halt();
+        this.model.messages.unbind("add", self.new_message_handler);
+      }
+      this.model = undefined;
+    },
+    bind_event_model: function(event_model) {
+      console.log("Binding event model ", event_model.get('title'));
+      this.unbind_current_model();
+      this.model = event_model;
+      var self = this;
+      this.$(".share").unbind().click(function() {
+        var insight = self.$(".post-input").val();
+        if (insight.length > 2) {
+          if (!self.anon) {
+            event_model.get_client().post(insight);
+          } else {
+            event_model.get_client().anon_post(insight);
+          }
+          self.$(".post-input").val("");
+        }
+      });
+      
+      //Listen for changes to this event
+      var self = this;
+      this.model.messages.bind("add", self.new_message_handler);
+      console.log("Done binding, ready to render.");
+      this.render();
+    },
+    new_message_handler: function(message) {
+      //What happens depends on if the message is a post or comment
+      if (message.get("parent_id") == null) {
+        //The message is a post b.c. it has no parent
+        this.append_post(message);
+      } else {
+        this.append_comment(message);
+      }
+    },
+    make_view_for_message: function(message_model) {
+      return new MessageView({model:message_model, collection:this.model});
+    },
+    append_post: function(message_model) {
+      var message_view = this.make_view_for_message(message_model);
+      $(message_view.el).css("display", "none");
+      this.$("#posts").prepend(message_view.el);
+      $(message_view.el).fadeIn();
+    },
+    append_comment: function(message_model) {
+      var parent_id = message_model.get("parent_id");
+      var message_view = this.make_view_for_message(message_model);
+      $(message_view.el).css("display", "none");
+      this.$("#" + parent_id + " .comments").append(message_view.el);
+      $(message_view.el).fadeIn();
+    },
+    toggle_anon: function() {
+      // Toggles anonymous posts
+      this.anon = !this.anon;
+      this.$(".anonymous-post").toggleClass("active");
+      if (this.anon) {
+        this.$("textarea.post-input").css({
+          'background-color' : '#666',
+          'color' : '#FFF'
+        });
+      } else {
+        this.$("textarea.post-input").css({
+          'background-color' : '#FFF',
+          'color' : '#333'
+        });
+      }
+    },
+    render: function() {
+      this.$("#convo-message").html("");
+      this.$("#posts").html("");
+      if(!_.isUndefined(this.model)) {
+        this.$("#message").html("");
+        this.$("#message").removeClass("active");
+        this.$("#convo-title").html(this.model.get("title"));
+        var startDate = new Date(this.model.get('start'));
+        this.$("#convo-time").html(startDate.format('UTC:m/d h:MMt'));
+        this.$("#convo-details").html(this.model.get("details"));
+        if (this.model.get("details") == "") { 
+          this.$("#convo-details-link").html("Show details");
+          this.$("#convo-details").slideUp("fast");
+        } else {
+          this.$("#convo-details-link").html("Hide details");
+          this.$("#convo-details").slideDown("fast");
+        }
+        var self = this;
+        //Initialize the client
+        this.model.get_client().start();
+      } else {
+        this.$("#message").html("Please bind a convo");
+        this.$("#message").addClass("active");
+      }
+    }
+  });
+  window.conversation_view = new ConversationView();
+  
 });
 </script>
 <script type='text/javascript' src='[[ script('fullcalendar.min.js') ]]'></script>
 <script type='text/javascript'>
-	// Calendar UI
-	$(document).ready(function() {
-		var transparent = "rgba(255,255,255,0)";
-		var blue = $(".link-blue").css("color");
-		$('#calendar').fullCalendar({
-			header: {
-				left: 'prev,title,next today',
-				center: '',
-				right: ''
-			},
-			editable: false,
-			events: "[[ reverse_url('CalendarFeed', class_id) ]]",
-			dayClick: function(date) {
-				if(class_doc.is_priveleged(user_id)) {
-					event_edit.prepare_new_event(date);
+  // Calendar UI
+  $(document).ready(function() {
+    var transparent = "rgba(255,255,255,0)";
+    var blue = $(".link-blue").css("color");
+    $('#calendar').fullCalendar({
+      header: {
+        left: 'prev,title,next today',
+        center: '',
+        right: ''
+      },
+      editable: false,
+      events: "[[ reverse_url('CalendarFeed', class_id) ]]",
+      dayClick: function(date) {
+        if(class_doc.is_priveleged(user_id)) {
+          event_edit.prepare_new_event(date);
 					file_bank.unbind_event_model();
-				}
-			},
-			eventClick: function(calEvent, jsEvent, view) {
-				if(class_doc.is_priveleged(user_id)) {
-					var event_model = events.get(calEvent.id);
-					event_edit.bind_event_model(event_model);
-					file_bank.bind_event_model(event_model);
-				}
-			},
-			eventBackgroundColor: transparent,
-			eventBorderColor: transparent
-		});
-		var refetch = function(){
-			$("#calendar").fullCalendar('refetchEvents');
-		};
-		events.bind('change', refetch);
-		events.bind('add', refetch);
-		events.bind('destroy', refetch);
-	});
+        }
+      },
+      eventClick: function(calEvent, jsEvent, view) {
+        if(class_doc.is_priveleged(user_id)) {
+          var event_model = events.get(calEvent.id);
+          event_edit.bind_event_model(event_model);
+          file_bank.bind_event_model(event_model);
+        }
+      },
+      eventBackgroundColor: transparent,
+      eventBorderColor: transparent
+    });
+    var refetch = function(){
+      $("#calendar").fullCalendar('refetchEvents');
+    };
+    events.bind('change', refetch);
+    events.bind('add', refetch);
+    events.bind('destroy', refetch);
+  });
 </script>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-		// Global jquery
-		function addTooltip(selector, content) {
-			$(selector).mouseover(function() {
-				$(this).append("<div class='tooltip'>" + content + "</div>");
-				console.log("Adding tooltip for " + selector);
-			});
-			$(selector).mouseout(function() {
-				$(".tooltip").remove();
-			});
-		}
-		
-		// Sidebar UI
-		$("p.header a").click(function(event) {
-			event.preventDefault();
-			$(this).parent().parent().children("ul").slideToggle('fast');
-			
-			var triangle = $(this).children(".triangle");
-			if (triangle.html() == '▲')
-				triangle.html('▼');
-			else
-				triangle.html('▲');
-		});
-		
-		$("#conversations li a").click(function() {
-			var link = $(this).attr("href");
-			$(".twelve.columns").load(link);
-		});
-		
-		// Re-show the calendar from a conversation view
-		$("#show-calendar").click(function() {
-			$("#conversation").hide();
-			$(".content.calendar").fadeIn();
-		});
+  $(document).ready(function() {
+    // Global jquery
+    function addTooltip(selector, content) {
+      $(selector).mouseover(function() {
+        $(this).append("<div class='tooltip'>" + content + "</div>");
+        console.log("Adding tooltip for " + selector);
+      });
+      $(selector).mouseout(function() {
+        $(".tooltip").remove();
+      });
+    }
+    
+    // Sidebar UI
+    $("p.header a").click(function(event) {
+      event.preventDefault();
+      $(this).parent().parent().children("ul").slideToggle('fast');
+      
+      var triangle = $(this).children(".triangle");
+      if (triangle.html() == '▲')
+        triangle.html('▼');
+      else
+        triangle.html('▲');
+    });
+    
+    $("#conversations li a").click(function() {
+      var link = $(this).attr("href");
+      $(".twelve.columns").load(link);
+    });
+    
+    // Re-show the calendar from a conversation view
+    $("#show-calendar").click(function() {
+      $("#conversation").hide();
+      $(".content.calendar").fadeIn();
+    });
 
-		// Sidebar navigation
-		$("#nav-link").click(function(event) {
-			event.preventDefault();
-			$(this).addClass("active");
-			$("#info-link").removeClass("active");
-			$("#info-content").hide();
-			$("#nav-content").fadeIn();
-		});
+    // Sidebar navigation
+    $("#nav-link").click(function(event) {
+      event.preventDefault();
+      $(this).addClass("active");
+      $("#info-link").removeClass("active");
+      $("#info-content").hide();
+      $("#nav-content").fadeIn();
+    });
 
-		$("#info-link").click(function(event) {
-			event.preventDefault();
-			$(this).addClass("active");
-			$("#nav-link").removeClass("active");
-			$("#nav-content").hide();
-			$("#info-content").fadeIn();
-		});
-		
-		if (class_doc.is_priveleged()) {
-			// New event form
-			$(".new-event-button").click(function(event) {
-				if(class_doc.is_priveleged(user_id)) {
-					event_edit.prepare_new_event(new Date(server_timestamp+"-05:00"));
-				}
-				file_bank.unbind_event_model();
-				$(".new-event").slideDown();
-			});
-			$(".fc-event").click(function(event) {
-			  $(".new-event").slideDown();
-			});
-			
-			$(".fc-widget-content").click(function(event) {
-			  $(".new-event").slideDown();
-			});
-			
-			$(".new-event form .close").click(function(event) {
-			  $(".new-event").slideUp();
-			});
-			
-			$("#calendar div.fc-event.fc-event-skin").click(function(event) { 
-				$(".new-event").slideDown();
-			});
-			
-			$("#event-edit a#hide").click(function() {
-				$(".new-event").slideUp();
-			});
-			addTooltip("#event-edit a#hide", "Hide this form");
-			addTooltip("#start-widget", "Try using the mousewheel");
-			addTooltip("#finish-widget", "Try using the mousewheel");
-		}
-		// Conversation
-		$("textarea.post-input").keypress(function(event) {
-			if ($(this).val().length > 300) {
-				this.rows = 6;
-			}
-		});
-		if ($("textarea.post-input").val() != "") $("textarea.post-input").rows = 3;
-		
-		$("#convo-details-link").click(function() {
-			$("#convo-details").slideToggle("fast");
-			if ($(this).html() == "Hide details") {
-				$(this).html("Show details");
-			} else {
-				$(this).html("Hide details");
-			}
-		});
-		
-		$("#posts a").click(function(event) { event.preventDefault(); });
-		
-		addTooltip(".anonymous-post", "Anonymous to classmates");
-		addTooltip("#posts a.delete", "Delete this post");
-		
-		$(".chzn-select").chosen();
-	});
+    $("#info-link").click(function(event) {
+      event.preventDefault();
+      $(this).addClass("active");
+      $("#nav-link").removeClass("active");
+      $("#nav-content").hide();
+      $("#info-content").fadeIn();
+    });
+    
+    // New event form
+    $(".new-event-button").click(function(event) {
+      if(class_doc.is_priveleged(user_id)) {
+        event_edit.prepare_new_event(new Date(server_timestamp+"-05:00"));
+      }
+      file_bank.unbind_event_model();
+      $(".new-event").slideDown();
+    });
+    $(".fc-event").click(function(event) {
+      $(".new-event").slideDown();
+    });
+    
+    $(".fc-widget-content").click(function(event) {
+      $(".new-event").slideDown();
+    });
+    
+    $(".new-event form .close").click(function(event) {
+      $(".new-event").slideUp();
+    });
+    
+    $("#calendar div.fc-event.fc-event-skin").click(function(event) { 
+      $(".new-event").slideDown();
+    });
+    
+    $("#event-edit a#hide").click(function() {
+      $(".new-event").slideUp();
+    });
+    addTooltip("#event-edit a#hide", "Hide this form");
+    addTooltip("#start-widget", "Try using the mousewheel");
+    addTooltip("#finish-widget", "Try using the mousewheel");
+    
+    // Conversation
+    $("textarea.post-input").keypress(function(event) {
+      if ($(this).val().length > 300) {
+        this.rows = 6;
+      }
+    });
+    if ($("textarea.post-input").val() != "") $("textarea.post-input").rows = 3;
+    
+    $("#convo-details-link").click(function() {
+      $("#convo-details").slideToggle("fast");
+      if ($(this).html() == "Hide details") {
+        $(this).html("Show details");
+      } else {
+        $(this).html("Hide details");
+      }
+    });
+    
+    $("#posts a").click(function(event) { event.preventDefault(); });
+    
+    addTooltip(".anonymous-post", "Anonymous to classmates");
+    addTooltip("#posts a.delete", "Delete this post");
+    
+    $(".chzn-select").chosen();
+  });
 </script>
 <script src="[[ script('fileuploader.js') ]]" type="text/javascript"></script>
 <script>        
@@ -1347,13 +1349,13 @@ function() {
             element: document.getElementById('file-uploader-demo1'),
             action: '[[ reverse_url("FileUpload", class_id) ]]',
             onComplete: function() {
-            	//console.log("Completed!");
-            	files.fetch({
-            		success: function() {
-                	//console.log("just fetched...", files.models);  //Sync the backbone collection w the new files
-                	files.trigger("change");
-            		}
-            	});
+              //console.log("Completed!");
+              files.fetch({
+                success: function() {
+                  //console.log("just fetched...", files.models);  //Sync the backbone collection w the new files
+                  files.trigger("change");
+                }
+              });
             },
             debug: true
         });           
@@ -1366,65 +1368,53 @@ function() {
 
 {% block body %}
 <div id="head-wrapper" class="container">
-	<header class="sixteen columns">
-		<a id="head-logo" href="[[reverse_url('ViewClasses')]]"><img src="[[ image('logo-bubbles.png') ]]" /></a>
-		<ul id="nav">
+  <header class="sixteen columns">
+    <a id="head-logo" href="[[reverse_url('ViewClasses')]]"><img src="[[ image('logo-bubbles.png') ]]" /></a>
+    <ul id="nav">
       <li><a href="[[reverse_url('AccountPage')]]">Account</a></li>
       <li><a href="[[reverse_url('ViewClasses')]]">View Classes</a></li>
       <li><a href="[[reverse_url('LogoutHandler')]]">Log Out</a></li>
-		</ul>
-	</header>
+    </ul>
+  </header>
 </div>
 
 <div id="main">
-	<div class="container">
-	  
-	  <div class="four columns content sidebar" id="sidebar">
+  <div class="container">
+    
+    <div class="four columns content sidebar" id="sidebar">
       <h4><span id="course_title"></span></h4>
       <p id="sidebar-nav">
-    		<a href="#" id="nav-link" class="active">Navigation</a>
-    		<a href="#" id="info-link">Information</a>
-    	</p>
-    	
-    	<div id="nav-content">
-    		<div id="conversations">
-    			<p class="header"><a href="">Conversations <span class="triangle">&#9660;</span></a></p>
-    			  <div class="purple-line" style="width:59%;"></div>
-    			<ul id="conversation-list" class="sidebar-content"></ul>
-    		</div>
-    		
-    		<div id="upcoming">
-    			<p class="header"><a href="">Upcoming <span class="triangle">&#9660;</span></a></p>
-    			  <div class="purple-line" style="width:68%;"></div>
-    			<ul id="upcoming-list" class="sidebar-content"></ul>
-    		</div>
-    		
-    		<div id="past-events">
-    			<p class="header"><a href="">Past Events <span class="triangle">&#9660;</span></a></p>
-    			  <div class="purple-line" style="width:66%;"></div>
-    			<ul id="past-events-list" class="sidebar-content"></ul>
-    		</div>
-    	</div>
-    	
-    	<div id="info-content">
-    		<div id="honchoes">
-    			<p class="header"><a href="">Honchoes <span class="triangle">&#9660;</span></a></p>
-    			  <div class="purple-line" style="width:68%;"></div>
-    			<ul id="honchoes-list" class="sidebar-content"></ul>
-    		</div>
-    		
-    		<div id="meeting">
-    			<p class="header"><a href="">Meeting <span class="triangle">&#9660;</span></a></p>
-    			  <div class="purple-line" style="width:73%;"></div>
-    			<ul id="meeting-list" class="sidebar-content"></ul>
-    		</div>
-    		
-    		<div id="files">
-    			<p class="header"><a href="">Files <span class="triangle">&#9660;</span></a></p>
-    			  <div class="purple-line" style="width:82%;"></div>
-    			<ul id="file-list" class="sidebar-content"></ul>
-    		</div>
-    		{% if codes %}
+        <a href="#" id="nav-link" class="active">Navigation</a>
+        <a href="#" id="info-link">Information</a>
+      </p>
+      
+      <div id="nav-content">
+        <div id="conversations">
+          <p class="header"><a href="">Conversations <span class="triangle">&#9660;</span></a></p>
+            <div class="purple-line" style="width:59%;"></div>
+          <ul id="conversation-list" class="sidebar-content"></ul>
+        </div>
+        
+        <div id="upcoming">
+          <p class="header"><a href="">Upcoming <span class="triangle">&#9660;</span></a></p>
+            <div class="purple-line" style="width:68%;"></div>
+          <ul id="upcoming-list" class="sidebar-content"></ul>
+        </div>
+        
+        <div id="past-events">
+          <p class="header"><a href="">Past Events <span class="triangle">&#9660;</span></a></p>
+            <div class="purple-line" style="width:66%;"></div>
+          <ul id="past-events-list" class="sidebar-content"></ul>
+        </div>
+      </div>
+      
+      <div id="info-content">
+        <div id="honchoes">
+          <p class="header"><a href="">Honchoes <span class="triangle">&#9660;</span></a></p>
+            <div class="purple-line" style="width:68%;"></div>
+          <ul id="honchoes-list" class="sidebar-content"></ul>
+        </div>
+        {% if codes %}
     		<div id="codes">
     			<p class="header"><a href="">Codes <span class="triangle">&#9660;</span></a></p>
     			  <div class="purple-line" style="width:66%;"></div>
@@ -1435,96 +1425,110 @@ function() {
     			</ul>
     		</div>
     		{% endif %}
-    		<div id="classmates">
-    			<p class="header"><a href="">Classmates <span class="triangle">&#9660;</span></a></p>
-    			  <div class="purple-line" style="width:66%;"></div>
-    			<ul id="classmates-list" class="sidebar-content"></ul>
-    		</div>
-    	</div>
+        <div id="meeting">
+          <p class="header"><a href="">Meeting <span class="triangle">&#9660;</span></a></p>
+            <div class="purple-line" style="width:73%;"></div>
+          <ul id="meeting-list" class="sidebar-content"></ul>
+        </div>
+        
+        <div id="files">
+          <p class="header"><a href="">Files <span class="triangle">&#9660;</span></a></p>
+            <div class="purple-line" style="width:82%;"></div>
+          <ul id="file-list" class="sidebar-content"></ul>
+        </div>
+        
+        <div id="classmates">
+          <p class="header"><a href="">Classmates <span class="triangle">&#9660;</span></a></p>
+            <div class="purple-line" style="width:66%;"></div>
+          <ul id="classmates-list" class="sidebar-content"></ul>
+        </div>
+      </div>
     </div>
 
-	  <div class="twelve columns content calendar">
-	  		{% if riveleged %}
+    <div class="twelve columns content calendar">
+      {% if is_priveleged %}
 			<button class="new-event-button">Create new event</button>
 			{% endif %}
-	    <div id="calendar"></div>
-	    
-	    <div class="new-event twelve columns">
-  	    <div id="event-edit">
-					<a href="#!" id="hide">x</a>
-        	<div id="message"></div>
-        	<div id="event-id"></div>
-        	<input id="title" type="text" name="title" placeholder="Event title"/>
-        	<select class="type chzn-select">
-        		<option value="Lecture">Lecture</option>
-        		<option value="Assignment">Assignment</option>
-        		<option value="Other">Other</option>
-        	</select>
-        	<button class="save"></button>
-        	<button class="delete"></button>
-        	<div id="start-widget" class="datetime-input-widget">Start:</div>
-        	<div id="finish-widget" class="datetime-input-widget">Finish:</div>
-        	<textarea class="details" placeholder="Event details"/></textarea>
-        	<br/>
-        	<label for="auto-convo" id="auto-convo-label">Auto conversation:</label>
-        	<input class="auto-convo" type="checkbox" />
-        	<div class="auto-convo-inputs">
-        		<label for="hours-before">Hours before:</label>
-						<input type="text" class="hours-before" name="hours-before" />
-	        	<label for="days-before">Days before:</label>
-        		<input type="text" class="days-before" name="days-before" />
-        	</div>
+      <div id="file-upload">
+        <div id="file-uploader-demo1">    
+          <noscript>      
+            <p>Please enable JavaScript to use file uploader.</p>
+            <!-- or put a simple form for upload here -->
+          </noscript>         
         </div>
-				<div id="file-bank">
-					<div class="message"></div>
-					<div class="event-id"></div>
-					<select class="files chzn-select" multiple="multiple" data-placeholder="Tag file(s)...">
-					</select>
-				</div>
+      </div>
+      <div id="calendar"></div>
+      
+      <div class="new-event twelve columns">
+        <div id="event-edit">
+          <a href="#!" id="hide">x</a>
+          <div id="message"></div>
+          <div id="event-id"></div>
+          <input id="title" type="text" name="title" placeholder="Event title"/>
+          <select class="type chzn-select">
+            <option value="Lecture">Lecture</option>
+            <option value="Assignment">Assignment</option>
+            <option value="Exam">Exam</option>
+            <option value="Project">Project</option>
+            <option value="Other">Other</option>
+          </select>
+          <button class="save"></button>
+          <button class="delete"></button>
+          <div id="start-widget" class="datetime-input-widget">Start:</div>
+          <div id="finish-widget" class="datetime-input-widget">Finish:</div>
+          <textarea class="details" placeholder="Event details"/></textarea>
+          <br/>
+          <label for="auto-convo" id="auto-convo-label">Auto conversation:</label>
+          <input class="auto-convo" type="checkbox" />
+          <div class="auto-convo-inputs">
+            <label for="hours-before">Hours before:</label>
+            <input type="text" class="hours-before" name="hours-before" />
+            <label for="days-before">Days before:</label>
+            <input type="text" class="days-before" name="days-before" />
+          </div>
+        </div>
+        <div id="file-bank">
+          <div class="message"></div>
+          <div class="event-id"></div>
+          <select class="files chzn-select" multiple="multiple" data-placeholder="Tag file(s)...">
+          </select>
+        </div>
         <div id="file-edit">
-        	<div class="message"></div>
-        	<select class="tags chzn-select" multiple="multiple" data-placeholder="Tag conversation(s)...">
-        	</select>
-        	<button class="save">Save Changes</button>
-        	<button class="delete">Delete file</button>
-        </div>
-
-        <div id="file-upload">
-        	<div id="file-uploader-demo1">		
-        		<noscript>			
-        			<p>Please enable JavaScript to use file uploader.</p>
-        			<!-- or put a simple form for upload here -->
-        		</noscript>         
-        	</div>
+          <div class="message"></div>
+          <select class="tags chzn-select" multiple="multiple" data-placeholder="Tag conversation(s)...">
+          </select>
+          <button class="save">Save Changes</button>
+          <button class="delete">Delete file</button>
         </div>
       </div> <!-- new event end -->
-		
-		</div> <!-- twelve columns calendar end -->
+    
+    </div> <!-- twelve columns calendar end -->
       
-		<div class="twelve columns content conversation" id="conversation">
-			<h3 id="convo-title">Lecture Conversation</h3>
-			<a href="#!" id="convo-details-link">Hide details</a>
-			<button id="show-calendar">Show calendar</button>
-			<p id="convo-details"></p>
-			<div id="message"></div>
-			<div class="new-post">
-		  	<textarea class="post-input" placeholder="Drop your insight" maxlength="1000" rows="1" onclick="this.rows=3;" onblur="this.rows=1;"></textarea>
-		  	<button class="anonymous-post"></button>
-		  	<button class="share">Share</button>
-			</div>
-	  	<div id="posts"></div>
-		</div>
-	    
-	</div>
+    <div class="twelve columns content conversation" id="conversation">
+      <h3 id="convo-title">Lecture Conversation</h3>
+      <p id="convo-time">12/1, 10:30a</p>
+      <button id="show-calendar">Show calendar</button>
+      <a href="#!" id="convo-details-link">Hide details</a>
+      <p id="convo-details"></p>
+      <div id="message"></div>
+      <div class="new-post">
+        <textarea class="post-input" placeholder="Drop your insight" maxlength="1000" rows="1" onclick="this.rows=3;" onblur="this.rows=1;"></textarea>
+        <button class="anonymous-post"></button>
+        <button class="share">Share</button>
+      </div>
+      <div id="posts"></div>
+    </div>
+      
+  </div>
 </div>
 
 
 <ul id="footer-links">
-	<li>&copy; 2011 Alternote</li>
-	<li><a href="[[ reverse_url('About') ]]">About us</a></li>
-	<li><a href="[[ reverse_url('Privacy') ]]">Privacy policy</a></li>
-	<li><a href="[[ reverse_url('Terms') ]]">Terms of service</a></li>
-	<li><a href="[[ reverse_url('Contact') ]]">Contact</a></li>
+  <li>&copy; 2011 Alternote</li>
+  <li><a href="[[ reverse_url('About') ]]">About us</a></li>
+  <li><a href="[[ reverse_url('Privacy') ]]">Privacy policy</a></li>
+  <li><a href="[[ reverse_url('Terms') ]]">Terms of service</a></li>
+  <li><a href="[[ reverse_url('Contact') ]]">Contact</a></li>
 </ul>
 
 <div id="scriptInject"></script>
