@@ -222,7 +222,8 @@ ul#footer-links {
 }
 
 #landing-wrapper {
-    background: #DDD url('../images/landing-bg.png') no-repeat fixed 50% 0%;
+	background: #EEE;
+    /* background: #DDD url('../images/landing-bg.png') no-repeat fixed 50% 0%; */
     height: 100%;
     
     #dropdown-link {
@@ -605,6 +606,14 @@ ul#footer-links {
 	width: 90%;
 	border-bottom: solid 1px #EEE;
 	
+	.hidden-post {
+		display: none;
+		width: 100%;
+		padding: 11px 0;
+		text-align: center;
+		background: #FEE;
+	}
+	
 	&.professor { .adminpost; }
 	
 	p { line-height: 1.5em; }
@@ -694,7 +703,7 @@ ul#footer-links {
 				position: absolute;
 				.opacity(50);
 				img { width: 16px; }
-				&.flagged { .opacity(85); }
+				&.flagged { .opacity(100); }
 			}
 		}
 	}
@@ -707,7 +716,7 @@ ul#footer-links {
 	
 	.comment {
 		float: left;
-		margin: 10px 0 0 0;
+		margin: 5px 0 0 0;
 		padding: 5px 5px 0 45px;
 		width: 93%;
 		border-top: solid 1px #EEE;
@@ -720,7 +729,7 @@ ul#footer-links {
 		}
 		&.professor { .adminpost; }
 		a.delete { margin-top: -2px; }
-		.meta { margin: 3px -16px 0 0; }
+		.meta { margin: 3px 0 0 0; }
 	}
 	
 	.submit-comment {

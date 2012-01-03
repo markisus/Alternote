@@ -67,7 +67,7 @@
 							happens when students have conversations. <br/>
 							<b>Alternote</b> is a course engagement system <br/>
 							that makes that happen.
-							<a href="/admin/school/create" class="link-blue">Create a school</a>
+							<a href="/admin/school/create" class="link-blue" style="display: none;">Create a school</a>
 						</p>
 						<form method="post">
 							Spring learners, enter your access code
