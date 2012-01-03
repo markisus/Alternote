@@ -99,15 +99,15 @@
 	</tr>
   <tr>
 		<td class="field">Password</td>
-		<h1>[[ message ]]</h1>
+		<h3 id="message">[[ message ]]</h3>
 		<td class="value">
 			<form method="post">
 				[[ with_errors(form.old_pass) ]]
-				[[ with_errors(form.old_pass_repeat) ]]<hr>
 				[[ with_errors(form.new_pass) ]]
+				[[ with_errors(form.new_pass_repeat) ]]
 				[[ with_errors(form.submit) ]]
 			</form>
-		<td class="edit"><a href="#!">Edit</a></td>
+		</td>
 	</tr>
 </tbody>
 </table>

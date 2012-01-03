@@ -811,6 +811,9 @@ ul#footer-links li a:hover {
   text-decoration: none;
   font-weight: bold;
 }
+.sidebar ul.sidebar-content#conversation-list div.active .files, .sidebar ul.sidebar-content#past-events-list div.active .files, .sidebar ul.sidebar-content#upcoming-list div.active .files {
+  display: block !important;
+}
 .sidebar ul.sidebar-content#file-list li {
   border: none;
 }
@@ -899,8 +902,8 @@ ul#footer-links li a:hover {
   opacity: 0.8;
 }
 .sidebar ul.sidebar-content li .files {
+  display: none;
   font-size: 12px;
-  font-style: italic;
 }
 .sidebar ul.sidebar-content li .files p {
   float: left;
@@ -910,7 +913,6 @@ ul#footer-links li a:hover {
   float: left;
   width: 85%;
   margin: -20px 0 5px 32px;
-  font-style: normal;
 }
 .sidebar ul.sidebar-content li .files ul li {
   font-size: 12px;
@@ -924,7 +926,12 @@ ul#footer-links li a:hover {
   -khtml-text-overflow: ellipsis;
 }
 .sidebar ul.sidebar-content li .files ul li a {
-  color: #777;
+  /* color: #619ecf; */
+
+  color: #009ed9;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
 }
 .sidebar ul.sidebar-content li .files ul li a:hover {
   color: #333;
@@ -964,6 +971,22 @@ ul#footer-links li a:hover {
   padding: 11px 0;
   text-align: center;
   background: #FEE;
+  filter: alpha(opacity=75);
+  -khtml-opacity: 0.75;
+  -moz-opacity: 0.75;
+  opacity: 0.75;
+}
+.post .hidden-post .hidden-post-show {
+  text-decoration: underline;
+  /* color: #619ecf; */
+
+  color: #009ed9;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.post .hidden-post .hidden-post-show:hover {
+  color: #333;
 }
 .post.professor {
   /* background-color: #feedd5; */
@@ -1192,7 +1215,7 @@ ul#footer-links li a:hover {
   line-height: 30px;
   height: 30px;
   color: #666;
-  margin-left: 10px;
+  margin: 0 0 10px 10px;
 }
 #conversation #convo-details {
   width: 100%;
@@ -1725,6 +1748,9 @@ ul#footer-links li a:hover {
   position: absolute;
   margin-top: 100px;
   margin-left: 142px;
+}
+#account-page #message {
+  float: left;
 }
 ul#classes {
   float: left;

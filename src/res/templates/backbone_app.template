@@ -59,7 +59,7 @@
       <a href="#!" class="flag"><img src="[[ image('flag-icon.png') ]]" /></a>
     </div>
   </div>
-  <div class="hidden-post">This post has been flagged by multiple people.</div>
+  <div class="hidden-post">Oh noes! This post has been flagged by multiple people. <a class="hidden-post-show" href="#!">Click here to show</a></div>
 </script>
 <script type="text/template" id="sidebar-item-template">
   <% var startDate = new Date(model.get('start')) %>
@@ -286,7 +286,7 @@ function() {
         $("#conversation").fadeIn();
         // Toggle active state in sidebar
         $("ul.sidebar-content div").removeClass("active");
-        $(self).parent().parent().addClass("active");
+        $(this).parent().parent().addClass("active");
       });
       
       // Show the edit icon if hovering over list of events
@@ -991,7 +991,7 @@ function() {
         this.$(".votes").first().show();
       }
       if (numFlags > 1) {
-        this.$(".content").children().hide();
+        this.$(".content").hide();
         this.$(".hidden-post").show();
       } else if (numFlags > 0) {
         this.$(".flag").first().show();
@@ -1341,6 +1341,12 @@ function() {
       }
     });
     
+    $(".hidden-post-show").click(function(event) {
+      event.preventDefault();
+      $(this).parent().hide();
+      $(this).parent().parent().children(".content").show();
+    });
+    
     $("#posts a").click(function(event) { event.preventDefault(); });
     
     addTooltip(".anonymous-post", "Anonymous to classmates");
@@ -1455,7 +1461,6 @@ function() {
     <div class="twelve columns content calendar">
       {% if is_priveleged %}
 			<button class="new-event-button">Create new event</button>
-			{% endif %}
       <div id="file-upload">
         <div id="file-uploader-demo1">    
           <noscript>      
@@ -1464,6 +1469,7 @@ function() {
           </noscript>         
         </div>
       </div>
+			{% endif %}
       <div id="calendar"></div>
       
       <div class="new-event twelve columns">
@@ -1525,7 +1531,10 @@ function() {
       </div>
       <div id="posts"></div>
     </div>
+    
+    <div class="twelve columns content" id="file">
       
+    </div>
   </div>
 </div>
 

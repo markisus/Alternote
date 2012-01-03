@@ -483,6 +483,7 @@ ul#footer-links {
 						text-decoration: none;
 						font-weight: bold;
 					}
+					.files { display: block !important; }
 				}
 			}
 		}
@@ -551,23 +552,19 @@ ul#footer-links {
 		    }
 		
 			.files {
+				display: none;
 				font-size: 12px;
-				font-style: italic;
 				p { float: left; color: #777; }
 				ul {
 					float: left;
 					width: 85%;
 					margin: -20px 0 5px 32px;
-					font-style: normal;
 					li {
 						font-size: 12px;
 						border: none;
 						padding: 0;
 						.overflow-ellipsis;
-						a {
-							color: #777;
-							&:hover { color: #333; }
-						}
+						a { .link-blue; }
 					}
 				}
 			}
@@ -612,6 +609,11 @@ ul#footer-links {
 		padding: 11px 0;
 		text-align: center;
 		background: #FEE;
+		.opacity(75);
+		.hidden-post-show {
+			text-decoration: underline;
+			.link-blue;
+		}
 	}
 	
 	&.professor { .adminpost; }
@@ -773,7 +775,7 @@ ul#footer-links {
 		line-height: 30px;
 		height: 30px;
 		color: #666;
-		margin-left: 10px;
+		margin: 0 0 10px 10px;
 	}
 	
 	#convo-details { width: 100%; }
@@ -1246,6 +1248,9 @@ ul#footer-links {
 		position: absolute;
 		margin-top: 100px;
 		margin-left: 142px;
+	}
+	#message {
+		float: left;
 	}
 }
 
