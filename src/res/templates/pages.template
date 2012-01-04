@@ -22,14 +22,17 @@
 
 {% block content %}
 	<div class="sixteen columns content pages">
-	    <div class="four columns content sidebar">
-	        <ul>
-				<li><a href="[[ reverse_url('About') ]]">About us</a></li>
-				<li><a href="[[ reverse_url('Privacy') ]]">Privacy policy</a></li>
-				<li><a href="[[ reverse_url('Terms') ]]">Terms of service</a></li>
-				<li><a href="[[ reverse_url('Contact') ]]">Contact</a></li>
-			</ul>
-		</div>
+    <div class="four columns content sidebar">
+      <ul>
+			  <li><a href="[[ reverse_url('About') ]]">About</a></li>
+			  <li><a href="[[ reverse_url('Team') ]]">Team</a></li>
+			  <li>
+			    <a href="http://twitter.com/alternoteam" class="social" id="twitter"></a>
+			    <a href="http://blog.alternote.com" class="social" id="blog"></a>
+			    <a href="mailto:team@alternote.com" class="social" id="email"></a>
+			  </li>
+		  </ul>
+	  </div>
 		<div class="twelve columns content">
 			{% block information %}
 			{% endblock %}

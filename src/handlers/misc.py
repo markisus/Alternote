@@ -23,7 +23,12 @@ class About(BaseHandler):
     template = env.get_template('pages/about.template')
     def get(self):
         self.write(self.template.render(loginForm=LoginForm()))
-    
+
+class Team(BaseHandler):
+    template = env.get_template('pages/team.template')
+    def get(self):
+        self.write(self.template.render(loginForm=LoginForm()))
+
 class Privacy(BaseHandler):
     template = env.get_template('pages/privacy.template')
     def get(self):

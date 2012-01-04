@@ -1277,8 +1277,84 @@ ul#classes {
 }
 
 .content.pages {
+	.sidebar {
+		padding-top: 30px;
+		border-right: none;
+		li {
+			font-size: 18px;
+			line-height: 24px;
+			a {
+				color: #777;
+				.transition(color 0.1s linear);
+				&:hover { color: #333; }
+			}
+		}
+		a.social {
+			float: left;
+			margin: 5px 15px 5px 5px;
+			height: 32px;
+			width: 32px;
+			background: url('../images/social-sprite.png');
+			&#twitter {
+				background-position: 0px -128px;
+				&:hover { background-position: 0px -96px; }
+			}
+			&#blog {
+				background-position: 0px -224px;
+				&:hover { background-position: 0px -192px; }
+			}
+			&#email {
+				background-position: 0px -320px;
+				&:hover { background-position: 0px -288px; }
+			}
+		}
+	}
     .twelve.columns {
         margin: 10px 0;
         padding-left: 10px;
+		padding-top: 30px;
+		p {
+			max-width: 600px;
+			font-size: 18px;
+			line-height: 24px;
+			color: #333;
+			&#team-header {
+				font-size: 20px;
+				line-height: 28px;
+			}
+		}
     }
+	h5 { font-style: italic; }
+	#divider {
+		width: 585px;
+		margin-bottom: 10px;
+	}
+	ul#team-members {
+		float: left;
+		width: 600px;
+		margin-top: 10px;
+		a { .link-blue; }
+		li {
+			float: left;
+			padding: 5px 5px 5px 120px;
+		}
+		img {
+			float: left;
+			margin-top: 5px;
+			margin-left: -120px;
+			max-width: 100px;
+		}
+		h3 {
+			font-weight: normal;
+			color: #868;
+		}
+		f {
+			font-style: italic;
+			color: #A8A;
+		}
+		p {
+			font-size: 14px;
+			line-height: 20px;
+		}
+	}
 }

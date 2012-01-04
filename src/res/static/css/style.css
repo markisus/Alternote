@@ -1801,7 +1801,105 @@ ul#classes li {
   border-radius: 3px;
   border: solid 1px #DDD;
 }
+.content.pages .sidebar {
+  padding-top: 30px;
+  border-right: none;
+}
+.content.pages .sidebar li {
+  font-size: 18px;
+  line-height: 24px;
+}
+.content.pages .sidebar li a {
+  color: #777;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.content.pages .sidebar li a:hover {
+  color: #333;
+}
+.content.pages .sidebar a.social {
+  float: left;
+  margin: 5px 15px 5px 5px;
+  height: 32px;
+  width: 32px;
+  background: url('../images/social-sprite.png');
+}
+.content.pages .sidebar a.social#twitter {
+  background-position: 0px -128px;
+}
+.content.pages .sidebar a.social#twitter:hover {
+  background-position: 0px -96px;
+}
+.content.pages .sidebar a.social#blog {
+  background-position: 0px -224px;
+}
+.content.pages .sidebar a.social#blog:hover {
+  background-position: 0px -192px;
+}
+.content.pages .sidebar a.social#email {
+  background-position: 0px -320px;
+}
+.content.pages .sidebar a.social#email:hover {
+  background-position: 0px -288px;
+}
 .content.pages .twelve.columns {
   margin: 10px 0;
   padding-left: 10px;
+  padding-top: 30px;
+}
+.content.pages .twelve.columns p {
+  max-width: 600px;
+  font-size: 18px;
+  line-height: 24px;
+  color: #333;
+}
+.content.pages .twelve.columns p#team-header {
+  font-size: 20px;
+  line-height: 28px;
+}
+.content.pages h5 {
+  font-style: italic;
+}
+.content.pages #divider {
+  width: 585px;
+  margin-bottom: 10px;
+}
+.content.pages ul#team-members {
+  float: left;
+  width: 600px;
+  margin-top: 10px;
+}
+.content.pages ul#team-members a {
+  /* color: #619ecf; */
+
+  color: #009ed9;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.content.pages ul#team-members a:hover {
+  color: #333;
+}
+.content.pages ul#team-members li {
+  float: left;
+  padding: 5px 5px 5px 120px;
+}
+.content.pages ul#team-members img {
+  float: left;
+  margin-top: 5px;
+  margin-left: -120px;
+  max-width: 100px;
+}
+.content.pages ul#team-members h3 {
+  font-weight: normal;
+  color: #868;
+}
+.content.pages ul#team-members f {
+  font-style: italic;
+  color: #A8A;
+}
+.content.pages ul#team-members p {
+  font-size: 14px;
+  line-height: 20px;
 }

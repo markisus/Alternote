@@ -1,0 +1,31 @@
+{% extends 'pages.template' %}
+
+{% block information %}
+
+  <p id="team-header">Alternote is built by students, for students. We knew our classes could be even more valuable if there was more communication, so we did something about it.</p>
+  
+  <ul id="team-members">
+    <li>
+      <img src="[[ image('default-icon.png') ]]">
+      <h3>Ankit Shah</h3>
+      <f>Head of Excitement, Co-founder</f>
+      <p>Ankit's a junior at the University of Pennsylvania. He probably thinks too much. He likes drawing stick figures. He does a lot of pushups. He knows a lot of random stuff, and he loves people who know more random trivia than he does. He designs for Alternote and predicts the future.</p>
+      <p>He <a href="mailto:a.shah811@gmail.com">emails</a>, <a href="http://www.twitter.com/AnkitShah">tweets</a>, <a href="http://sankit.tumblr.com/">tumbles</a>, and <a href="http://ankitmoves.com/">travels</a>.</p>
+    </li>
+    <li>
+      <img src="[[ image('default-icon.png') ]]">
+      <h3>Mark Liu</h3>
+      <f>Head of Construction, Co-founder</f>
+      <p>Mark's a senior at Columbia. </p>
+      <p>He <a href="mailto:markisus@gmail.com">emails</a> and <a href="http://www.github.com/markisus">codes</a>.</p>
+    </li>
+    <li>
+      <img src="[[ image('default-icon.png') ]]">
+      <h3>Adi Dahiya</h3>
+      <f>Head of Beautiful Experiences, Co-founder</f>
+      <p>Adi's a sophomore at the University of Pennsylvania. He loves simple design, things that 'just work,' and people as detail-oriented as he is.</p>
+      <p>He <a href="mailto:adi@adidahiya.com">emails</a>, <a href="http://www.twitter.com/adidas006">tweets</a>, <a href="http://www.github.com/adidas006">codes</a>, and <a href="http://www.flickr.com/photos/adidas006">takes some cool photos</a>.</p>
+    </li>
+  </ul>
+	
+{% endblock %}

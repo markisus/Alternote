@@ -2,40 +2,15 @@
 
 {% block information %}
 
-	<h4>About Alternote</h4> <br/>
+	<h3>The curious change the world.</h3> <br/>
+	<h5>They create value. They search. They talk. They do.</h5> <br/>
+	<img id="divider" src="[[ image('landing-divider.png') ]]" />
 	<p>
-		<b>We dream.</b> <br/>
-		Curious learners change the world. They create value. They search. They talk. They do.  <br/> <br/>
-
-		The issue with most institutional learning is that it doesn't usually create those curious learners. It creates receptacles for information. We become fantastic at jumping from class to class, delivering what we've learned for testing purposes, but there's not enough focus on constructive thinking about content. <br/> <br/>
-
-		At Alternote, we believe that when we're encouraged to create discussions around content in their classes, thinking will reach far beyond the curriculum. We realize we can ask questions, both directly-related and tangential. We can ignite debates. We can share thoughts and links. We can poke the box. <br/> <br/>
-
-		We want classes to be places of meaningful exchange between both students and professors, and the best way to make that happen is by turning a class's presence online into a conversation. So we built Alternote &ndash; for us and for our fellow learners. <br/> <br/>
-
-		<b>We do.</b> <br/> <br/>
-
-		Alternote serves as a course engagement system to create conversations around events in class. We believe that context is the key to engagement, so we base our platform on the class calendar. We, as students, draw reference to the things we learn in a class using other class events as frames of reference. So on Alternote, we use the calendar to drive conversation occurrences and to manage files. <br/> <br/>
-
-		Each event has its own place for conversation. Files can be attached to those events to allow for easy access when you need them. And all conversations happen in real-time. That means these conversations can serve as backchannels during lectures or even live office hours. Alternatively, they could be homework or exam review boards, all sorted chronologically to make it dead simple to find what you need, when you need it. <br/> <br/>
-
-		Alternote changes the way class communication happens and makes it dead simple for professors to foster it. Students learn more. Professors understand more about what piques student interest, where they're confused, and how they're doing in class. <br/> <br/>
-
-		It's time to use course software to do more than just make announcements and manage things. Let's start creating better learning experiences. <br/> <br/>
-
-		<b>Who's we?</b> <br/> <br/>
-
-		Alternote is built by students, for students. We knew our classes could be even more valuable if there was more communication, so we did something about it. <br/> <br/>
-
-		<em>Ankit Shah</em>, Chief Excitement Officer <br/>
-		Ankit's a junior at the University of Pennsylvania. He probably thinks too much. He likes drawing stick figures. He does a lot of pushups. He knows a lot of random stuff, and he loves people who know more random trivia than he does. He designs for Alternote and predicts the future. <br/> <br/>
-
-		<em>Mark Liu</em>, Construction Extraordinaire <br/>
-		[insert bio] <br/> <br/>
-
-		<em>Adi Dahiya</em>, Interaction and Information Architect <br/>
-		Adi's a sophomore at the University of Pennsylvania. He loves simple design, things that 'just work,' and people as detail-oriented as he is.
+		At college, we become receptacles of information. We're fantastic at jumping from class to class, delivering what we've learned for testing purposes, but rarely do we actively engage with content. <br/> <br/>
 		
+		At Alternote, we believe that when we're encouraged to create discussions around content in our courses, we reach beyond the curriculum. We ask questions. We ignite debates. We share thoughts, findings, and insights. <br/> <br/>
+		
+		We want classes to be platforms for meaningful exchange between both students and professors, and the best way to make that happen is by turning a class's online presence into a conversation. Because conversation sparks curiosity. So we built Alternote - for us and for our fellow learners.
 	</p>
 	
 {% endblock %}

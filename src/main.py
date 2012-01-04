@@ -56,6 +56,7 @@ application = tornado.web.Application([
     
 	#Pages
 	URLSpec(r"/pages/about", misc.About, name="About"),
+	URLSpec(r"/pages/team", misc.Team, name="Team"),
 	URLSpec(r"/pages/privacy", misc.Privacy, name="Privacy"),
 	URLSpec(r"/pages/terms", misc.Terms, name="Terms"),
 	URLSpec(r"/pages/contact", misc.Contact, name="Contact"),
