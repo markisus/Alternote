@@ -303,8 +303,8 @@ button.anonymous-post .tooltip, button.anonymous-comment .tooltip {
 .adminpost {
   /* background-color: #feedd5; */
 
-  background-color: #fff3e2;
-  border-top: none;
+  /* background-color: #fff3e2; */
+
 }
 .clear {
   clear: both;
@@ -991,8 +991,8 @@ ul#footer-links li a:hover {
 .post.professor {
   /* background-color: #feedd5; */
 
-  background-color: #fff3e2;
-  border-top: none;
+  /* background-color: #fff3e2; */
+
 }
 .post p {
   line-height: 1.5em;
@@ -1000,14 +1000,20 @@ ul#footer-links li a:hover {
 .post .embed {
   float: left;
   width: 100%;
-  margin-top: 5px;
+  margin: 5px 0;
+  font-size: 12px;
+  line-height: 18px;
+  color: #666;
+  /* iframe { width: 100% !important; } */
+
 }
 .post .embed .message {
   float: left;
 }
 .post .embed a {
-  max-width: 300px;
-  float: left;
+  font-size: 14px;
+  display: block;
+  max-width: 520px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1028,15 +1034,20 @@ ul#footer-links li a:hover {
   display: none;
 }
 .post .embed img {
-  float: left;
-  margin: 5px 10px 0 0;
+  /* float: left;
+			margin: 5px 10px 0 0; */
+
 }
 .post .embed img.thumb {
   max-width: 90px;
   max-height: 90px;
 }
-.post .embed iframe {
-  width: 100% !important;
+.post .embed.indented {
+  padding-left: 100px;
+  width: auto;
+}
+.post .embed.indented img {
+  margin-left: -100px;
 }
 .post a.delete {
   float: right;
@@ -1164,8 +1175,8 @@ ul#footer-links li a:hover {
 .post .comment.professor {
   /* background-color: #feedd5; */
 
-  background-color: #fff3e2;
-  border-top: none;
+  /* background-color: #fff3e2; */
+
 }
 .post .comment a.delete {
   margin-top: -2px;

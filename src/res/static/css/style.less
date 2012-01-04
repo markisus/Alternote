@@ -94,8 +94,8 @@ button.anonymous-post, button.anonymous-comment {
 
 .adminpost {
     /* background-color: #feedd5; */
-	background-color: #fff3e2;
-	border-top: none;
+	/* background-color: #fff3e2; */
+	
 }
 
 .clear {
@@ -623,24 +623,33 @@ ul#footer-links {
 	.embed {
 		float: left;
 		width: 100%;
-		margin-top: 5px;
+		margin: 5px 0;
+		font-size: 12px;
+		line-height: 18px;
+		color: #666;
 		.message { float: left; }
 		a { 
-			max-width: 300px;
-			float: left;
+			font-size: 14px;
+			display: block;
+			max-width: 520px;
 			.overflow-ellipsis;
 			.link-blue; 
 			&.provider { display: none; }
 		}
 		img {
-			float: left;
-			margin: 5px 10px 0 0;
+			/* float: left;
+			margin: 5px 10px 0 0; */
 			&.thumb {
 				max-width: 90px;
 				max-height: 90px;
 			}
 		}
-		iframe { width: 100% !important; }
+		&.indented {
+			padding-left: 100px;
+			width: auto;
+			img { margin-left: -100px; }
+		}
+		/* iframe { width: 100% !important; } */
 	}
 	
 	a.delete {
