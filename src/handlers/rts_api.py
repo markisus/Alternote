@@ -1,6 +1,7 @@
 import tornado
 from db.logins import *
 from db.conversations import *
+import db.conversations
 from collections import defaultdict
 import json
 from backbone import collection_to_Backbone
@@ -87,6 +88,14 @@ class Listener(JSONPHandler):
             self.set_status(410) #Gone
             self.finish()
             return
+        #Reveal anon author
+        for datum in data.values():
+            if datum['action'] in ['post', 'comment']:
+                if datum['user']['_id'] == 'Anonymous':
+                    datum['is_author'] = db.conversations.is_anon_author(self.get_current_user(), datum['_id'])
+                else:
+                    datum['is_author'] = datum['user']['_id'] == self.get_current_user()
+#        print("Revealed anon post: " + str(post))
         self.write(eventid, json.dumps(data, default=str, cls=None))
         self.finish()
         
@@ -167,7 +176,7 @@ class Comment(BaseHandler):
                  'parent_id':postid, 
                  'message':comment['message'], 
                  'objectid':str(comment['_id']),
-                 'is_author':comment['is_author'],
+#                 'is_author':comment['is_author'],
                  'timestamp':comment['timestamp']
                  }
         
@@ -195,7 +204,7 @@ class Post(BaseHandler):
                  'user':user, 
                  'message':post['message'], 
                  'objectid':str(post['_id']), 
-                 'is_author':post['is_author'],
+#                 'is_author':post['is_author'],
                  'timestamp':post['timestamp']
                  }
         
