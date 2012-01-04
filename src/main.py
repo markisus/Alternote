@@ -15,6 +15,7 @@ from handlers.calendar import time_format, twelve_hour_time
 import handlers.backbone
 import handlers.rts_api
 import db.users
+import sys
 
 login_url = r"/auth/login"
 
@@ -133,5 +134,10 @@ globals['time_format'] = time_format
 globals['date_format'] = date_format
 globals['twelve_hour_time'] = twelve_hour_time
 if __name__ == "__main__":
-    application.listen(8888)
+    try:
+        port = int(sys.argv[1])
+    except:
+        port = 8888
+    print("Port: " + str(port))
+    application.listen(port)
     tornado.ioloop.IOLoop.instance().start()
