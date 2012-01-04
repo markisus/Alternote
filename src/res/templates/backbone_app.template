@@ -1074,6 +1074,7 @@ function() {
         
         this.$(".delete").click(function(event){
           event.preventDefault();
+          event.stopPropagation();
           $(this).html("");
           $(this).prepend("<button class='delete-confirm'>Delete this post</button>");
           $(this).children(".delete-confirm").click(function(event){
@@ -1347,6 +1348,11 @@ function() {
       $(this).parent().parent().children(".content").show();
     });
     
+    $(document.body).click(function() {
+      $(".delete-confirm").fadeOut("fast");
+      $(".delete").html("x");
+    });
+    
     $("#posts a").click(function(event) { event.preventDefault(); });
     
     addTooltip(".anonymous-post", "Anonymous to classmates");
@@ -1430,7 +1436,7 @@ function() {
         {% if codes %}
     		<div id="codes">
     			<p class="header"><a href="">Codes <span class="triangle">&#9660;</span></a></p>
-    			  <div class="purple-line" style="width:66%;"></div>
+    			  <div class="purple-line" style="width:78%;"></div>
     			<ul id="code-list" class="sidebar-content">
     				{% for code in codes %}
     					<li>[[ code.type ]] : [[ code._id ]] </li>

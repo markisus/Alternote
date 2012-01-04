@@ -664,6 +664,7 @@ ul#footer-links {
 			position: absolute;
 			width: 100px;
 			right: 10px;
+			margin-top: -3px;
 		}
 	}
 	
@@ -1231,13 +1232,9 @@ ul#footer-links {
 					font-weight: bold;
 				}
 			}
-			.edit-field {
-				display: none;
-				position: absolute;
-				margin: -5px 0 0 -5px;
-				&#old_pass {  }
-				&#new_pass { margin-top: 30px; }
-				&#new_pass_repeat { margin-top: 65px; }
+			input.has_error {
+				background: #FEE;
+				border-color: #CAA;
 			}
 		}
 		
@@ -1250,7 +1247,7 @@ ul#footer-links {
 		margin-left: 142px;
 	}
 	#message {
-		float: left;
+		color: #644;
 	}
 }
 

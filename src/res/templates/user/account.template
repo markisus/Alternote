@@ -74,15 +74,12 @@
   <tr>
 		<td class="field">Name</td>
 		<td class="value">
-			<input id="first_name" class="edit-field" type="text" placeholder="Edit Name" name="first_name" />
-			<input id="last_name" class="edit-field" type="text" placeholder="Edit Name" name="last_name" />
 			[[ user_info['first_name'] + " " + user_info['last_name'] ]]
 		</td>
 	</tr>
   <tr>
 		<td class="field">School</td>
 		<td class="value">
-			<input class="edit-field" type="text" placeholder="Edit School" />
 			[[ user_info['school'] ]]
 		</td>
 	</tr>
@@ -99,8 +96,8 @@
 	</tr>
   <tr>
 		<td class="field">Password</td>
-		<h3 id="message">[[ message ]]</h3>
 		<td class="value">
+  		<p id="message">[[ message ]]</p>
 			<form method="post">
 				[[ with_errors(form.old_pass) ]]
 				[[ with_errors(form.new_pass) ]]
