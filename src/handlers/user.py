@@ -17,6 +17,7 @@ def get_avatar_url(user_id):
 class GetAvatar(BaseHandler):
     def get(self, user_id, random_string=None):
         self.set_status(303)
+        self.set_header("Cache-Control", "no-cache")
         self.redirect(get_avatar_url(user_id))
         
 
