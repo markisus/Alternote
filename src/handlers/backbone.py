@@ -53,7 +53,7 @@ class Bootstrap(BaseHandler):
         if is_priveleged:
             codes = db.codes.lookup_codes(class_id)
             
-        self.render_out(server_timestamp=datetime.datetime.now().isoformat()[:16], user_id=user_id, class_id=class_id, class_doc=class_doc, files=files, events=events, codes=codes, is_privelged=is_priveleged)
+        self.render_out(server_timestamp=datetime.datetime.now().isoformat()[:16], user_id=user_id, class_id=class_id, class_doc=class_doc, files=files, events=events, codes=codes, is_priveleged=is_priveleged)
 #        print("Get completed")
         
 #Backbone Collection Handlers

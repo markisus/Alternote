@@ -992,7 +992,7 @@ function() {
       }
       if (numFlags > 1) {
         this.$(".content").hide();
-        this.$(".hidden-post").show();
+   		this.$(".hidden-post").css("display", "block");
       } else if (numFlags > 0) {
         this.$(".flag").first().show();
         this.$(".flag").first().addClass("flagged");
@@ -1022,7 +1022,6 @@ function() {
         }
         //Prepend avatar!
         $(this.el).prepend("<img class='authorimg' src='/account/avatar/" + this.model.get("author")["_id"] + "'/>")
-        this.render_stats();
         //Create timestamp
         var timestamp = new TimestampWidget();
         timestamp.set_timestamp(this.model.get("timestamp"));
@@ -1083,6 +1082,7 @@ function() {
           });
         });
       }
+	  this.render_stats();
     },
   });
   
