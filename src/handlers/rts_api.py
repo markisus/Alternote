@@ -92,7 +92,7 @@ class Listener(JSONPHandler):
         for datum in data.values():
             if datum['action'] in ['post', 'comment']:
                 if datum['user']['_id'] == 'Anonymous':
-                    datum['is_author'] = db.conversations.is_anon_author(self.get_current_user(), datum['_id'])
+                    datum['is_author'] = db.conversations.is_anon_author(self.get_current_user(), datum['objectid'])
                 else:
                     datum['is_author'] = datum['user']['_id'] == self.get_current_user()
 #        print("Revealed anon post: " + str(post))
