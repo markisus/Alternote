@@ -841,7 +841,7 @@ function() {
     window.event_edit = new EventEdit();
     $("#event-edit").show();
   } else {
-    alert("Not privelged!");
+//    alert("Not privelged!");
   }
   
   //Timestamp Widget
