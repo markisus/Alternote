@@ -15,30 +15,23 @@
 
 {% block content %}
 	<div class="twelve columns content registration">
-	<p>We'd love to know a little more about you.</p> <br/>
-		
-		<form method="post">
-			{% if form.type is defined %}
-			[[ form.type.label ]]
-				[[ with_errors(form.type) ]]
-			{% endif %}
-			[[ form.first_name.label ]]
-				[[ with_errors(form.first_name) ]]
-			[[ form.last_name.label ]]
-				[[ with_errors(form.last_name) ]]
-			[[ form.email.label ]]
-				[[ with_errors(form.email) ]]
-			[[ form.password.label ]]
-				[[ with_errors(form.password) ]]
-			[[ form.password1.label ]]
-				[[ with_errors(form.password1) ]]
-			[[ form.image.label ]]
-			<div id="photo">
-				<img src="[[ image('default-icon-small.png') ]]" />
-				[[ form.image() ]]
-			</div>
-			[[ form.submit() ]]
-		</form>
+  	<p>Thanks for signing up for Alternote! We'd love to know a little more about you.</p> <br/>
+  	<form method="post" id="student-registration">
+  		{% if form.type is defined %}
+  		[[ form.type.label ]]
+  			[[ with_errors(form.type) ]]
+  		{% endif %}
+  		[[ form.first_name.label ]]
+  			[[ with_errors(form.first_name) ]]
+  		[[ form.last_name.label ]]
+  			[[ with_errors(form.last_name) ]]
+  		[[ form.email.label ]]
+  			[[ with_errors(form.email) ]]
+  		[[ form.password.label ]]
+  			[[ with_errors(form.password) ]]
+  		[[ form.password1.label ]]
+  			[[ with_errors(form.password1) ]]
+  		[[ form.submit() ]]
+  	</form>
 	</div>
-	
 {% endblock content %}

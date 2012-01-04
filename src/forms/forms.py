@@ -30,7 +30,7 @@ class ProfRegistrationForm(Form):
 class RegistrationForm(Form):
     first_name = TextField('What is your first name?', [validators.Length(min=1)])
     last_name = TextField('And last name?', [validators.Length(min=1)])
-    email = TextField("Email?", [validators.Email()])
+    email = TextField("Where does your professor email you?", [validators.Email()])
     password = PasswordField("Create a password", [validators.Length(min=4)])
     password1 = PasswordField("Repeat password", [validators.EqualTo('password', message="Passwords must match")])
     image = FileField("It'd be nice (for us and the students) to see your face around here. Mind uploading a photo?")

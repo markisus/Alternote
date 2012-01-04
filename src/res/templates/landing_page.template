@@ -70,11 +70,11 @@
 							<a href="/admin/school/create" class="link-blue" style="display: none;">Create a school</a>
 						</p>
 						<form method="post">
-							Spring learners, enter your access code
+							Join or create a class
 							[[ regForm.code( placeholder="Access code..." ) ]] [[ regForm.submit() ]]
 						</form>
 						<form method="post">
-							Professors and students, sign up here
+							Sign up for updates
 							[[ emailForm.email( placeholder="Email address..." ) ]] [[ emailForm.submit() ]]
 						</form>
 						<f>Confused about what we're dreaming about, what we're building, or who we are? Maybe <a href="[[ reverse_url('About') ]]">this</a> will help.</f>

@@ -571,7 +571,7 @@ ul#footer-links li a:hover {
 }
 #index #join input[type="text"] {
   color: #333;
-  width: 230px;
+  width: 182px;
   margin-top: 5px;
   margin-bottom: 0;
   padding: 8px 4px;
@@ -586,7 +586,7 @@ ul#footer-links li a:hover {
 #index #join input[type="submit"] {
   float: left;
   margin-top: 5px;
-  margin-left: -40px;
+  margin-left: 8px;
   padding: 6px 12px;
   background-color: #3caed5;
   background-repeat: repeat-x;
@@ -1034,9 +1034,8 @@ ul#footer-links li a:hover {
   display: none;
 }
 .post .embed img {
-  /* float: left;
-			margin: 5px 10px 0 0; */
-
+  float: left;
+  margin: 5px 10px 0 0;
 }
 .post .embed img.thumb {
   max-width: 90px;
@@ -1697,6 +1696,15 @@ ul#footer-links li a:hover {
   font-style: italic;
   font-size: 12px;
   line-height: 14px;
+}
+.registration form#student-registration {
+  width: 600px;
+}
+.registration form#student-registration label {
+  width: 330px;
+}
+.registration form#student-registration .form_field {
+  margin-right: 0;
 }
 #account-page {
   float: left;
