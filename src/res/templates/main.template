@@ -1,6 +1,6 @@
 {% extends 'base.template' %}
 
-{% block title %}Alternote Alpha{% endblock %}
+{% block title %}alternote: be curious{% endblock %}
 
 {% block scripts %}
 	<script type="text/javascript" src="[[ script('jquery-1.6.4.js') ]]"></script>
