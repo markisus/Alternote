@@ -283,7 +283,6 @@ function() {
       // If a conversation is clicked, show it
       self.$("button.convo").click(function() {
         $(".content.calendar").hide();
-        $("#file.content").hide();
         $("#conversation").fadeIn();
         // Toggle active state in sidebar
         $("ul.sidebar-content div").removeClass("active");
@@ -421,9 +420,16 @@ function() {
       this.$("#file-list").html("");
       files.forEach(
         function(file) {
-          var file_format = '<li><a href="<%= generate_filepath(file.get("name")) %>"><%= file.get("name") %></a> <button class="edit">edit</button></li>';
+          var file_format = '<li><a href="<%= generate_filepath(file.get("name")) %>"><%= file.get("name") %></a> <button class="edit"></button></li>';
           var file_info = $(_.template(file_format, {file:file}));
-          $(file_info).children("button.edit").click(function(){file_edit.bind_file_model(file)});
+          $(file_info).children("button.edit").click(function(){
+            file_edit.bind_file_model(file);
+            $("#file-modal h5").html("Editing " + file_info.children("a").html());
+            $("#file-modal").fadeIn();
+          });
+          $(file_info).hover(function() {
+            $(this).children(".edit").toggle();
+          });
           this.$("#file-list").append(file_info);
         }
       );
@@ -436,7 +442,7 @@ function() {
   var FileEdit = Backbone.View.extend({
     el: $("#file-edit"),
     initialize: function() {
-      this.template = _.template("<option value='<%= event_id %>'><%= event_name %></option>")
+      this.template = _.template("<option value='<%= event_id %>'><%= event_name %> <%= event_date %></option>")
       this.render();
     },
     bind_file_model: function(file_model) {
@@ -487,7 +493,9 @@ function() {
         
         //Populate Events
         events.forEach(function(item) {
-          self.$(".tags").append(self.template({event_id:item.get('id'), event_name:item.get('title')}));
+          var rawDate = new Date(item.get('start'));
+          var formattedDate = rawDate.format('UTC:m/d');
+          self.$(".tags").append(self.template({event_id:item.get('id'), event_name:item.get('title'), event_date:formattedDate}));
         });
         
         //Select the correct events
@@ -497,12 +505,13 @@ function() {
             return item.get('id');
           }
         );
+        this.$(".tags").chosen();
+        this.$(".tags").trigger("liszt:updated");
       }
       else {
         //console.log("No bound model");
         this.$("#message").html("Please bind a file.");
       }
-      //console.log("Rendering");
     }
   });
   window.file_edit = new FileEdit();
@@ -628,7 +637,7 @@ function() {
       this.$("#message").html("");
       if (!_.isUndefined(this.model)) {
         //Populate the field with model attrs
-        this.$("#event-id").html("Editing " + this.model.get("id"));
+        // this.$("#event-id").html("Editing " + this.model.get("id"));
         this.$("#title").val(this.model.get("title"));
         this.dtStart.set_date(this.model.get_date("start"));
         this.dtFinish.set_date(this.model.get_date("finish"));
@@ -1303,7 +1312,6 @@ function() {
     // Re-show the calendar from a conversation view
     $(".show-calendar").click(function() {
       $("#conversation").hide();
-      $("#file.content").hide();
       $(".content.calendar").fadeIn();
     });
 
@@ -1324,11 +1332,15 @@ function() {
       $("#info-content").fadeIn();
     });
     
-    $("#file-edit-link").click(function(event) {
+    /* $("#file-edit-link").click(function(event) {
       event.preventDefault();
       $("#conversation").hide();
       $(".content.calendar").hide();
       $("#file.content").fadeIn();
+    }); */
+    
+    $("#file-modal-hide").click(function() {
+      $("#file-modal").fadeOut("fast");
     });
     
     // New event form
@@ -1463,7 +1475,7 @@ function() {
           <p class="header"><a href="">Files <span class="triangle">&#9660;</span></a></p>
             <div class="purple-line" style="width:82%;"></div>
           <ul id="file-list" class="sidebar-content"></ul>
-          <a href="#!" id="file-edit-link" class="link-blue">Edit files</a>
+          <!-- <a href="#!" id="file-edit-link" class="link-blue">Edit files</a> -->
         </div>
         
         <div id="classmates">
@@ -1563,9 +1575,9 @@ function() {
       <div id="posts"></div>
     </div>
     
-    <div class="twelve columns content" id="file">
-      <h3>Edit Files</h3>
-      <button class="show-calendar">Show calendar</button>
+    <div id="file-modal">
+      <h5>Edit Files</h5>
+      <a href="#!" id="file-modal-hide">x</a>
       <div id="file-edit">
         <div class="message"></div>
         <select class="tags" multiple="multiple" data-placeholder="Tag conversation(s)...">

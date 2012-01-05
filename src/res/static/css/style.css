@@ -820,24 +820,18 @@ ul#footer-links li a:hover {
 .sidebar ul.sidebar-content#file-list li {
   border: none;
 }
-.sidebar ul.sidebar-content#file-list button {
-  border: none;
-  background: transparent;
-  float: right;
-  cursor: pointer;
-  padding: 0px 2px;
-  font-weight: normal;
-  text-shadow: none;
-  margin: 0 4px 0 0;
-  /* color: #619ecf; */
-
-  color: #009ed9;
-  -webkit-transition: color 0.1s linear;
-  -moz-transition: color 0.1s linear;
-  transition: color 0.1s linear;
+.sidebar ul.sidebar-content#file-list li a {
+  max-width: 190px;
+  float: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -khtml-text-overflow: ellipsis;
 }
-.sidebar ul.sidebar-content#file-list button:hover {
-  color: #333;
+.sidebar ul.sidebar-content#file-list button {
+  margin-top: -2px;
 }
 .sidebar ul.sidebar-content li {
   float: left;
@@ -1602,20 +1596,50 @@ ul#footer-links li a:hover {
   height: auto;
   margin: 0 0 0 5px;
 }
-#file.content {
+#file-modal {
   display: none;
-  margin: 10px 0 0 0 !important;
-  padding-left: 10px;
+  position: absolute;
+  margin: 274px 0 0 230px;
+  width: 230px;
+  padding: 10px;
+  border: solid 1px #999;
+  background: #FFF;
+  z-index: 11;
+  -webkit-box-shadow: 0px 2px 5px #cccccc;
+  -moz-box-shadow: 0px 2px 5px #cccccc;
+  box-shadow: 0px 2px 5px #cccccc;
 }
-#file.content h3 {
-  width: 75%;
+#file-modal h5 {
+  width: 90%;
+  float: left;
+  font-size: 14px;
+  font-weight: normal;
+  margin-bottom: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -khtml-text-overflow: ellipsis;
+}
+#file-modal #file-modal-hide {
+  float: right;
+  color: #999;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+#file-modal #file-modal-hide:hover {
+  color: #333;
+}
+#file-modal #file-edit {
   float: left;
 }
-#file.content #file-edit {
+#file-modal #file-edit select, #file-modal #file-edit .chzn-container {
   float: left;
-  width: 400px;
+  margin-bottom: 5px;
 }
-#file.content #file-edit button {
+#file-modal #file-edit button {
   float: left;
   height: 30px;
   margin-bottom: 0;
