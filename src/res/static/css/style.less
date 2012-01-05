@@ -428,6 +428,8 @@ ul#footer-links {
 		background: #CAC;
 	}
 	
+	#past-events { display: none; }
+	
 	ul.sidebar-content {
 		float: left;
 		width: 100%;
@@ -811,13 +813,6 @@ ul#footer-links {
 		}
 	}
 
-	#show-calendar {
-		padding: 3px 8px;
-		margin: 0;
-		float: right;
-		.opacity(75);
-	}
-
 	#posts {
 		float: left;
 		width: 100%;
@@ -837,6 +832,13 @@ ul#footer-links {
 			&.anonymous-post { float: left; }
 		}
 	}
+}
+
+.show-calendar {
+	padding: 3px 8px;
+	margin: 0;
+	float: right;
+	.opacity(75);
 }
 
 .calendar {
@@ -1117,17 +1119,25 @@ ul#footer-links {
 				margin: 0 0 0 5px;
 			}
 		}
-		
-		#file-edit {
-			display: none;
-		    width: 260px;
-		    
-			button {
-			    float: left;
-			    height: 30px;
-			    margin-bottom: 0;
-		    }
-		}
+	}
+}
+
+#file.content {
+	display: none;
+	margin: 10px 0 0 0 !important;
+	padding-left: 10px;
+	
+	h3 { width: 75%; float: left; }
+	
+	#file-edit {
+		float: left;
+	    width: 400px;
+	    
+		button {
+		    float: left;
+		    height: 30px;
+		    margin-bottom: 0;
+	    }
 	}
 }
 

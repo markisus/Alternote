@@ -283,6 +283,7 @@ function() {
       // If a conversation is clicked, show it
       self.$("button.convo").click(function() {
         $(".content.calendar").hide();
+        $("#file.content").hide();
         $("#conversation").fadeIn();
         // Toggle active state in sidebar
         $("ul.sidebar-content div").removeClass("active");
@@ -1300,8 +1301,9 @@ function() {
     });
     
     // Re-show the calendar from a conversation view
-    $("#show-calendar").click(function() {
+    $(".show-calendar").click(function() {
       $("#conversation").hide();
+      $("#file.content").hide();
       $(".content.calendar").fadeIn();
     });
 
@@ -1320,6 +1322,13 @@ function() {
       $("#nav-link").removeClass("active");
       $("#nav-content").hide();
       $("#info-content").fadeIn();
+    });
+    
+    $("#file-edit-link").click(function(event) {
+      event.preventDefault();
+      $("#conversation").hide();
+      $(".content.calendar").hide();
+      $("#file.content").fadeIn();
     });
     
     // New event form
@@ -1454,6 +1463,7 @@ function() {
           <p class="header"><a href="">Files <span class="triangle">&#9660;</span></a></p>
             <div class="purple-line" style="width:82%;"></div>
           <ul id="file-list" class="sidebar-content"></ul>
+          <a href="#!" id="file-edit-link" class="link-blue">Edit files</a>
         </div>
         
         <div id="classmates">
@@ -1534,13 +1544,6 @@ function() {
           <select class="files chzn-select" multiple="multiple" data-placeholder="Tag file(s)...">
           </select>
         </div>
-        <div id="file-edit">
-          <div class="message"></div>
-          <select class="tags chzn-select" multiple="multiple" data-placeholder="Tag conversation(s)...">
-          </select>
-          <button class="save">Save Changes</button>
-          <button class="delete">Delete file</button>
-        </div>
       </div> <!-- new event end -->
     
     </div> <!-- twelve columns calendar end -->
@@ -1548,7 +1551,7 @@ function() {
     <div class="twelve columns content conversation" id="conversation">
       <h3 id="convo-title">Lecture Conversation</h3>
       <p id="convo-time">12/1, 10:30a</p>
-      <button id="show-calendar">Show calendar</button>
+      <button class="show-calendar">Show calendar</button>
       <a href="#!" id="convo-details-link">Hide details</a>
       <p id="convo-details"></p>
       <div id="message"></div>
@@ -1561,7 +1564,15 @@ function() {
     </div>
     
     <div class="twelve columns content" id="file">
-      
+      <h3>Edit Files</h3>
+      <button class="show-calendar">Show calendar</button>
+      <div id="file-edit">
+        <div class="message"></div>
+        <select class="tags" multiple="multiple" data-placeholder="Tag conversation(s)...">
+        </select>
+        <button class="save">Save Changes</button>
+        <button class="delete">Delete file</button>
+      </div>
     </div>
   </div>
 </div>

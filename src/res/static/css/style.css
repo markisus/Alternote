@@ -756,6 +756,9 @@ ul#footer-links li a:hover {
   width: 50%;
   background: #CAC;
 }
+.sidebar #past-events {
+  display: none;
+}
 .sidebar ul.sidebar-content {
   float: left;
   width: 100%;
@@ -1256,15 +1259,6 @@ ul#footer-links li a:hover {
   padding: 5px;
   margin-bottom: 10px;
 }
-#conversation #show-calendar {
-  padding: 3px 8px;
-  margin: 0;
-  float: right;
-  filter: alpha(opacity=75);
-  -khtml-opacity: 0.75;
-  -moz-opacity: 0.75;
-  opacity: 0.75;
-}
 #conversation #posts {
   float: left;
   width: 100%;
@@ -1284,6 +1278,15 @@ ul#footer-links li a:hover {
 }
 #conversation .new-post button.anonymous-post {
   float: left;
+}
+.show-calendar {
+  padding: 3px 8px;
+  margin: 0;
+  float: right;
+  filter: alpha(opacity=75);
+  -khtml-opacity: 0.75;
+  -moz-opacity: 0.75;
+  opacity: 0.75;
 }
 .calendar {
   margin: 5px 0 0 0 !important;
@@ -1599,11 +1602,20 @@ ul#footer-links li a:hover {
   height: auto;
   margin: 0 0 0 5px;
 }
-.calendar .new-event #file-edit {
+#file.content {
   display: none;
-  width: 260px;
+  margin: 10px 0 0 0 !important;
+  padding-left: 10px;
 }
-.calendar .new-event #file-edit button {
+#file.content h3 {
+  width: 75%;
+  float: left;
+}
+#file.content #file-edit {
+  float: left;
+  width: 400px;
+}
+#file.content #file-edit button {
   float: left;
   height: 30px;
   margin-bottom: 0;
