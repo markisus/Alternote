@@ -728,20 +728,15 @@ ul#footer-links li a:hover {
   float: left;
   font-size: 12px;
   margin-top: 10px;
-  /* text-transform: uppercase; */
-
-  -webkit-transition: color 0.1s linear;
-  -moz-transition: color 0.1s linear;
-  transition: color 0.1s linear;
+  text-transform: uppercase;
 }
 .sidebar p.header a {
   color: #858;
   font-size: 12px;
-}
-.sidebar p.header a:hover {
-  color: #000;
+  cursor: default;
 }
 .sidebar p.header .triangle {
+  display: none;
   font-size: 8px;
   filter: alpha(opacity=75);
   -khtml-opacity: 0.75;
@@ -1599,7 +1594,7 @@ ul#footer-links li a:hover {
 #file-modal {
   display: none;
   position: absolute;
-  margin: 274px 0 0 230px;
+  margin: 262px 0 0 220px;
   width: 230px;
   padding: 10px;
   border: solid 1px #999;
@@ -1642,7 +1637,7 @@ ul#footer-links li a:hover {
 #file-modal #file-edit button {
   float: left;
   height: 30px;
-  margin-bottom: 0;
+  margin: 0 5px 0 0;
 }
 .registration {
   border-left: solid 1px #CCC;

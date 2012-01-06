@@ -1295,7 +1295,7 @@ function() {
     // Sidebar UI
     $("p.header a").click(function(event) {
       event.preventDefault();
-      $(this).parent().parent().children("ul").slideToggle('fast');
+      // $(this).parent().parent().children("ul").slideToggle('fast');
       
       var triangle = $(this).children(".triangle");
       if (triangle.html() == '▲')
@@ -1331,13 +1331,6 @@ function() {
       $("#nav-content").hide();
       $("#info-content").fadeIn();
     });
-    
-    /* $("#file-edit-link").click(function(event) {
-      event.preventDefault();
-      $("#conversation").hide();
-      $(".content.calendar").hide();
-      $("#file.content").fadeIn();
-    }); */
     
     $("#file-modal-hide").click(function() {
       $("#file-modal").fadeOut("fast");
@@ -1431,13 +1424,13 @@ function() {
       <div id="nav-content">
         <div id="conversations">
           <p class="header"><a href="">Conversations <span class="triangle">&#9660;</span></a></p>
-            <div class="purple-line" style="width:59%;"></div>
+            <div class="purple-line" style="width:58%;"></div>
           <ul id="conversation-list" class="sidebar-content"></ul>
         </div>
         
         <div id="upcoming">
           <p class="header"><a href="">Upcoming <span class="triangle">&#9660;</span></a></p>
-            <div class="purple-line" style="width:68%;"></div>
+            <div class="purple-line" style="width:70%;"></div>
           <ul id="upcoming-list" class="sidebar-content"></ul>
         </div>
         
@@ -1451,13 +1444,13 @@ function() {
       <div id="info-content">
         <div id="honchoes">
           <p class="header"><a href="">Honchoes <span class="triangle">&#9660;</span></a></p>
-            <div class="purple-line" style="width:68%;"></div>
+            <div class="purple-line" style="width:70%;"></div>
           <ul id="honchoes-list" class="sidebar-content"></ul>
         </div>
         {% if codes %}
     		<div id="codes">
     			<p class="header"><a href="">Codes <span class="triangle">&#9660;</span></a></p>
-    			  <div class="purple-line" style="width:78%;"></div>
+    			  <div class="purple-line" style="width:81%;"></div>
     			<ul id="code-list" class="sidebar-content">
     				{% for code in codes %}
     					<li>[[ code.type ]] : [[ code._id ]] </li>
@@ -1467,20 +1460,30 @@ function() {
     		{% endif %}
         <div id="meeting">
           <p class="header"><a href="">Meeting <span class="triangle">&#9660;</span></a></p>
-            <div class="purple-line" style="width:73%;"></div>
+            <div class="purple-line" style="width:75%;"></div>
           <ul id="meeting-list" class="sidebar-content"></ul>
         </div>
         
         <div id="files">
           <p class="header"><a href="">Files <span class="triangle">&#9660;</span></a></p>
-            <div class="purple-line" style="width:82%;"></div>
+            <div class="purple-line" style="width:85%;"></div>
           <ul id="file-list" class="sidebar-content"></ul>
-          <!-- <a href="#!" id="file-edit-link" class="link-blue">Edit files</a> -->
+          <div id="file-modal">
+            <h5>Edit Files</h5>
+            <a href="#!" id="file-modal-hide">x</a>
+            <div id="file-edit">
+              <div class="message"></div>
+              <select class="tags" multiple="multiple" data-placeholder="Tag conversation(s)...">
+              </select>
+              <button class="save">Save Changes</button>
+              <button class="delete">Delete file</button>
+            </div>
+          </div>
         </div>
         
         <div id="classmates">
           <p class="header"><a href="">Classmates <span class="triangle">&#9660;</span></a></p>
-            <div class="purple-line" style="width:66%;"></div>
+            <div class="purple-line" style="width:67%;"></div>
           <ul id="classmates-list" class="sidebar-content"></ul>
         </div>
       </div>
@@ -1573,18 +1576,6 @@ function() {
         <button class="share">Share</button>
       </div>
       <div id="posts"></div>
-    </div>
-    
-    <div id="file-modal">
-      <h5>Edit Files</h5>
-      <a href="#!" id="file-modal-hide">x</a>
-      <div id="file-edit">
-        <div class="message"></div>
-        <select class="tags" multiple="multiple" data-placeholder="Tag conversation(s)...">
-        </select>
-        <button class="save">Save Changes</button>
-        <button class="delete">Delete file</button>
-      </div>
     </div>
   </div>
 </div>

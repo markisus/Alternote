@@ -406,14 +406,14 @@ ul#footer-links {
 	    float: left;
 		font-size: 12px;
 		margin-top: 10px;
-		/* text-transform: uppercase; */
-		.transition(color 0.1s linear);
+		text-transform: uppercase;
 		a { 
 			color: #858; 
 			font-size: 12px;
-			&:hover { color: #000; } 
+			cursor: default;
 		}
 		.triangle {
+			display: none;
 		    font-size: 8px;
 		    .opacity(75);
 		}
@@ -1122,7 +1122,7 @@ ul#footer-links {
 #file-modal {
 	display: none;
 	position: absolute;
-	margin: 274px 0 0 230px;
+	margin: 262px 0 0 220px;
 	width: 230px;
 	padding: 10px;
 	border: solid 1px #999;
@@ -1154,7 +1154,7 @@ ul#footer-links {
 		button {
 		    float: left;
 		    height: 30px;
-		    margin-bottom: 0;
+		    margin: 0 5px 0 0;
 	    }
 	}
 }
