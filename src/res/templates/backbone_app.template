@@ -70,13 +70,13 @@
     <% } %>
     
     <% if(model.has_active_convo()) { %>
-      <button class="convo"><%= model.get('title') %></button>
+      <button class="convo"><span class="convo"><%= model.get('title') %></span></button>
     <% } else { %>
-      <%= model.get('title') %><br/>
+      <span class="convo"><%= model.get('title') %></span><br/>
     <% } %>
     <p class="date"><%= startDate.format('UTC:m/d h:MMt') %></p>
     
-    <% if(!_.isEmpty(files)) { %>
+    <% if (!_.isEmpty(files)) { %>
     <div class="files">
       <p>Files:</p>
       <ul>
@@ -102,17 +102,19 @@
   <a href="#!" id="hide">x</a>
   <h3><%= model.get('title') %></h3>
   <div id="main-info">
-    <p><%= start %> to <%= finish %></p>
+    <p><%= startDate.format('UTC:m/d/y h:MMt') %> to <%= finishDate.format('UTC:m/d/y h:MMt') %></p>
     <p>Conversation starts <%= model.get('days_before') %> days, <%= model.get('hours_before') %> hours before <%= model.get('type') %></p>
     <% if (model.get('details')) { %>
       <hr/>
       <p id="event-details"><%= model.get('details') %></p>
     <% } %>
   </div>
-  <div id="associated-files">
-    Associated files: 
-    <ul></ul>
-  </div>
+  <% if (!_.isEmpty(model.get_files())) { %>
+    <div id="associated-files">
+      Associated files: 
+      <ul></ul>
+    </div>
+  <% } %>
 </script>
 <script type="text/template" id="datetime-input-template">
   <input type="text" class="date"/>
@@ -296,7 +298,7 @@ function() {
       });
       
       if (!class_doc.is_priveleged(user_id)) {
-        self.$("button.convo").addClass("student");
+        self.$(".convo").addClass("student");
       }
       
       // If a conversation is clicked, show it
@@ -350,7 +352,7 @@ function() {
       this.render();
     },
     render_events: function() {
-      console.log("Rendering events");
+      // console.log("Rendering events");
       events.sort();
       this.render_upcoming();
       this.render_past();
@@ -364,6 +366,7 @@ function() {
       this.render_classmates();
       this.render_meeting_times();
       this.render_files();
+      this.$("#course-title").html(events.first().get("class")["name"]);
     },
     render_upcoming: function() {
       var upcoming = events.first(this.max_upcoming);
@@ -597,12 +600,21 @@ function() {
       var details = this.$(".details").val();
       var type = this.$(".type").val();
       var auto_convo = this.$(".auto-convo").attr("checked") == "checked";
-      var hours_before = parseInt(this.$(".hours-before")) || 0; //Default 0
-      var days_before = parseInt(this.$(".days-before")) || 0;
-      event = {title:title, start:start, finish:finish, details:details, type:type, dummy:!auto_convo}
+      var hours_before = parseInt(this.$(".hours-before").val()) || 0; //Default 0
+      var days_before = parseInt(this.$(".days-before").val()) || 0;
+      event = {
+        title:title, 
+        start:start, 
+        finish:finish, 
+        details:details, 
+        type:type, 
+        dummy:!auto_convo,
+        hours_before:hours_before,
+        days_before:days_before
+      }
       events.create(event, {
         success: function() {
-          this.$('#message').html("Success!");
+          this.$('#message').html("New event created successfully.");
           //The server will have calculated a convo_start time for this object, re-sync:
           events.fetch(
             {'success':function(){
@@ -612,7 +624,7 @@ function() {
           );
         },
         error: function() {
-          this.$('#message').html("Error!");
+          this.$('#message').html("Error creating event.");
           this.model = undefined;
         },
       });
@@ -635,11 +647,11 @@ function() {
         type:type,
         dummy:!auto_convo,
         hours_before:hours_before,
-        days_before:days_before,
-        }
+        days_before:days_before
+      }
       this.model.save(changes, {
         success: function() {
-          this.$('#message').html("Success!");
+          this.$('#message').html("Event saved successfully.");
           //The server will have calculated a convo_start time for this object, re-sync:
           events.fetch(
             {'success':function(){
@@ -650,7 +662,7 @@ function() {
         },
         error: function(data) {
           //console.log("Error: ", data);
-          this.$('#message').html("Error :(");
+          this.$('#message').html("Error editing event.");
         }
       });
     },
@@ -709,9 +721,9 @@ function() {
       this.$("#message").html("");
       if (!_.isUndefined(this.model)) {
         var model = self.model;
-        var startDate = (new Date(this.model.get('start'))).format('UTC:m/d h:MMt');
-        var finishDate = (new Date(this.model.get('finish'))).format('UTC:m/d h:MMt');
-        var result = $(self.el).html(self.template({model:model, start:startDate, finish:finishDate}));
+        var startDate = new Date(this.model.get('start'));
+        var finishDate = new Date(this.model.get('finish'));
+        var result = $(self.el).html(self.template({model:model, startDate:startDate, finishDate:finishDate}));
         
         this.$("a#hide").mouseover(function() {
           $(this).append("<div class='tooltip'>Hide</div>");
@@ -870,7 +882,7 @@ function() {
     },
     //Add/remove files to/from class
     save: function() {
-      console.log("Saving", this.model);
+      // console.log("Saving", this.model);
       var self = this;
       var all_files = files.pluck("id");
       var selected_files = _(this.$("select option:selected")).map(function(item){
@@ -883,7 +895,7 @@ function() {
       _(unselected_files).forEach(function(id) {
         files.get(id).remove_tag(self.model.get("id"));
       });
-      console.log(all_files, selected_files, unselected_files);
+      // console.log(all_files, selected_files, unselected_files);
     },
     render: function() {
       //Clear current list
@@ -1087,7 +1099,7 @@ function() {
               wmode: 'transparent'
             });
           } catch(something) {
-            console.log("Embedly exception caught");
+            console.log("Embedly error");
           }
         } else {
           $(this.el).addClass("comment");
@@ -1100,7 +1112,7 @@ function() {
               wmode: 'transparent'
             });
           } catch(something) {
-            console.log("Embedly exception caught");
+            console.log("Embedly error");
           }
         }
         // Make admin post if privileged
@@ -1192,7 +1204,7 @@ function() {
       'click .anonymous-post': 'toggle_anon'
     },
     initialize: function() {
-      console.log("Initializing the ConversationView");
+      // console.log("Initializing the ConversationView");
       _.bindAll(this, 
         "new_message_handler",
         "toggle_anon");
@@ -1208,7 +1220,7 @@ function() {
       this.model = undefined;
     },
     bind_event_model: function(event_model) {
-      console.log("Binding event model ", event_model.get('title'));
+      // console.log("Binding event model ", event_model.get('title'));
       this.unbind_current_model();
       this.model = event_model;
       var self = this;
@@ -1227,7 +1239,7 @@ function() {
       //Listen for changes to this event
       var self = this;
       this.model.messages.bind("add", self.new_message_handler);
-      console.log("Done binding, ready to render.");
+      // console.log("Done binding, ready to render.");
       this.render();
     },
     new_message_handler: function(message) {
@@ -1409,6 +1421,9 @@ function() {
     $(".fc-event").live("click", function() {
       $(".new-event").slideDown();
     });
+    $(".fc-widget-content").live("click", function() {
+      $(".new-event").slideDown();
+    });
     
     $(".new-event form .close").click(function(event) {
       $(".new-event").slideUp();
@@ -1470,7 +1485,7 @@ function() {
   <div class="container">
     
     <div class="four columns content sidebar" id="sidebar">
-      <h4><span id="course_title"></span></h4>
+      <h5 id="course-title"></h5>
       <p id="sidebar-nav">
         <a href="#" id="nav-link" class="active">Navigation</a>
         <a href="#" id="info-link">Information</a>

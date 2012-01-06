@@ -359,9 +359,14 @@ ul#footer-links {
 	margin-right: -1px !important;
 	padding-top: 10px;
 	
-	#course_title {
+	#course-title {
 		float: left;
 		margin-bottom: 10px;
+		font-weight: normal;
+		width: 100%;
+		font-size: 18px;
+		line-height: 22px;
+		.overflow-ellipsis;
 	}
 	
 	img { float: left; }
@@ -543,6 +548,8 @@ ul#footer-links {
 					.overflow-ellipsis;
 					&.student { width: 100%; }
 			    }
+			
+				span.convo { width: 100% !important; }
 		        
 		        &.edit {
 		            display: none;
@@ -555,6 +562,13 @@ ul#footer-links {
                     .transition(opacity 0.1s linear);
                     &:hover { .opacity(80); }
 		        }
+		    }
+		
+			span.convo { 
+				float: left;
+		        width: 85%;
+				.overflow-ellipsis;
+				&.student { width: 100%; }
 		    }
 		
 			.files {
@@ -794,7 +808,7 @@ ul#footer-links {
 		margin: 0 0 10px 10px;
 	}
 	
-	#convo-details { width: 100%; }
+	#convo-details { width: 100%; display: none; }
 	#convo-details-link {
 		float: right;
 		font-size: 12px;
@@ -982,7 +996,7 @@ ul#footer-links {
 		
 		#event-info {
 			width: 97%;
-			h3 { font-weight: normal; }
+			h3 { font-weight: normal; margin-bottom: 8px; }
 			p { line-height: 20px; }
 			#main-info {
 				width: 66%;
@@ -994,8 +1008,15 @@ ul#footer-links {
 				padding-top: 5px;
 				ul {
 					margin-top: 5px;
-					li { margin-bottom: 2px; }
-					li a { .link-blue; }
+					li { 
+						margin-bottom: 3px;
+						a { .link-blue; }
+						&:before {
+							content: url('../images/paperclip-icon.png');
+							margin-right: 3px;
+							vertical-align: sub;
+						}
+					}
 				}
 			}
 			.tooltip { width: 40px !important; }

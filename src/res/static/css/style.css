@@ -679,9 +679,19 @@ ul#footer-links li a:hover {
   margin-right: -1px !important;
   padding-top: 10px;
 }
-.sidebar #course_title {
+.sidebar #course-title {
   float: left;
   margin-bottom: 10px;
+  font-weight: normal;
+  width: 100%;
+  font-size: 18px;
+  line-height: 22px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -khtml-text-overflow: ellipsis;
 }
 .sidebar img {
   float: left;
@@ -891,6 +901,9 @@ ul#footer-links li a:hover {
 .sidebar ul.sidebar-content li button.convo.student {
   width: 100%;
 }
+.sidebar ul.sidebar-content li button span.convo {
+  width: 100% !important;
+}
 .sidebar ul.sidebar-content li button.edit {
   display: none;
   float: right;
@@ -911,6 +924,19 @@ ul#footer-links li a:hover {
   -khtml-opacity: 0.8;
   -moz-opacity: 0.8;
   opacity: 0.8;
+}
+.sidebar ul.sidebar-content li span.convo {
+  float: left;
+  width: 85%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -khtml-text-overflow: ellipsis;
+}
+.sidebar ul.sidebar-content li span.convo.student {
+  width: 100%;
 }
 .sidebar ul.sidebar-content li .files {
   display: none;
@@ -1241,6 +1267,7 @@ ul#footer-links li a:hover {
 }
 #conversation #convo-details {
   width: 100%;
+  display: none;
 }
 #conversation #convo-details-link {
   float: right;
@@ -1477,6 +1504,7 @@ ul#footer-links li a:hover {
 }
 .calendar .new-event #event-info h3 {
   font-weight: normal;
+  margin-bottom: 8px;
 }
 .calendar .new-event #event-info p {
   line-height: 20px;
@@ -1494,7 +1522,7 @@ ul#footer-links li a:hover {
   margin-top: 5px;
 }
 .calendar .new-event #event-info #associated-files ul li {
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 .calendar .new-event #event-info #associated-files ul li a {
   /* color: #619ecf; */
@@ -1506,6 +1534,11 @@ ul#footer-links li a:hover {
 }
 .calendar .new-event #event-info #associated-files ul li a:hover {
   color: #333;
+}
+.calendar .new-event #event-info #associated-files ul li:before {
+  content: url('../images/paperclip-icon.png');
+  margin-right: 3px;
+  vertical-align: sub;
 }
 .calendar .new-event #event-info .tooltip {
   width: 40px !important;
