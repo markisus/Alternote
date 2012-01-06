@@ -33,7 +33,7 @@
 			  </li>
 		  </ul>
 	  </div>
-		<div class="twelve columns content">
+		<div class="twelve columns content" id="information">
 			{% block information %}
 			{% endblock %}
 		</div>

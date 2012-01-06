@@ -798,7 +798,7 @@ ul#footer-links li a:hover {
   margin-bottom: 0px;
 }
 .sidebar ul.sidebar-content#conversation-list:hover, .sidebar ul.sidebar-content#past-events-list:hover, .sidebar ul.sidebar-content#upcoming-list:hover {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .sidebar ul.sidebar-content#conversation-list div, .sidebar ul.sidebar-content#past-events-list div, .sidebar ul.sidebar-content#upcoming-list div {
   float: left;
@@ -812,6 +812,13 @@ ul#footer-links li a:hover {
 .sidebar ul.sidebar-content#conversation-list div.active .files, .sidebar ul.sidebar-content#past-events-list div.active .files, .sidebar ul.sidebar-content#upcoming-list div.active .files {
   display: block !important;
 }
+.sidebar ul.sidebar-content#file-list {
+  max-height: 160px;
+  overflow: hidden;
+}
+.sidebar ul.sidebar-content#file-list:hover {
+  overflow-y: auto;
+}
 .sidebar ul.sidebar-content#file-list li {
   border: none;
 }
@@ -824,6 +831,15 @@ ul#footer-links li a:hover {
   -webkit-text-overflow: ellipsis;
   -moz-text-overflow: ellipsis;
   -khtml-text-overflow: ellipsis;
+  /* color: #619ecf; */
+
+  color: #009ed9;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.sidebar ul.sidebar-content#file-list li a:hover {
+  color: #333;
 }
 .sidebar ul.sidebar-content#file-list button {
   margin-top: -2px;
@@ -1204,7 +1220,7 @@ ul#footer-links li a:hover {
   margin-bottom: 10px;
 }
 #conversation #convo-title {
-  max-width: 70%;
+  max-width: 64%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1298,12 +1314,15 @@ ul#footer-links li a:hover {
   width: 195px;
   margin-top: 36px;
   z-index: 10;
-  /*
-				border: solid 1px #CCC;
-				.border-radius(3px);
-				.box-shadow(0px 1px 5px rgba(50,50,50,0.2);
-			*/
-
+}
+.calendar #file-upload ul.qq-upload-list.active {
+  border: solid 1px #CCC;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: 0px 1px 5px rgba(50, 50, 50, 0.2);
+  -moz-box-shadow: 0px 1px 5px rgba(50, 50, 50, 0.2);
+  box-shadow: 0px 1px 5px rgba(50, 50, 50, 0.2);
 }
 .calendar #file-upload ul.qq-upload-list li {
   padding: 3px 6px;
@@ -1313,8 +1332,15 @@ ul#footer-links li a:hover {
   -webkit-text-overflow: ellipsis;
   -moz-text-overflow: ellipsis;
   -khtml-text-overflow: ellipsis;
-  /* &.qq-upload-success { background-color: #EEF; } */
-
+}
+.calendar #file-upload ul.qq-upload-list li:first-child {
+  border-bottom: solid 1px #CCC;
+}
+.calendar #file-upload ul.qq-upload-list li.qq-upload-fail {
+  background: #EEE;
+}
+.calendar #file-upload ul.qq-upload-list li #upload-list-hide {
+  float: right;
 }
 .calendar .new-event-button {
   float: right;
@@ -1882,18 +1908,18 @@ ul#classes li {
 .content.pages .sidebar a.social#email:hover {
   background-position: 0px -288px;
 }
-.content.pages .twelve.columns {
-  margin: 10px 0;
+.content.pages #information {
+  margin: 0;
   padding-left: 10px;
   padding-top: 30px;
 }
-.content.pages .twelve.columns p {
+.content.pages #information p {
   max-width: 600px;
   font-size: 18px;
   line-height: 24px;
   color: #333;
 }
-.content.pages .twelve.columns p#team-header {
+.content.pages #information p#team-header {
   font-size: 20px;
   line-height: 28px;
 }
@@ -1932,7 +1958,7 @@ ul#classes li {
 }
 .content.pages ul#team-members h3 {
   font-weight: normal;
-  color: #868;
+  color: #AE519F;
 }
 .content.pages ul#team-members f {
   font-style: italic;

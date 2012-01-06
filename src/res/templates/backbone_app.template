@@ -425,7 +425,7 @@ function() {
           $(file_info).children("button.edit").click(function(){
             file_edit.bind_file_model(file);
             $("#file-modal h5").html("Editing " + file_info.children("a").html());
-            $("#file-modal").fadeIn();
+            $("#file-modal").fadeIn("fast");
           });
           $(file_info).hover(function() {
             $(this).children(".edit").toggle();
@@ -1344,20 +1344,12 @@ function() {
       file_bank.unbind_event_model();
       $(".new-event").slideDown();
     });
-    $(".fc-event").click(function(event) {
-      $(".new-event").slideDown();
-    });
-    
-    $(".fc-widget-content").click(function(event) {
+    $(".fc-event").live("click", function() {
       $(".new-event").slideDown();
     });
     
     $(".new-event form .close").click(function(event) {
       $(".new-event").slideUp();
-    });
-    
-    $("#calendar div.fc-event.fc-event-skin").click(function(event) { 
-      $(".new-event").slideDown();
     });
     
     $("#event-edit a#hide").click(function() {
@@ -1507,16 +1499,28 @@ function() {
                   element: document.getElementById('file-uploader-demo1'),
                   action: '[[ reverse_url("FileUpload", class_id) ]]',
                   onComplete: function() {
-                    //console.log("Completed!");
                     files.fetch({
                       success: function() {
-                        //console.log("just fetched...", files.models);  //Sync the backbone collection w the new files
+                        // console.log("just fetched...", files.models);  
+                        // Sync the backbone collection w the new files
                         files.trigger("change");
                       }
                     });
                   },
                   debug: true
-              });           
+              });
+              $(".qq-upload-button").click(function() {
+                var upload_list = $(this).parent().children("ul");
+                upload_list.fadeIn("fast");
+                upload_list.addClass("active");
+                // Add list title if not present
+                if (!upload_list.children("li").first().hasClass("upload-list-title")) {
+                  upload_list.prepend("<li class='upload-list-title'>Uploaded files:<a href='#!' id='upload-list-hide'>x</a></li>");
+                  upload_list.children("li").children("#upload-list-hide").click(function() {
+                    upload_list.fadeOut("fast");
+                  });
+                }
+              });
           }
 
           // Create uploader as soon as the DOM is ready
