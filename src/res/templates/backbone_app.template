@@ -98,6 +98,22 @@
 <script type="text/template" id="event_template">
   <div>Event</div>
 </script>
+<script type="text/template" id="event-info-template">
+  <a href="#!" id="hide">x</a>
+  <h3><%= model.get('title') %></h3>
+  <div id="main-info">
+    <p><%= start %> to <%= finish %></p>
+    <p>Conversation starts <%= model.get('days_before') %> days, <%= model.get('hours_before') %> hours before <%= model.get('type') %></p>
+    <% if (model.get('details')) { %>
+      <hr/>
+      <p id="event-details"><%= model.get('details') %></p>
+    <% } %>
+  </div>
+  <div id="associated-files">
+    Associated files: 
+    <ul></ul>
+  </div>
+</script>
 <script type="text/template" id="datetime-input-template">
   <input type="text" class="date"/>
   <input type="text" class="hour"/>:
@@ -279,7 +295,10 @@ function() {
         conversation_view.bind_event_model(model);
       });
       
-          
+      if (!class_doc.is_priveleged(user_id)) {
+        self.$("button.convo").addClass("student");
+      }
+      
       // If a conversation is clicked, show it
       self.$("button.convo").click(function() {
         $(".content.calendar").hide();
@@ -307,7 +326,7 @@ function() {
     }
   });
   
-  //Sidebar UI Component
+  // Sidebar UI Component
   var SideBar = Backbone.View.extend({
     el:$('#sidebar'),
     initialize: function(){
@@ -375,7 +394,7 @@ function() {
       this.$("#conversation-list").html("");
       convos
       .filter(function(item) {
-        console.log("Looking at " + item.get('title') + " has convo: " + item.has_active_convo());
+        // console.log("Looking at " + item.get('title') + " has convo: " + item.has_active_convo());
         return item.has_active_convo();
       })
       .forEach(function(item) {
@@ -422,14 +441,20 @@ function() {
         function(file) {
           var file_format = '<li><a href="<%= generate_filepath(file.get("name")) %>"><%= file.get("name") %></a> <button class="edit"></button></li>';
           var file_info = $(_.template(file_format, {file:file}));
-          $(file_info).children("button.edit").click(function(){
-            file_edit.bind_file_model(file);
-            $("#file-modal h5").html("Editing " + file_info.children("a").html());
-            $("#file-modal").fadeIn("fast");
-          });
-          $(file_info).hover(function() {
-            $(this).children(".edit").toggle();
-          });
+          
+          if (class_doc.is_priveleged(user_id)) {
+            $(file_info).children("button.edit").click(function(){
+              file_edit.bind_file_model(file);
+              $("#file-modal h5").html("Editing " + file_info.children("a").html());
+              $("#file-modal").fadeIn("fast");
+            });
+            $(file_info).hover(function() {
+              $(this).children(".edit").toggle();
+            });
+          } else {
+            $(file_info).children("button.edit").remove();
+          }
+          
           this.$("#file-list").append(file_info);
         }
       );
@@ -438,11 +463,11 @@ function() {
   });
   window.sidebar = new SideBar();
   
-  //File Edit Widget (Change the tags of a file)
+  // File Edit Widget (Change the tags of a file)
   var FileEdit = Backbone.View.extend({
     el: $("#file-edit"),
     initialize: function() {
-      this.template = _.template("<option value='<%= event_id %>'><%= event_name %> <%= event_date %></option>")
+      this.template = _.template("<option value='<%= event_id %>'><%= event_name %> <%= event_date %></option>");
       this.render();
     },
     bind_file_model: function(file_model) {
@@ -516,7 +541,7 @@ function() {
   });
   window.file_edit = new FileEdit();
   
-  //Event Edit Widget (also for creating new events)
+  // Event Edit Widget (also for creating new events)
   var EventEdit = Backbone.View.extend({
     el: $("#event-edit"),
     initialize: function() {
@@ -536,11 +561,8 @@ function() {
       var toggleConvoInputs = function() {
         //console.log("Input toggled");
         if(self.$(".auto-convo").is(":checked")) {
-          //console.log("checked");
           self.$(".auto-convo-inputs").show();
-        }
-        else {
-          //console.log("unchecked");
+        } else {
           self.$(".auto-convo-inputs").hide();
         }
       }
@@ -638,6 +660,7 @@ function() {
       if (!_.isUndefined(this.model)) {
         //Populate the field with model attrs
         // this.$("#event-id").html("Editing " + this.model.get("id"));
+        $(this.el).show();
         this.$("#title").val(this.model.get("title"));
         this.dtStart.set_date(this.model.get_date("start"));
         this.dtFinish.set_date(this.model.get_date("finish"));
@@ -670,6 +693,51 @@ function() {
       } 
     }
   });
+  
+  var EventInfo = Backbone.View.extend({
+    el: $("#event-info"),
+    template: _.template($('#event-info-template').html()),
+    initialize: function() {
+      this.render();
+    },
+    bind_event_model: function(event_model) {
+      this.model = event_model;
+      this.render();
+    },
+    render: function() {
+      var self = this;
+      this.$("#message").html("");
+      if (!_.isUndefined(this.model)) {
+        var model = self.model;
+        var startDate = (new Date(this.model.get('start'))).format('UTC:m/d h:MMt');
+        var finishDate = (new Date(this.model.get('finish'))).format('UTC:m/d h:MMt');
+        var result = $(self.el).html(self.template({model:model, start:startDate, finish:finishDate}));
+        
+        this.$("a#hide").mouseover(function() {
+          $(this).append("<div class='tooltip'>Hide</div>");
+        });
+        this.$("a#hide").mouseout(function() {
+          $(".tooltip").remove();
+        });
+        _(this.model.get_files()).forEach(function(item) {
+          this.$("#associated-files ul").append("<li><a href='" + generate_filepath(item.get("name")) + "'>" + item.get('name') + "</a></li>");
+        });
+        
+        return result;
+      } else {
+        this.$("#message").html("Please bind an event.");
+      }
+    }
+  });
+  
+  if (class_doc.is_priveleged(user_id)) {
+    window.event_edit = new EventEdit();
+    $(function(){ $("#event-edit").show(); });
+  } else {
+    window.event_info = new EventInfo();
+    $(function(){ $("#event-info").show(); $("#file-bank").hide(); });
+  }
+  
   //Datetime Input Widget
   var DatetimeInputWidget = Backbone.View.extend({
     events: {
@@ -846,13 +914,6 @@ function() {
     }
   });
   window.file_bank = new FileBank();
-  
-  if (class_doc.is_priveleged(user_id)) {
-    window.event_edit = new EventEdit();
-    $("#event-edit").show();
-  } else {
-//    alert("Not privelged!");
-  }
   
   //Timestamp Widget
   var TimestampWidget = Backbone.View.extend({
@@ -1261,10 +1322,12 @@ function() {
         }
       },
       eventClick: function(calEvent, jsEvent, view) {
-        if(class_doc.is_priveleged(user_id)) {
-          var event_model = events.get(calEvent.id);
+        var event_model = events.get(calEvent.id);
+        if (class_doc.is_priveleged(user_id)) {
           event_edit.bind_event_model(event_model);
           file_bank.bind_event_model(event_model);
+        } else {
+          event_info.bind_event_model(event_model);
         }
       },
       eventBackgroundColor: transparent,
@@ -1285,7 +1348,6 @@ function() {
     function addTooltip(selector, content) {
       $(selector).mouseover(function() {
         $(this).append("<div class='tooltip'>" + content + "</div>");
-        console.log("Adding tooltip for " + selector);
       });
       $(selector).mouseout(function() {
         $(".tooltip").remove();
@@ -1355,6 +1417,9 @@ function() {
     $("#event-edit a#hide").click(function() {
       $(".new-event").slideUp();
     });
+    $("#event-info a#hide").live("click", function() {
+      $(".new-event").slideUp();
+    });
     addTooltip("#event-edit a#hide", "Hide this form");
     addTooltip("#start-widget", "Try using the mousewheel");
     addTooltip("#finish-widget", "Try using the mousewheel");
@@ -1384,8 +1449,6 @@ function() {
     $("#posts a").click(function(event) { event.preventDefault(); });
     
     addTooltip(".anonymous-post", "Anonymous to classmates");
-    addTooltip("#posts a.delete", "Delete this post");
-    
     $(".chzn-select").chosen();
   });
 </script>
@@ -1563,6 +1626,7 @@ function() {
           <select class="files chzn-select" multiple="multiple" data-placeholder="Tag file(s)...">
           </select>
         </div>
+        <div id="event-info"></div>
       </div> <!-- new event end -->
     
     </div> <!-- twelve columns calendar end -->

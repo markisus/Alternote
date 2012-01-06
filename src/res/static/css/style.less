@@ -540,7 +540,8 @@ ul#footer-links {
 			    
 			    &.convo { 
 			        width: 85%;
-					.overflow-ellipsis
+					.overflow-ellipsis;
+					&.student { width: 100%; }
 			    }
 		        
 		        &.edit {
@@ -927,6 +928,7 @@ ul#footer-links {
     }
     
     .fc-content {
+		height: 519px !important;
         .fc-grid .fc-day-number {
             float: left;
             padding: 1px 5px;
@@ -963,7 +965,9 @@ ul#footer-links {
 		border-bottom: solid 1px #CCC;
 		margin: 0 0 0 -1px;
 		
-		#event-edit, #file-edit, #file-bank { 
+		#event-edit, #event-info { display: none; }
+		
+		#event-edit, #file-edit, #file-bank, #event-info { 
 		    float: left;
 		    padding: 10px;
 		}
@@ -974,6 +978,27 @@ ul#footer-links {
 				margin: 2px 10px 10px 5px;
 				span { margin-top: 5px; }
 			}
+		}
+		
+		#event-info {
+			width: 97%;
+			h3 { font-weight: normal; }
+			p { line-height: 20px; }
+			#main-info {
+				width: 66%;
+				float: left;
+			}
+			#associated-files {
+				width: 30%;
+				float: right;
+				padding-top: 5px;
+				ul {
+					margin-top: 5px;
+					li { margin-bottom: 2px; }
+					li a { .link-blue; }
+				}
+			}
+			.tooltip { width: 40px !important; }
 		}
 		
 		a#hide {

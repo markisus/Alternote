@@ -9,10 +9,11 @@ import tornado
 #Handlers related to user account stuff
 def get_avatar_url(user_id):
     try:
-        file_name = db.users.get_avatar(user_id)
+        file_name = "/static/avatars/" + db.users.get_avatar(user_id)
     except KeyError:
-        file_name = "default-icon.png"
-    return "/static/avatars/" + file_name
+        file_name = "http://static1.robohash.com/" + user_id
+        # file_name = "default-icon.png"
+    return file_name
 
 class GetAvatar(BaseHandler):
     def get(self, user_id, random_string=None):

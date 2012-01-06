@@ -888,6 +888,9 @@ ul#footer-links li a:hover {
   -moz-text-overflow: ellipsis;
   -khtml-text-overflow: ellipsis;
 }
+.sidebar ul.sidebar-content li button.convo.student {
+  width: 100%;
+}
 .sidebar ul.sidebar-content li button.edit {
   display: none;
   float: right;
@@ -1411,6 +1414,9 @@ ul#footer-links li a:hover {
 .calendar table.fc-header .fc-header-right .fc-button {
   margin-left: 5px;
 }
+.calendar .fc-content {
+  height: 519px !important;
+}
 .calendar .fc-content .fc-grid .fc-day-number {
   float: left;
   padding: 1px 5px;
@@ -1447,7 +1453,13 @@ ul#footer-links li a:hover {
   border-bottom: solid 1px #CCC;
   margin: 0 0 0 -1px;
 }
-.calendar .new-event #event-edit, .calendar .new-event #file-edit, .calendar .new-event #file-bank {
+.calendar .new-event #event-edit, .calendar .new-event #event-info {
+  display: none;
+}
+.calendar .new-event #event-edit,
+.calendar .new-event #file-edit,
+.calendar .new-event #file-bank,
+.calendar .new-event #event-info {
   float: left;
   padding: 10px;
 }
@@ -1459,6 +1471,44 @@ ul#footer-links li a:hover {
 }
 .calendar .new-event #event-edit .chzn-container span {
   margin-top: 5px;
+}
+.calendar .new-event #event-info {
+  width: 97%;
+}
+.calendar .new-event #event-info h3 {
+  font-weight: normal;
+}
+.calendar .new-event #event-info p {
+  line-height: 20px;
+}
+.calendar .new-event #event-info #main-info {
+  width: 66%;
+  float: left;
+}
+.calendar .new-event #event-info #associated-files {
+  width: 30%;
+  float: right;
+  padding-top: 5px;
+}
+.calendar .new-event #event-info #associated-files ul {
+  margin-top: 5px;
+}
+.calendar .new-event #event-info #associated-files ul li {
+  margin-bottom: 2px;
+}
+.calendar .new-event #event-info #associated-files ul li a {
+  /* color: #619ecf; */
+
+  color: #009ed9;
+  -webkit-transition: color 0.1s linear;
+  -moz-transition: color 0.1s linear;
+  transition: color 0.1s linear;
+}
+.calendar .new-event #event-info #associated-files ul li a:hover {
+  color: #333;
+}
+.calendar .new-event #event-info .tooltip {
+  width: 40px !important;
 }
 .calendar .new-event a#hide {
   position: absolute;
