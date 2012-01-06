@@ -467,7 +467,7 @@ function() {
   var FileEdit = Backbone.View.extend({
     el: $("#file-edit"),
     initialize: function() {
-      this.template = _.template("<option value='<%= event_id %>'><%= event_name %> <%= event_date %></option>");
+      this.template = _.template("<option value='<%= event_id %>'><%= event_name %> <%= event_date %></option>")
       this.render();
     },
     bind_file_model: function(file_model) {
@@ -660,7 +660,7 @@ function() {
       if (!_.isUndefined(this.model)) {
         //Populate the field with model attrs
         // this.$("#event-id").html("Editing " + this.model.get("id"));
-        $(this.el).show();
+        // $(this.el).show();
         this.$("#title").val(this.model.get("title"));
         this.dtStart.set_date(this.model.get_date("start"));
         this.dtFinish.set_date(this.model.get_date("finish"));
@@ -729,14 +729,6 @@ function() {
       }
     }
   });
-  
-  if (class_doc.is_priveleged(user_id)) {
-    window.event_edit = new EventEdit();
-    $(function(){ $("#event-edit").show(); });
-  } else {
-    window.event_info = new EventInfo();
-    $(function(){ $("#event-info").show(); $("#file-bank").hide(); });
-  }
   
   //Datetime Input Widget
   var DatetimeInputWidget = Backbone.View.extend({
@@ -851,6 +843,14 @@ function() {
       if (!_.isUndefined(this.options.that_ceil)) this.options.that_ceil(this.date);
     },
   });
+  
+  if (class_doc.is_priveleged(user_id)) {
+    window.event_edit = new EventEdit();
+    $(function(){ $("#event-edit").show(); });
+  } else {
+    window.event_info = new EventInfo();
+    $(function(){ $("#event-info").show(); $("#file-bank").hide(); });
+  }
   
   //Widget to add files to a class
   var FileBank = Backbone.View.extend({
