@@ -55,7 +55,7 @@ class CreateClass(BaseHandler):
             self.redirect(self.reverse_url("ViewClasses"))
         else:
             print("Validation failed" + str(form.errors))
-            self.write(self.template.render(form=form, navbar=self.render_navbar()))
+            self.write(self.template.render(form=form))
         
 class ViewClasses(BaseHandler):
     template = env.get_template("classes/view_classes.template")

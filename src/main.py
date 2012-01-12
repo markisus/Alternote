@@ -38,21 +38,21 @@ application = tornado.web.Application([
     URLSpec(r"/admin/school/create", admin.CreateSchool, name="CreateSchool"),
     
     #Calendar
-    URLSpec(r"/calendar/view/(?P<class_id>[\w|\-|%]+)", calendar.ViewCalendar, name="ViewCalendar"),
-    URLSpec(r"/calendar/feed/(?P<class_id>[\w|\-|%]+)", calendar.CalendarFeed, name="CalendarFeed"),
-    URLSpec(r"/calendar/details/(?P<class_id>[\w|\-|%]+)/(?P<calendar_id>\w+)", calendar.CalendarDetails, name="CalendarDetails"),
-    URLSpec(r"/calendar/create/(?P<class_id>[\w|\-|%]+)", calendar.CreateCalendarStandalone, name="CreateCalendarStandalone"),
+    URLSpec(r"/calendar/view/(?P<class_id>[\w|\-|%|:|,|\.|!]+)", calendar.ViewCalendar, name="ViewCalendar"),
+    URLSpec(r"/calendar/feed/(?P<class_id>[\w|\-|%|:|,|\.|!]+)", calendar.CalendarFeed, name="CalendarFeed"),
+    URLSpec(r"/calendar/details/(?P<class_id>[\w|\-|%|:|,|\.|!]+)/(?P<calendar_id>\w+)", calendar.CalendarDetails, name="CalendarDetails"),
+    URLSpec(r"/calendar/create/(?P<class_id>[\w|\-|%|:|,|\.|!]+)", calendar.CreateCalendarStandalone, name="CreateCalendarStandalone"),
     
     #Classes
     URLSpec(r"/classes/create", classes.CreateClass, name="CreateClass"),
     URLSpec(r"/classes/view", classes.ViewClasses, name="ViewClasses"),
-    URLSpec(r"/classes/codes/(?P<class_id>[\w|\-|%]+)", classes.ViewCodes, name="ViewCodes"),
+    URLSpec(r"/classes/codes/(?P<class_id>[\w|\-|%|:|,|\.|!]+)", classes.ViewCodes, name="ViewCodes"),
 
     #Files
-    #URLSpec(r"/files/edit/(?P<class_id>[\w|\-|%]+)", files.Files, name="Files"),
-    URLSpec(r"/files/upload/(?P<class_id>[\w|\-|%]+)", files.FileUpload, name="FileUpload"),
-    URLSpec(r"/files/delete/(?P<class_id>[\w|\-|%]+)", files.FileDelete, name="FileDelete"),
-    URLSpec(r"/files/tags/(?P<class_id>[\w|\-|%]+)/(?P<record_id>\w+)", files.FileTags, name="FileTags"),
+    #URLSpec(r"/files/edit/(?P<class_id>[\w|\-|%|:|,|\.|!]+)", files.Files, name="Files"),
+    URLSpec(r"/files/upload/(?P<class_id>[\w|\-|%|:|,|\.|!]+)", files.FileUpload, name="FileUpload"),
+    URLSpec(r"/files/delete/(?P<class_id>[\w|\-|%|:|,|\.|!]+)", files.FileDelete, name="FileDelete"),
+    URLSpec(r"/files/tags/(?P<class_id>[\w|\-|%|:|,|\.|!]+)/(?P<record_id>\w+)", files.FileTags, name="FileTags"),
     
 	#Pages
 	URLSpec(r"/pages/about", misc.About, name="About"),
@@ -62,12 +62,12 @@ application = tornado.web.Application([
 	URLSpec(r"/pages/contact", misc.Contact, name="Contact"),
     
     #Backbone Bootstrap
-    URLSpec(r"/class/(?P<class_id>[\w|\-|%]+)", handlers.backbone.Bootstrap, name="Bootstrap"),
+    URLSpec(r"/class/(?P<class_id>[\w|\-|%|:|,|\.|!]+)", handlers.backbone.Bootstrap, name="Bootstrap"),
     #Backbone Collection URLs
-    URLSpec(r"/events/(?P<class_id>[\w|\-|%]+)", handlers.backbone.Events, name="Events"),
-    URLSpec(r"/events/(?P<class_id>[\w|\-|%]+)/(?P<event_id>\w+)", handlers.backbone.Events, name="Event"),
-    URLSpec(r"/files/(?P<class_id>[\w|\-|%]+)", handlers.backbone.Files, name="Files"),
-    URLSpec(r"/files/(?P<class_id>[\w|\-|%]+)/(?P<record_id>\w+)", handlers.backbone.Files, name="File"),
+    URLSpec(r"/events/(?P<class_id>[\w|\-|%|:|,|\.|!]+)", handlers.backbone.Events, name="Events"),
+    URLSpec(r"/events/(?P<class_id>[\w|\-|%|:|,|\.|!]+)/(?P<event_id>\w+)", handlers.backbone.Events, name="Event"),
+    URLSpec(r"/files/(?P<class_id>[\w|\-|%|:|,|\.|!]+)", handlers.backbone.Files, name="Files"),
+    URLSpec(r"/files/(?P<class_id>[\w|\-|%|:|,|\.|!]+)/(?P<record_id>\w+)", handlers.backbone.Files, name="File"),
     
     #Calendar
 #    (r"/", LoginHandler),

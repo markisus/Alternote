@@ -83,9 +83,9 @@ def date_validate(form, field):
             valid = time.strptime(data, "%Y-%m-%d")
         except ValueError:
             raise ValidationError("Date must be formated YYYY-MM-DD")
-    
+        
 class CreateClassForm(Form):
-    name = TextField("What's the name of your course?", [validators.Required()])
+    name = TextField("What's the name of your course?", [validators.Required(), validators.Regexp(r"[\w|\-|%|:|,|\.|!]+")])
     section = TextField("What is the section number of your course?")
     code = TextField("And the course code?")
     alternate_codes = TextField("Does the course have any cross-listed codes? If not, leave this blank.")

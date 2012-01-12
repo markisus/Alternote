@@ -366,7 +366,7 @@ function() {
       this.render_classmates();
       this.render_meeting_times();
       this.render_files();
-      this.$("#course-title").html(events.first().get("class")["name"]);
+      this.$("#course-title").html(class_doc.get("name"));
     },
     render_upcoming: function() {
       var upcoming = events.first(this.max_upcoming);
