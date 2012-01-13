@@ -305,6 +305,8 @@ function() {
       self.$("button.convo").click(function() {
         $(".content.calendar").hide();
         $("#conversation").fadeIn();
+        $("#convo-details").slideUp();
+        $("#convo-details-link").html("Show details");
         // Toggle active state in sidebar
         $("ul.sidebar-content div").removeClass("active");
         $(this).parent().parent().addClass("active");
@@ -1657,7 +1659,7 @@ function() {
           <div id="finish-widget" class="datetime-input-widget">Finish:</div>
           <textarea class="details" placeholder="Event details"/></textarea>
           <br/>
-          <label for="auto-convo" id="auto-convo-label">Auto conversation:</label>
+          <label for="auto-convo" id="auto-convo-label">Conversation?</label>
           <input class="auto-convo" type="checkbox" />
           <div class="auto-convo-inputs">
             <label for="hours-before">Hours before:</label>

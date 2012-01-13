@@ -1250,12 +1250,6 @@ ul#footer-links li a:hover {
 }
 #conversation #convo-title {
   max-width: 64%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  -webkit-text-overflow: ellipsis;
-  -moz-text-overflow: ellipsis;
-  -khtml-text-overflow: ellipsis;
 }
 #conversation #convo-time {
   float: left;
