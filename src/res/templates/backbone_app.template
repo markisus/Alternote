@@ -1201,15 +1201,18 @@ function() {
   var ConversationView = Backbone.View.extend({
     el: $("#conversation"),
     events: {
-      'click .anonymous-post': 'toggle_anon'
+      'click .anonymous-post': 'toggle_anon',
+      'click .broadcast': 'toggle_broadcast'
     },
     initialize: function() {
       // console.log("Initializing the ConversationView");
       _.bindAll(this, 
         "new_message_handler",
-        "toggle_anon");
+        "toggle_anon",
+        "toggle_broadcast");
       this.message_template = _.template($("#message-template").html());
       this.anon = false;
+      this.broadcast = false;
       this.render();
     },
     unbind_current_model: function() {
@@ -1227,12 +1230,16 @@ function() {
       this.$(".share").unbind().click(function() {
         var insight = self.$(".post-input").val();
         if (insight.length > 2) {
-          if (!self.anon) {
-            event_model.get_client().post(insight);
-          } else {
+          if (self.anon) {
             event_model.get_client().anon_post(insight);
+          } else if (self.broadcast) {
+            event_model.get_client().broadcast_post(insight);
+          } else {
+          	event_model.get_client().post(insight);
           }
           self.$(".post-input").val("");
+        } else {
+        	alert('Message length must be > 2');
         }
       });
       
@@ -1283,6 +1290,22 @@ function() {
         });
       }
     },
+    toggle_broadcast: function() {
+      // Toggles Broadcast posts
+      this.broadcast = !this.broadcast;
+      this.$(".anonymous-post").toggleClass("active");
+      if (this.broadcast) {
+        this.$("textarea.post-input").css({
+          'background-color' : '#666',
+          'color' : '#FFF'
+        });
+      } else {
+        this.$("textarea.post-input").css({
+          'background-color' : '#FFF',
+          'color' : '#333'
+        });
+      }
+    },
     render: function() {
       this.$("#convo-message").html("");
       this.$("#posts").html("");
@@ -1307,6 +1330,11 @@ function() {
         this.$("#message").html("Please bind a convo");
         this.$("#message").addClass("active");
       }
+      if(class_doc.is_priveleged(user_id)) {
+    	this.$(".anonymous-post").hide();
+		} else {
+			this.$(".broadcast").hide();
+		}
     }
   });
   window.conversation_view = new ConversationView();
@@ -1465,6 +1493,9 @@ function() {
     
     addTooltip(".anonymous-post", "Anonymous to classmates");
     $(".chzn-select").chosen();
+    
+    //Make anon posts or broadcasts invisible based on if user is priveleged
+    
   });
 </script>
 {% endblock scripts %}
@@ -1656,6 +1687,7 @@ function() {
       <div class="new-post">
         <textarea class="post-input" placeholder="Drop your insight" maxlength="1000" rows="1" onclick="this.rows=3;" onblur="this.rows=1;"></textarea>
         <button class="anonymous-post"></button>
+        <button class="broadcast">Broadcast</button>
         <button class="share">Share</button>
       </div>
       <div id="posts"></div>

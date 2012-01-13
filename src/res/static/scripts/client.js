@@ -117,7 +117,9 @@ function Client(eventid, userid, messages) {
 		_post_helper("anon_comment", parentid, message);
 	};
 	
-	
+	self.broadcast_post = function(message) {
+		_post_helper("broadcast_post", self.eventid, message);
+	}
 	var _post_helper = function(api_call, parentid, message) {
 		message = escape(message);
 		self.injectScript("/" + api_call + "/" + parentid + "/" + message);

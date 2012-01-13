@@ -103,6 +103,7 @@ application = tornado.web.Application([
     (r'/delete/(\w+)/?', handlers.rts_api.Delete),
     (r'/anon_comment/(\w+)/(.+)/?', handlers.rts_api.Comment, {'anon':True}),
     (r'/anon_post/(\w+)/(.+)/?', handlers.rts_api.Post, {'anon':True}),
+    (r'/broadcast_post/(\w+)/(.+)/?', handlers.rts_api.Post, {'email':True}),
     (r'/vote/(\w+)/?', handlers.rts_api.VoteObject),
     (r'/unvote/(\w+)/?', handlers.rts_api.UnvoteObject),
     (r'/flag/(\w+)/?', handlers.rts_api.FlagObject),

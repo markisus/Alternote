@@ -6,7 +6,9 @@ from collections import defaultdict
 import json
 from backbone import collection_to_Backbone
 from env import BaseHandler
-    
+import smtplib
+from email.mime.text import MIMEText
+
 class JSONPHandler(BaseHandler):
     def write(self, eventid, chunk):
         #Kind of a kludge... :(
@@ -185,10 +187,10 @@ class Comment(BaseHandler):
 
 #/post/(eventid)/(message)
 class Post(BaseHandler):
-    def initialize(self, anon=False):
+    def initialize(self, anon=False, email=False):
         print("Initializing post!")
         self.anon = anon
-        print("Anon post!")
+        self.email = email
         
     @tornado.web.authenticated
     def get(self, eventid, message):
@@ -213,6 +215,27 @@ class Post(BaseHandler):
         print("notifying listeners")
         EVENT_REGISTRY.notify_all_listeners_about_event(eventid)
 
+        if self.email:
+            #Get the class_id associated with this event
+            event_id = post["event_id"]
+            class_id = get_event(event_id)['class']['_id']
+            class_doc = db.classes.get_class(class_id)
+            instructor_emails = [instructor['_id'] for instructor in class_doc['instructors']]
+            ta_emails = [ta['_id'] for ta in class_doc['tas']]
+            student_emails = [student['_id'] for student in class_doc['students']]
+            #Make sure that the current user is in instructors or tas
+            if self.get_current_user() in instructor_emails+ta_emails:
+                print("Emailing...")
+                msg = MIMEText(message)
+                msg['Subject'] = class_doc['name'] + ": " + message[:20] + "..."
+                msg['From'] = "hello@alternote.com"
+                msg['To'] = student_emails
+                msg['Cc'] = instructor_emails + ta_emails
+                s = smtplib.SMTP('localhost')
+                s.sendmail("hello@alternote.com", student_emails + instructor_emails + ta_emails, msg.as_string())
+                print("Done...")
+            else:
+                raise ValueError("Not priveleged, cannot email.")
 #/delete/(messageid)/
 class Delete(BaseHandler):
         

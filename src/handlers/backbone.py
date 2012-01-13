@@ -55,10 +55,11 @@ class Bootstrap(BaseHandler):
             
         self.render_out(server_timestamp=datetime.datetime.now().isoformat()[:16], user_id=user_id, class_id=class_id, class_doc=class_doc, files=files, events=events, codes=codes, is_priveleged=is_priveleged)
 #        print("Get completed")
-        
+
 #Backbone Collection Handlers
 class Events(BaseHandler):
     def get(self, class_id, event_id=None):
+        print(class_id, event_id)
         if not event_id:
             events = db.calendar.get_all(class_id)
             collection_to_Backbone(events)
