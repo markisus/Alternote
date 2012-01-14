@@ -229,8 +229,8 @@ class Post(BaseHandler):
                 msg = MIMEText(message)
                 msg['Subject'] = class_doc['name'] + ": " + message[:20] + "..."
                 msg['From'] = "hello@alternote.com"
-                msg['To'] = student_emails
-                msg['Cc'] = instructor_emails + ta_emails
+                msg['To'] = " ,".join(student_emails)
+                msg['Cc'] = " ,".join(instructor_emails + ta_emails)
                 s = smtplib.SMTP('localhost')
                 s.sendmail("hello@alternote.com", student_emails + instructor_emails + ta_emails, msg.as_string())
                 print("Done...")
