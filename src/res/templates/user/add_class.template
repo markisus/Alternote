@@ -1,0 +1,6 @@
+<h1>Add Class Page</h1>
+
+<form method="post">
+Class Code <input type="text" placeholder="enter code here" name="code"/><br/>
+<input type="submit" value="Add a class!"/>
+</form>

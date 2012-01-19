@@ -1,0 +1,8 @@
+Are you a
+<form method="post">
+	<select name="prof_or_ta">
+		<option value="instructors">Professor</option>
+		<option value="tas">TA</option>
+	</select>
+	<input type="submit" value="Add class"/>
+</form>
