@@ -33,7 +33,8 @@ application = tornado.web.Application([
     URLSpec(r"/account/upload_avatar/?", user.AvatarUpload, name="AvatarUpload"),
     URLSpec(r"/account/avatar/(?P<user_id>[\w|\-|@|\.]+)/?", user.GetAvatar, name="GetAvatar"),
     URLSpec(r"/account/avatar/(?P<user_id>[\w|\-|@|\.]+)/(?P<random_string>\d+)", user.GetAvatar, name="GetAvatarHack"),
-    
+    URLSpec(r"/account/add_class", user.AddClassPage, name="AddClassPage"),
+    URLSpec(r"/account/priveleged_add_class", user.PrivelegedAddClassPage, name="PrivelegedAddClassPage"),
     #Admin Methods
     URLSpec(r"/admin/school/create", admin.CreateSchool, name="CreateSchool"),
     

@@ -21,7 +21,57 @@ class GetAvatar(BaseHandler):
         self.set_header("Cache-Control", "no-cache")
         self.redirect(get_avatar_url(user_id))
         
-
+class AddClassPage(BaseHandler):
+    template = env.get_template("user/add_class.template")
+    
+    @authenticated
+    def get(self):
+        self.render_out()
+    
+    def post(self):
+        user_id = self.get_current_user()
+        code = self.get_argument("code")
+        code_doc = db.codes.lookup_code(code)
+        class_id = code_doc['class_id']
+        user_type = code_doc['type']
+        if user_type == "student":
+            db.classes.register_user_for_class(user_id, class_id, "students")
+            self.redirect(self.reverse_url("ViewClasses"))
+        elif user_type == "admin":
+            self.set_secure_cookie("code", code)
+            self.redirect(self.reverse_url("PrivelegedAddClassPage"))
+        else:
+            self.write("Error: code has no type")
+            
+class PrivelegedAddClassPage(BaseHandler):
+    template = env.get_template("user/priveleged_add_class.template")
+    
+    @authenticated
+    def get(self):
+        #Check if the user is allowed to be on this page
+        code = self.get_secure_cookie("code")
+        code_doc = db.codes.lookup_code(code)
+        class_id = code_doc['class_id']
+        user_type = code_doc['type']
+        if user_type != "admin":
+            self.write("Something went wrong, code type must be admin to be on this page")
+            return
+        else:
+            self.render_out()
+    
+    def post(self):
+        #Check if the user is allowed to be on this page
+        code = self.get_secure_cookie("code")
+        code_doc = db.codes.lookup_code(code)
+        class_id = code_doc['class_id']
+        user_type = code_doc['type']
+        if user_type != "admin":
+            self.write("Something went wrong, code type must be admin to be on this page")
+            return
+        else:
+            prof_or_ta = self.get_argument("prof_or_ta")
+            db.classes.register_user_for_class(self.get_current_user(), class_id, prof_or_ta)
+            self.redirect(self.reverse_url("ViewClasses"))
 class AccountPage(BaseHandler):
     template = env.get_template("user/account.template")
     
