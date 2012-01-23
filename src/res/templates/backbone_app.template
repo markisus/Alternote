@@ -142,8 +142,10 @@ function() {
   //meet time format
   window.day_names = {'m':'Mon', 't':'Tue', 'w':'Wed', 'r':'Thu', 'f':'Fri', 's':'Sat', 'u':'Sun'};
   window.meet_time_format = function(meet_time) {
+  	console.log("Creating date...");
     d = new Date("0000-01-01T" + meet_time);
     return d.format("UTC:h:MMt")
+    console.log("Done creating date");
   };
   window.day_order = ["m", "t", "w", "r", "f", "s", "u"];
   
