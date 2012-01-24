@@ -88,6 +88,25 @@ button.anonymous-post, button.anonymous-comment {
 	}
 }
 
+button.broadcast {
+	float: left;
+	width: 40px;
+	height: 30px;
+	margin-left: -40px !important;
+	margin-right: 10px !important;
+	border: none;
+	.opacity(90);
+	.box-shadow(none);
+	background: url('../images/microphone.png') no-repeat 50% 50%;
+	&.active { background: url('../images/microphone-inverted.png') no-repeat 50% 50%; }
+	
+	.tooltip {
+		width: 90px;
+		margin-left: 110px;
+		margin-top: -18px;
+	}
+}
+
 .profpost {
     background-color: #fde4e5;
 }
@@ -960,8 +979,8 @@ ul#footer-links {
         }
         
         .fc-event-skin {
-			white-space: nowrap;
-			overflow: hidden;
+			width: 98px !important;
+			.overflow-ellipsis;
             color: @lightBlue;
             .transition(color 0.1s linear);
             &:hover { 

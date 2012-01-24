@@ -1297,7 +1297,7 @@ function() {
     toggle_broadcast: function() {
       // Toggles Broadcast posts
       this.broadcast = !this.broadcast;
-      this.$(".anonymous-post").toggleClass("active");
+      this.$(".broadcast").toggleClass("active");
       if (this.broadcast) {
         this.$("textarea.post-input").css({
           'background-color' : '#666',
@@ -1496,6 +1496,7 @@ function() {
     $("#posts a").click(function(event) { event.preventDefault(); });
     
     addTooltip(".anonymous-post", "Anonymous to classmates");
+    addTooltip(".broadcast", "Send as broadcast");
     $(".chzn-select").chosen();
     
     //Make anon posts or broadcasts invisible based on if user is priveleged
@@ -1691,7 +1692,7 @@ function() {
       <div class="new-post">
         <textarea class="post-input" placeholder="Drop your insight" maxlength="1000" rows="1" onclick="this.rows=3;" onblur="this.rows=1;"></textarea>
         <button class="anonymous-post"></button>
-        <button class="broadcast">Broadcast</button>
+        <button class="broadcast"></button>
         <button class="share">Share</button>
       </div>
       <div id="posts"></div>

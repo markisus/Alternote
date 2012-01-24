@@ -297,6 +297,30 @@ button.anonymous-post .tooltip, button.anonymous-comment .tooltip {
   margin-left: 110px;
   margin-top: -18px;
 }
+button.broadcast {
+  float: left;
+  width: 40px;
+  height: 30px;
+  margin-left: -40px !important;
+  margin-right: 10px !important;
+  border: none;
+  filter: alpha(opacity=90);
+  -khtml-opacity: 0.9;
+  -moz-opacity: 0.9;
+  opacity: 0.9;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  background: url('../images/microphone.png') no-repeat 50% 50%;
+}
+button.broadcast.active {
+  background: url('../images/microphone-inverted.png') no-repeat 50% 50%;
+}
+button.broadcast .tooltip {
+  width: 90px;
+  margin-left: 110px;
+  margin-top: -18px;
+}
 .profpost {
   background-color: #fde4e5;
 }
@@ -1457,8 +1481,13 @@ ul#footer-links li a:hover {
   background-color: #F6F6F6;
 }
 .calendar .fc-content .fc-event-skin {
-  white-space: nowrap;
+  width: 98px !important;
   overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -khtml-text-overflow: ellipsis;
   color: #009ed9;
   -webkit-transition: color 0.1s linear;
   -moz-transition: color 0.1s linear;
