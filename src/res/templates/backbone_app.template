@@ -1299,15 +1299,9 @@ function() {
       this.broadcast = !this.broadcast;
       this.$(".broadcast").toggleClass("active");
       if (this.broadcast) {
-        this.$("textarea.post-input").css({
-          'background-color' : '#666',
-          'color' : '#FFF'
-        });
+        this.$("textarea.post-input").addClass("broadcast-state");
       } else {
-        this.$("textarea.post-input").css({
-          'background-color' : '#FFF',
-          'color' : '#333'
-        });
+        this.$("textarea.post-input").removeClass("broadcast-state");
       }
     },
     render: function() {
