@@ -1496,7 +1496,7 @@ function() {
     $("#posts a").click(function(event) { event.preventDefault(); });
     
     addTooltip(".anonymous-post", "Anonymous to classmates");
-    addTooltip(".broadcast", "Send as broadcast");
+    addTooltip("button.broadcast", "Send as broadcast");
     $(".chzn-select").chosen();
     
     //Make anon posts or broadcasts invisible based on if user is priveleged
